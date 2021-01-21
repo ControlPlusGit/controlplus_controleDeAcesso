@@ -1,0 +1,45 @@
+build/default/production/src/main.o:  \
+src/main.c  \
+src/i2c.h  \
+ src/as3993_config.h  \
+src/global.h  \
+src/ams_types.h  \
+src/GenericTypeDefs.h  \
+ src/platform.h  \
+src/p24FJ256DA210.h  \
+src/Compiler.h  \
+src/perifericos.h  \
+ src/stream_dispatcher.h  \
+src/stream_driver.h  \
+src/ams_stream.h  \
+ src/usb_hid_stream_driver.h  \
+src/usb.h  \
+src/usb_config.h  \
+src/usb_common.h  \
+ src/usb_ch9.h  \
+src/usb_device.h  \
+src/usb_hal.h  \
+src/usb_hal_pic24.h  \
+ src/usb_function_hid.h  \
+src/uart_driver.h  \
+src/setup_usb.h  \
+src/errno.h  \
+ src/as3993_public.h  \
+src/errno_as3993.h  \
+src/as3993.h  \
+src/gen2.h  \
+ src/timer.h  \
+src/appl_commands.h  \
+src/tuner.h  \
+src/config_i2c3.h  \
+ src/mem_i2c_24LC256.h  \
+src/tags.h  \
+src/empilhadeira.h  \
+ src/tabelaDeExclusao.h  \
+src/rtc.h  \
+src/FSM_EventosDeParada.h  \
+ src/FSM_DataHora.h  \
+src/FSM_TabelaDeExclusao.h  \
+src/FSM_Ethernet.h  \
+ src/FSM_ESP8266.h  \
+
