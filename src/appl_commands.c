@@ -2934,7 +2934,6 @@ void initCommands(void)
     cyclicInventory = 0;
     fastInventory = 0;
     autoAckMode = 1;
-//    rssiMode = RSSI_MODE_PEAK;
     rssiMode = 0x06;    //rssi at 2nd byte
 
     rssiThreshold = -40;
@@ -2942,9 +2941,6 @@ void initCommands(void)
 
     tagDataAvailable = 0;
     num_of_tags = 0;
-//#ifdef ANTENNA_SWITCH
-    //SWITCH_ANTENNA(usedAntenna);
-//#endif
     as3993AntennaPower(0);
     powerDownReader();
 }

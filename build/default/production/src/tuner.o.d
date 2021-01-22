@@ -16,4 +16,5 @@ src/timer.h  \
  src/appl_commands.h  \
 src/as3993.h  \
 src/setup_usb.h  \
+src/i2c.h  \
 src/spi1.h 

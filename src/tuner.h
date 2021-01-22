@@ -61,27 +61,21 @@ typedef struct {
     void (*coutSenFn)(int);
 } TunerConfiguration;
 
+extern TunerConfiguration mainTuner;
+
 /**
  * Initializes the tuner caps to value 0. This function requires an already set-up
  * SPI communication (see initInterface() in serialinterface.c).
  */
-extern void tunerInit(const TunerConfiguration * config);
-extern void tunerInit_A1(const TunerConfiguration * config);
-extern void tunerInit_A2(const TunerConfiguration * config);
-extern void tunerInit_A3(const TunerConfiguration * config);
-extern void tunerInit_A4(const TunerConfiguration * config);
-extern void tunerInit_A5(const TunerConfiguration * config);
-void tunerInit_tec_ban_a1(const TunerConfiguration * config);
-void tunerInit_tec_ban_ax(const TunerConfiguration * config);
+void tunerInit_A1(const TunerConfiguration * config);
+void tunerInit_A2(const TunerConfiguration * config);
+void tunerInit_A3(const TunerConfiguration * config);
+void tunerInit_A4(const TunerConfiguration * config);
+void tunerInit_A5(const TunerConfiguration * config);
 
-void tunerInitFrenteSankyu(const TunerConfiguration *config);
-void tunerInitTraseiraSankyu(const TunerConfiguration *config);
 void sintonizaCapacitores(const TunerConfiguration *config, u8 Cin, u8 Cen, u8 Cout);
 
-void tunerInitTraseiraJuizDeFora(const TunerConfiguration *config);
-void tunerInitOperador(const TunerConfiguration *config);
-
-void tunerInitTraseiraParaEmpilhadeiraComBaseComum(const TunerConfiguration *config);
+void realizaAutoSintoniaDosCapacitores(int Metodo);
 
 
 /*
