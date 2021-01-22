@@ -21,5 +21,4 @@ src/uart_stream_driver.h  \
 src/setup_usb.h  \
 src/bootloadable.h  \
 src/i2c_driver.h  \
- src/spi_driver.h  \
-src/logger.h 
+ src/logger.h 

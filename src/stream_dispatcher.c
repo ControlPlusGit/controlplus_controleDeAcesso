@@ -46,7 +46,7 @@
 #include "bootloadable.h"
 #include "ams_types.h"
 #include "i2c_driver.h"
-#include "spi_driver.h"
+
 #include "logger.h"
 /* FCY needed by libpic30.h, pessimistically assume the maximum, needed for __delay functions */
 #ifndef FCY
@@ -121,21 +121,21 @@ static u8 handleI2cConfig ( u16 rxed, u8 * rxData )
 
 static u8 handleSpi ( u16 rxed, u8 * rxData, u16 * toTx, u8 * txData )
 {
-    u8 status;
+    u8 status=0;
     /* find maximum between send and receive - and hand this in to
        the spi driver */
-    u16 maxSize = ( rxed > *toTx ? rxed : *toTx );
-    spiActivateSEN();
-    status = spiTxRx( rxData, txData, maxSize );
-    spiDeactivateSEN();
+//    u16 maxSize = ( rxed > *toTx ? rxed : *toTx );
+//    spiActivateSEN();
+//    status = spiTxRx( rxData, txData, maxSize );
+//    spiDeactivateSEN();
     return status;
 }
 
 static u8 handleSpiConfig ( u16 rxed, u8 * rxData )
 {    
-    spiConfig_t config;
-    spiDeserialiseConfig( &config, rxData );
-    return spiInitialize( systemClock, &config, 0 );
+//    spiConfig_t config;
+//    spiDeserialiseConfig( &config, rxData );
+    return 0;//spiInitialize( systemClock, &config, 0 );
 }
 
 static u8 handleReset ( u16 rxed, u8 * rxData )

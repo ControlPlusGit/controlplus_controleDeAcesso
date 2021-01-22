@@ -1287,8 +1287,6 @@ void enviaRespostaAosComandosDeSetupUSB(char *dados, int tamanho){
     dados = (char*) pointerAddress;
 }
 
-
-
 void gravaAjusteDeCapacitoresNaMemoria(unsigned char endereco){
     char num[10];
     int valor;

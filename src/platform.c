@@ -41,8 +41,9 @@
 #include "global.h"
 #include "logger.h"
 #include "timer.h"
-#include "spi_driver.h"
+
 #include "PPS.h"
+#include "spi1.h"
 
 /*------------------------------------------------------------------------- */
 /** This function initialising the external interrupt for comunication with the
@@ -297,18 +298,18 @@ void platformInit(void)
 /*------------------------------------------------------------------------- */
 void spiInit(void)
 {
-    spiConfig_t spiconf;
-
-    // setup spi configuration
-    spiconf.frequency = 2000000ULL;
-    spiconf.instance = SPI1;
-    spiconf.clockPhase = 0;
-    spiconf.clockPolarity = 0;
-    spiconf.deviceId = 0;
-//#if  FEMTO2 ||FEMTO2_1 //Gabriel
-    spiconf.frequency = 4000000ULL; // on FEMTO 4MHz are possible.
-//#endif
-    spiInitialize(SYSCLK, &spiconf, 0);
+//    spiConfig_t spiconf;
+//
+//    // setup spi configuration
+//    spiconf.frequency = 2000000ULL;
+//    spiconf.instance = SPI1;
+//    spiconf.clockPhase = 0;
+//    spiconf.clockPolarity = 0;
+//    spiconf.deviceId = 0;
+////#if  FEMTO2 ||FEMTO2_1 //Gabriel
+//    spiconf.frequency = 4000000ULL; // on FEMTO 4MHz are possible.
+////#endif
+//    spiInitialize(SYSCLK, &spiconf, 0);
 }
 
 /*------------------------------------------------------------------------- */
@@ -320,9 +321,11 @@ void writeReadAS3993( const u8* wbuf, u8 wlen, u8* rbuf, u8 rlen, u8 stopMode, u
 #endif
     if (doStart) NCS_SELECT();
 
-    spiTxRx(wbuf, 0, wlen);
+    //spiTxRx(wbuf, 0, wlen);
+    SPI1_Exchange8bitBuffer((uint8_t *)wbuf,(uint16_t)wlen,0);
     if (rlen)
-        spiTxRx(0, rbuf, rlen);
+        //spiTxRx(0, rbuf, rlen);
+        SPI1_Exchange8bitBuffer(0,(uint16_t)rlen,rbuf);
 
     if (stopMode != STOP_NONE) NCS_DESELECT();
 }
@@ -337,8 +340,10 @@ void writeReadAS3993Isr( const u8* wbuf, u8 wlen, u8* rbuf, u8 rlen )
 
     NCS_SELECT();
 
-    spiTxRx(wbuf, 0, wlen);
-    spiTxRx(0, rbuf, rlen);
+    //spiTxRx(wbuf, 0, wlen);
+    //spiTxRx(0, rbuf, rlen);
+    SPI1_Exchange8bitBuffer((uint8_t *)wbuf,(uint16_t)wlen,0);
+    SPI1_Exchange8bitBuffer(0,(uint16_t)rlen,rbuf);
 
     NCS_DESELECT();
 }

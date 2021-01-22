@@ -4,6 +4,11 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f1"
+                     displayName="novaEstruturaRevisada"
+                     projectFiles="true">
+        <itemPath>src/spi1.h</itemPath>
+      </logicalFolder>
       <itemPath>src/Compiler.h</itemPath>
       <itemPath>src/FSM_DataHora.h</itemPath>
       <itemPath>src/FSM_ESP8266.h</itemPath>
@@ -92,6 +97,11 @@
         <itemPath>src/FSM_TabelaDeExclusao.c</itemPath>
         <itemPath>src/setup_usb.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f6"
+                     displayName="novaEstruturaRevisada"
+                     projectFiles="true">
+        <itemPath>src/spi1.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="f3" displayName="PERIPHERALS" projectFiles="true">
         <itemPath>src/rtc.c</itemPath>
         <itemPath>src/spi_driver.c</itemPath>
@@ -126,6 +136,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>src</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -426,6 +439,7 @@
         <property key="UART 4" value="true"/>
         <property key="UCNFG1" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>

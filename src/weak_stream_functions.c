@@ -43,7 +43,7 @@
 #include "ams_stream.h"
 #include "logger.h"
 #include "i2c_driver.h"
-#include "spi_driver.h"
+
 #include "stream_driver.h"
 #include "stream_dispatcher.h"
 
@@ -69,16 +69,16 @@ s8 WEAK i2cRxTx ( u16 numberOfBytesToTx, const u8 * txData, u16 numberOfBytesToR
     return AMS_STREAM_UNHANDLED_PROTOCOL;
 }
 
-void WEAK spiDeserialiseConfig ( spiConfig_t * config, const u8 * data )
-{
-    INFO_LOG( "spiDeserialiseConfig N/A\n" );
-}
-
-s8 WEAK spiInitialize ( u32 sysClk, const spiConfig_t* spiConfigIn, spiConfig_t* spiConfigOut )
-{
-    INFO_LOG( "spiInitialise N/A\n" );
-    return AMS_STREAM_UNHANDLED_PROTOCOL;
-}
+//void WEAK spiDeserialiseConfig ( spiConfig_t * config, const u8 * data )
+//{
+//    INFO_LOG( "spiDeserialiseConfig N/A\n" );
+//}
+//
+//s8 WEAK spiInitialize ( u32 sysClk, const spiConfig_t* spiConfigIn, spiConfig_t* spiConfigOut )
+//{
+//    INFO_LOG( "spiInitialise N/A\n" );
+//    return AMS_STREAM_UNHANDLED_PROTOCOL;
+//}
 
 s8 WEAK spiTxRx ( const u8 * txData, u8 * rxData, u16 numberOfBytes )
 {

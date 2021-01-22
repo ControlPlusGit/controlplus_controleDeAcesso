@@ -13,7 +13,7 @@ src/platform.h  \
 src/Compiler.h  \
 src/logger.h  \
 src/timer.h  \
- src/spi_driver.h  \
-src/appl_commands.h  \
+ src/appl_commands.h  \
 src/as3993.h  \
-src/setup_usb.h 
+src/setup_usb.h  \
+src/spi1.h 

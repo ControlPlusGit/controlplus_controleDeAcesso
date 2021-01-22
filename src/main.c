@@ -28,6 +28,7 @@
 #include "FSM_Ethernet.h"
 #include "FSM_ESP8266.h"
 #include "setup_usb.h"
+#include "spi1.h"
 
 
 
@@ -355,7 +356,7 @@ int main(void){
     //systemInit();
     timerInit();
     platformInit();
-    spiInit();
+    SPI1_Initialize();
     
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
     

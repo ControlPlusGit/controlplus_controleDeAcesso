@@ -1289,6 +1289,7 @@ int operadorPresente(void){
     
     sel_led(0,0);//Apaga leds
     setarAntenaASerLida(ANTENA_PARA_LER_O_OPERADOR);
+    setarAntenaASerLida(1);
     comecaInvetorio();
     TempoDeValidadeDOOperador = MeuOperador.TempoDeValidade;
     //if (TempoDeValidadeDOOperador > TEMPO_PARA_PROCURAR_O_OPERADOR){

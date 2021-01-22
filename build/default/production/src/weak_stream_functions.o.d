@@ -5,7 +5,6 @@ src/GenericTypeDefs.h  \
  src/ams_stream.h  \
 src/logger.h  \
 src/i2c_driver.h  \
-src/spi_driver.h  \
- src/Compiler.h  \
 src/stream_driver.h  \
+ src/Compiler.h  \
 src/stream_dispatcher.h 

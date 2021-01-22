@@ -51,12 +51,14 @@
 #include "platform.h"
 #include "logger.h"
 #include "timer.h"
-#include "spi_driver.h"
+
 #include "tuner.h"
 #include <math.h>
 #include "appl_commands.h"
 #include "as3993.h"
 #include "setup_usb.h"
+
+#include "spi1.h"
 
 extern int rssi_tag;
 extern int dbm_tag_real;
@@ -248,18 +250,18 @@ void tunerDebug(const TunerConfiguration *config)
 /*------------------------------------------------------------------------- */
 void tunerSetCap(const TunerConfiguration *config,  u8 component, u8 val )
 {
-    spiConfig_t tunerConfig, oldConfig;
+    //spiConfig_t tunerConfig, oldConfig;
 
     if (tunerCheckConfig(config, component))
         return;     //we have an invalid component.
 
     /* reconfigure spi to 2MHz */
-    tunerConfig.frequency = 2000000ULL;
-    tunerConfig.instance = SPI1;
-    tunerConfig.clockPhase = 1;
-    tunerConfig.clockPolarity = 0;
-    tunerConfig.deviceId = 0;
-    spiInitialize(SYSCLK, &tunerConfig, &oldConfig);
+//    tunerConfig.frequency = 2000000ULL;
+//    tunerConfig.instance = SPI1;
+//    tunerConfig.clockPhase = 1;
+//    tunerConfig.clockPolarity = 0;
+//    tunerConfig.deviceId = 0;
+    //spiInitialize(SYSCLK, &tunerConfig, &oldConfig);
 
     switch (component)
     {
@@ -277,7 +279,7 @@ void tunerSetCap(const TunerConfiguration *config,  u8 component, u8 val )
             break;
     }
 
-    spiTxRx(&val, 0, 1);
+    SPI1_Exchange8bitBuffer(&val, 1, 0);
 
     switch (component)
     {
@@ -295,7 +297,7 @@ void tunerSetCap(const TunerConfiguration *config,  u8 component, u8 val )
             break;
     }
     /* restore spi to default */
-    spiInitialize(SYSCLK, &oldConfig, 0);
+    //spiInitialize(SYSCLK, &oldConfig, 0);
 }
 u16 tunerGetReflected(void)
 {
