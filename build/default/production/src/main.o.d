@@ -41,5 +41,4 @@ src/FSM_EventosDeParada.h  \
  src/FSM_DataHora.h  \
 src/FSM_TabelaDeExclusao.h  \
 src/FSM_Ethernet.h  \
- src/FSM_ESP8266.h  \
-
+ src/FSM_ESP8266.h 

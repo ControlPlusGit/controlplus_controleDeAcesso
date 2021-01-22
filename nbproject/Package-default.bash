@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/FWEMP.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=FWEMP.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=fwemp.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/controleDeAcesso.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=controleDeAcesso.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=controledeacesso/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/fwemp.x/bin
+makeDirectory ${TMPDIR}/controledeacesso/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/fwemp.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/controledeacesso.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/fwemp.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/controledeacesso.tar *
 checkReturnCode
 
 # Cleanup

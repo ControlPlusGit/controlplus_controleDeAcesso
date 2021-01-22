@@ -29,12 +29,12 @@ unsigned long long retornaValorContadorDePerformance(void){
 }
 
 void escreverMensagemEthernet(char *data){  
-    int pointerAddress = data;
+    int pointerAddress = (int) data;
     while(*data != '\0'){
         uart2Tx(*data);
         data++; 
     }
-    data = pointerAddress;
+    data = (char*) pointerAddress;
 }
 /*
     teste de presença
@@ -62,7 +62,7 @@ void limpaMensagemESP8266(void){
 }
 
 void escreveMensagemESP8266(char *data){ 
-    int pointerAddress = data;
+    int pointerAddress = (int) data;
     
     if(debugInterfaceWifi_Silent){
         escreverMensagemUSB(data);
@@ -75,7 +75,7 @@ void escreveMensagemESP8266(char *data){
         data++;
     }
     
-    data = pointerAddress;
+    data = (char*) pointerAddress;
 }
 
 char jaInicializeiESP8266 = NAO;
@@ -144,21 +144,21 @@ void iniciaESP8266(void){
 extern unsigned int wifiLiberadoParaUso;
 
 void escreverMensagemWifi(char *data){ 
-    int pointerAddress = data;
+    int pointerAddress = (int) data;
     if(wifiLiberadoParaUso){
         if(ESP8266_jaFoiInicializado()){
             escreveMensagemESP8266(data);
         }
     }
-    data = pointerAddress;
+    data = (char*) pointerAddress;
 }
 
 void escreverMensagemUSB(char *data){ 
-    int pointerAddress = data;
+    int pointerAddress = (int) data;
     
     while(*data != '\0'){
         uart3Tx(*data);
         data++; 
     }    
-    data = pointerAddress;
+    data = (char*) pointerAddress;
 }

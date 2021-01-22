@@ -72,12 +72,12 @@ unsigned char ipTemp[4];
 
 void enviaDadosParaUSBserial(char *mensagem, int tamanho){
     int contador;
-    int pointerAddress = mensagem;
+    int pointerAddress = (int) mensagem;
     for (contador = 0; contador < tamanho; contador = contador + 1){
         uart3Tx(*mensagem); //Porta USB Serial
         mensagem++;
     }
-    mensagem = pointerAddress;
+    mensagem = (char*) pointerAddress;
 }
 
 void commandHandlerPortaUSB(void){
@@ -1279,12 +1279,12 @@ void retornaNok(void){
 
 void enviaRespostaAosComandosDeSetupUSB(char *dados, int tamanho){
     int posicao;
-    int pointerAddress = dados;
+    int pointerAddress = (int) dados;
     for (posicao = 0; posicao < tamanho; posicao = posicao + 1){
         uart3Tx(*dados); //Porta USB  
         dados++;
     }
-    dados = pointerAddress;
+    dados = (char*) pointerAddress;
 }
 
 

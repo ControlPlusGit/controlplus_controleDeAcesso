@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=FWEMP.X
+PROJECTNAME=controleDeAcesso
 
 # Active Configuration
 DEFAULTCONF=default
