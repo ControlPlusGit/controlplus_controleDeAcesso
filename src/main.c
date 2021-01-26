@@ -1,34 +1,33 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+
 #include "i2c.h"
-#include "as3993_config.h"
+#include "rtc.h"
+#include "spi1.h"
+#include "timer.h"
 #include "platform.h"
 #include "perifericos.h"
-#include "stream_dispatcher.h"
-#include "usb_hid_stream_driver.h"
 #include "uart_driver.h"
 #include "uart.h"
 #include "errno.h"
 #include "as3993_public.h"
+#include "as3993_config.h"
 #include "as3993.h"
 #include "gen2.h"
-#include "global.h"
-#include "timer.h"
 #include "appl_commands.h"
+#include "global.h"
 #include "uart_driver.h"
 #include "tuner.h"
 #include "config_i2c3.h"
 #include "mem_i2c_24LC256.h"
 #include "tags.h"
-#include "empilhadeira.h"
-#include "rtc.h"
-#include "FSM_EventosDeParada.h"
+
 #include "FSM_DataHora.h"
-#include "FSM_TabelaDeExclusao.h"
 #include "FSM_Ethernet.h"
 #include "FSM_ESP8266.h"
 #include "setup_usb.h"
-#include "spi1.h"
+
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -37,38 +36,7 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
 
 #endif
 
-char num_serie[20];
-char empilhadeira[20];
-
-int dbm_tag_real;
-
-extern void tick(void);
-extern void ObtemID (char*);
-extern Freq Frequencies;
-
-extern Tag __attribute__((far)) tags_[MAXTAG];
-
-int total_parcial = 0;
-
-u8 cin,clen,cout = 0;
-
-unsigned int total_tags = 0;
-
-void lista_freq_anatel(void);
-
-extern u8 inventoryGen2(void);
-
-void ligaTimer2(void);
-
-extern void uart4Tx(u8);
-
-extern u16 readerInitStatus;
-
-int ContadorParaUmSegundo;
-char ContadorParaUmCentessimo;
-
-int ContadorParaEnviarArrayXbee;
-int ContadorParaRemocaoDeTabelaDeExclusao;
+void tick(void);
 
 void systemInit(void);
 
@@ -76,40 +44,9 @@ int main(void){
     
     systemInit();    
  
-    readerInitStatus = as3993Initialize(915000ULL);
-    
-    initCommands(); 
-    
-    desliga_saida_pa();
-    
-    desliga_led_tag ();
-   
-    ligaTimer2();
-    
-   
-    IniciaRTC(); // Inicializa o RTC no periferico I2C1
-    inicializa_i2c3(); // Inicializa a EEPROM 
-       
     obtemParametrosDaMemoria();
     
-    inicializaMaquinaDeEstados_ESP8266();  
-    
-    num_serie[0] = idDoLeitor[0];
-    num_serie[1] = idDoLeitor[1];
-    num_serie[2] = idDoLeitor[2];
-    num_serie[3] = idDoLeitor[3];
-       
-    delay_ms(1000);
-
-    if(readerInitStatus){
-        readerInitStatus = as3993Initialize(915000ULL);
-    }
-    
-    iniciaLogicaDeEmpilhadeira();
-    
-    as3993SetSensitivity(125);
-    
-    logicaDeEmpilhadeiraV2();
+    inicializaMaquinaDeEstados_ESP8266();   
 
     return 0;
 }
@@ -117,6 +54,8 @@ int main(void){
 void systemInit(void){
 
     u32 baudrate, realrate;
+    
+    u16 readerInitStatus;
     
     CNPU1bits.CN15PUE = 1; 
     CNPU2bits.CN16PUE = 1;
@@ -128,13 +67,20 @@ void systemInit(void){
     
     //systemInit();
     timerInit();
+    
     platformInit();
+    
     SPI1_Initialize();
     
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
     
-    baudrate = BAUDRATE;
+    ligaTimer2();    
    
+    IniciaRTC(); // Inicializa o RTC no periferico I2C1
+    
+    inicializa_i2c3(); // Inicializa a EEPROM 
+    
+    baudrate = BAUDRATE;   
     
     uartTxInitialize(SYSCLK, baudrate, &realrate); 
     
@@ -143,6 +89,18 @@ void systemInit(void){
     uart3TxInitialize(SYSCLK, baudrate, &realrate); // usb
     
     uart4TxInitialize(SYSCLK, baudrate, &realrate); // wifi 
+    
+    readerInitStatus = as3993Initialize(BAUDRATE);
+    
+    initCommands(); 
+       
+    delay_ms(10);
+
+    if(readerInitStatus){
+        readerInitStatus = as3993Initialize(BAUDRATE);
+    }
+    
+    as3993SetSensitivity(125);
     
     ////////////////////////////////////////////////////////
     // Rotina de inicializacao visual do leitor
@@ -181,7 +139,5 @@ void systemInit(void){
     
 }
 
-void tick ( void ){
-    incrementaContadorDePerformance();    
-    operacoesEmTickParaEmpilhadeira();
+void tick ( void ){   
 }

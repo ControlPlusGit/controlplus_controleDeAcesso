@@ -8,13 +8,13 @@
 #include <uart.h>
 #include "FSM_Ethernet.h"
 #include "timer.h"
-#include "FSM_TabelaDeExclusao.h"
-#include "FSM_EventosDeParada.h"
+//#include "FSM_TabelaDeExclusao.h"
+//#include "FSM_EventosDeParada.h"
 #include "FSM_DataHora.h"
 #include "FSM_ESP8266.h"
 #include "uart_driver.h"
 #include <stdint.h>
-#include "empilhadeira.h"
+//#include "empilhadeira.h"
 #include "i2c.h"
 #include <stdio.h>
 #include <string.h>

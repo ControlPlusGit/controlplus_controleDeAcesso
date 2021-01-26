@@ -48,11 +48,11 @@
 #include "global.h"
 #include "Compiler.h"
 #include "string.h"
-#include "empilhadeira.h"
+//#include "empilhadeira.h"
 #include "timer.h"
-#include "FSM_EventosDeParada.h"
+//#include "FSM_EventosDeParada.h"
 #include "FSM_DataHora.h"
-#include "FSM_TabelaDeExclusao.h"
+//#include "FSM_TabelaDeExclusao.h"
 #include "setup_usb.h"
 /*
  *

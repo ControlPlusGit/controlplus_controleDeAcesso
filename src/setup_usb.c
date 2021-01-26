@@ -1,16 +1,19 @@
 
-#include "setup_usb.h"
-#include "i2c.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+
+//#include "FSM_TabelaDeExclusao.h"
+#include "i2c.h"
 #include "uart_driver.h"
 #include "FSM_DataHora.h"
 #include "FSM_ESP8266.h"
 #include "FSM_Ethernet.h"
-#include "FSM_EventosDeParada.h"
-#include "FSM_TabelaDeExclusao.h"
+//#include "FSM_EventosDeParada.h"
+
+#include "setup_usb.h"
 
 void realizaAutoSintoniaDosCapacitores(int Metodo);
 
@@ -393,14 +396,14 @@ void habilitaDebugInterfaceWifiViaUSB(void){
     debugInterfaceWifi = 1;
     bloqueiaMaquinaDeEstados_ESP8266();
     bloqueiaMaquinaDeEstados_DataHora();
-    bloqueiaMaquinaDeEstados_EventosDeParada();
-    bloqueiaMaquinaDeEstados_TabelaDeExclusao();
+//    bloqueiaMaquinaDeEstados_EventosDeParada();
+//    bloqueiaMaquinaDeEstados_TabelaDeExclusao();
     retornaOk();
 }
 void desabilitaDebugInterfaceWifiViaUSB(void){
     debugInterfaceWifi = 0;
-    habilitaMaquinaDeEstados_TabelaDeExclusao();
-    habilitaMaquinaDeEstados_EventosDeParada();
+//    habilitaMaquinaDeEstados_TabelaDeExclusao();
+ //   habilitaMaquinaDeEstados_EventosDeParada();
     habilitaMaquinaDeEstados_DataHora();
     habilitaMaquinaDeEstados_ESP8266();
     retornaOk();
@@ -1168,6 +1171,17 @@ void obtemIdDoLeitor(void){
     mensagem[4] = '\r';
     mensagem[5] = '\n';
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));    
+}
+
+void retornaIdDoLeitor(unsigned char *pointer){
+    uint16_t addr = (uint16_t) pointer;
+    
+    *pointer++ = idDoLeitor[0];
+    *pointer++ = idDoLeitor[0];
+    *pointer++ = idDoLeitor[0];
+    *pointer++ = idDoLeitor[0];
+    
+    pointer = (unsigned char*) addr;
 }
 
 

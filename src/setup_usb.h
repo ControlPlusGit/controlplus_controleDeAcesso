@@ -234,6 +234,8 @@ void limpaBufferRxUSB(void);
 
 void realizarCalibracaoAutomatica(void);
 
+void retornaIdDoLeitor(unsigned char *pointer);
+
 //Seta parametros do leitor
 void setaModoDeOperacao(void);
 void setaAtrasoParaDegradarLeitura(void);
@@ -323,12 +325,6 @@ void habilitaDebugInterfaceWifiSilentViaUSB(void);
 void desabilitaDebugInterfaceWifiSilentViaUSB(void);
 void habilitaLogConectividadeWifiViaUSB(void);
 void desabilitaLogConectividadeWifiViaUSB(void);
-
-
-
-
-
-
 
 
 

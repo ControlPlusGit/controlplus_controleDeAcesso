@@ -61,8 +61,6 @@
 
 #include "spi1.h"
 
-extern int rssi_tag;
-extern int dbm_tag_real;
 extern Freq Frequencies;
 void calcula_dbm(int);
 
@@ -512,13 +510,6 @@ void tunerSetTuning(const TunerConfiguration *config, u8 cin, u8 clen, u8 cout )
         tunerSetCap(config, TUNER_COUT, cout);
 }
 
-void calcula_dbm(rssi_tag){
-    int q,i;
-    q = (rssi_tag & 0xF0) >> 4;
-    i = (rssi_tag & 0x0F);
-
-    dbm_tag_real = sqrt ((q*q + i*i))/1.414;    
-}
 
 
 

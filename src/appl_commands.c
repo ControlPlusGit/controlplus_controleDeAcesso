@@ -63,7 +63,7 @@
 #include "as3993.h"
 #include "tuner.h"
 
-extern unsigned int total_tags;
+unsigned int total_tags;
 //extern unsigned int conta_tag_frente[];
 //extern unsigned int conta_tag_traseira[];
 

@@ -13,13 +13,13 @@
 #include "FSM_DataHora.h"
 #include "uart_driver.h"
 #include <stdint.h>
-#include "empilhadeira.h"
 #include "i2c.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> 
 #include "rtc.h"
 #include <time.h>
+#include "setup_usb.h"
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
@@ -73,8 +73,7 @@ struct tm objetoDataHora;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     char stringSolicitacaoDataHora[300];
     
-    static unsigned char idLeitor_DataHora[20];
-    
+    unsigned char idLeitor_DataHora[20];    
     
     char horarioFoiAtualizado = NAO;
     
