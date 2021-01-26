@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "i2c.h"
 #include "rtc.h"
@@ -22,32 +23,38 @@
 #include "config_i2c3.h"
 #include "mem_i2c_24LC256.h"
 #include "tags.h"
-
 #include "FSM_DataHora.h"
 #include "FSM_Ethernet.h"
 #include "FSM_ESP8266.h"
 #include "setup_usb.h"
 
+#include "tabelaEstacionamento.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
 _CONFIG2(POSCMOD_HS & IOL1WAY_OFF & OSCIOFNC_OFF & FCKSM_CSDCMD & FNOSC_PRIPLL & PLL96MHZ_ON & PLLDIV_DIV3 & IESO_OFF)
 _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDIS & WPCFG_WPCFGDIS & WPEND_WPENDMEM)
 
-#endif
+#endif     
+
+TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
 
 void tick(void);
 
 void systemInit(void);
 
+void testAppResources(void);
+
 int main(void){
-    
+        
     systemInit();    
  
     obtemParametrosDaMemoria();
     
     inicializaMaquinaDeEstados_ESP8266();   
-
+    
+    testAppResources();
+    
     return 0;
 }
 
@@ -140,4 +147,13 @@ void systemInit(void){
 }
 
 void tick ( void ){   
+}
+
+void testAppResources(void){
+    
+    ////////////////////////////
+    // Green list tests
+    ////////////////////////////
+    testTabelaDeEPC_should_IncludeSearchExclude();
+    
 }
