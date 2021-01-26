@@ -54,8 +54,6 @@ u16 slowTimerValue( );
  */
 void slowTimerStop( );
 
-void ligaTimer2 (void);
-
 /*!
  * Set up timers. The timers are used for:
  * T1: 
@@ -64,5 +62,5 @@ void ligaTimer2 (void);
  * T4:
  * T5:
  */
-void timerInit();
+void TMR3_Init();
 #endif

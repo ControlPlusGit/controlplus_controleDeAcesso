@@ -345,14 +345,14 @@ void pega_pot_refl (void)
  */
 static BOOL continueCheckTimeout( ) 
 {
-    if (maxSendingLimit == 0) return 1;
-    if ( slowTimerValue() >= maxSendingLimit )
-    {
-        //APPLOG("allocation timeout\n");
-        slowTimerStop();
-        maxSendingLimitTimedOut = 1;
-        return 0;
-    }
+//    if (maxSendingLimit == 0) return 1;
+//    if ( slowTimerValue() >= maxSendingLimit )
+//    {
+//        //APPLOG("allocation timeout\n");
+//        slowTimerStop();
+//        maxSendingLimitTimedOut = 1;
+//        return 0;
+//    }
     return 1;
 }
 
@@ -2507,7 +2507,7 @@ void callChangeFreq(void)
                 maxSendingLimitTimedOut = 0;
                 as3993AntennaPower(1);
                 delay_ms(1);
-                slowTimerStart();
+                //slowTimerStart();
                 do{
                     if (cmdBuffer.rxData[6] == 0x01)
                     {   /* pseudo random continuous modulation */
@@ -2994,18 +2994,19 @@ static s8 hopFrequencies(void)
     u8 min_idx;
     s8 dBm = -128;
     u8 rssi;
-    u16 idleDelay;
+//    u16 idleDelay;
 
-    slowTimerStart();       //start timer for idle delay
+    //slowTimerStart();       //start timer for idle delay
     powerUpReader();
     as3993AntennaPower(0);
 
-    idleDelay = slowTimerValue();
-    if ( idleTime > idleDelay)
-    { /* wait for idle time */
-        delay_ms(idleTime -  idleDelay);
-    }
-    slowTimerStop();
+//    idleDelay = slowTimerValue();
+//    if ( idleTime > idleDelay)
+//    { /* wait for idle time */
+//        delay_ms(idleTime -  idleDelay);
+//    }
+//    slowTimerStop();
+    delay_ms(1);
     if (Frequencies.numFreqs == 0)
     {
         if (!cyclicInventory) 
@@ -3024,7 +3025,7 @@ static s8 hopFrequencies(void)
     }
     if (dBm <= rssiThreshold)
     {
-        slowTimerStart();
+//        slowTimerStart();
         maxSendingLimitTimedOut = 0;
 #ifdef TUNER
         applyTunerSettingForFreq(Frequencies.freq[currentFreqIdx]);
@@ -3103,7 +3104,7 @@ static s8 hopFrequencies(void)
 
 static void hopChannelRelease(void)
 {
-    slowTimerStop();
+    //slowTimerStop();
     if (readerPowerDownMode != POWER_NORMAL_RF)
         as3993AntennaPower(0);
     if (!cyclicInventory)

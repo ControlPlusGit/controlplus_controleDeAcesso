@@ -29,6 +29,7 @@
 #include "setup_usb.h"
 
 #include "tabelaEstacionamento.h"
+#include "tmr2.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -55,6 +56,10 @@ int main(void){
     
     testAppResources();
     
+    while(1){
+        
+    }
+    
     return 0;
 }
 
@@ -72,16 +77,15 @@ void systemInit(void){
     CNPU4bits.CN57PUE = 1;
     CNPU2bits.CN28PUE = 1;
     
-    //systemInit();
-    timerInit();
-    
     platformInit();
     
     SPI1_Initialize();
     
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
     
-    ligaTimer2();    
+    TMR2_LoadInterruptCallback(tick);
+    
+    TMR2_Initialize();
    
     IniciaRTC(); // Inicializa o RTC no periferico I2C1
     
@@ -147,6 +151,7 @@ void systemInit(void){
 }
 
 void tick ( void ){   
+    
 }
 
 void testAppResources(void){
@@ -155,5 +160,11 @@ void testAppResources(void){
     // Green list tests
     ////////////////////////////
     testTabelaDeEPC_should_IncludeSearchExclude();
+    
+    ////////////////////////////
+    // TMR2 overflow interrupt
+    ////////////////////////////
+    test_TMR2_OverflowInterrupt_should_Execute();
+    
     
 }
