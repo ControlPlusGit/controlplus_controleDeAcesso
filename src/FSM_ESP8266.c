@@ -322,7 +322,10 @@ enum{
                 else{
                     zeraContadorExecucao_FSM_ESP8266();
                     estadoAtual_ESP8266=AGUARDANDO_TAREFA;
-                    estadoAnterior_ESP8266=AGUARDANDO_ACK_1;                                          
+                    estadoAnterior_ESP8266=AGUARDANDO_ACK_1;
+                    
+                    sprintf(stringMensagemESP8266,"+++");
+                    escreveMensagemESP8266(stringMensagemESP8266);
                 }
             break;
             case ENVIAR_MENSAGEM_2:  

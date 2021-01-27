@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "tmr2.h"
+#include "log.h"
 #include "global.h"
 #include <libpic30.h>
 
@@ -42,7 +43,9 @@ void test_TMR2_OverflowInterrupt_should_Execute(void){
     __delay_ms(100);
     
     if(i > 2){
-        sprintf(mensagem,"Interrupcao ocorrendo conforme esperado");
+        logMsg("///////////////////////////////////////////////\n\rTESTE - INTERRUPCAO OVERFLOW DO TIMER2\n\r///////////////////////////////////////////////\n\n\r");
+
+        logMsg("\rInterrupcao ocorrendo conforme esperado\r\n\n");
     }
     
 }

@@ -30,6 +30,8 @@
 
 #include "tabelaEstacionamento.h"
 #include "tmr2.h"
+#include "FSM_TabelaDeEstacionamento.h"
+#include "log.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -39,6 +41,8 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
 #endif     
 
 TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
+
+uint16_t globalCounter_ms = 0;
 
 void tick(void);
 
@@ -61,6 +65,19 @@ int main(void){
     }
     
     return 0;
+}
+
+void tick ( void ){   
+    
+    globalCounter_ms++;
+    
+    executaMaquinaDeEstados_TabelaDeEstacionamento();
+    executaMaquinaDeEstados_ESP8266();
+    commandHandlerPortaUSB();
+}
+
+uint16_t tick_getTimerCounter(void){
+    return globalCounter_ms;
 }
 
 void systemInit(void){
@@ -150,11 +167,9 @@ void systemInit(void){
     
 }
 
-void tick ( void ){   
-    
-}
-
 void testAppResources(void){
+    
+    loadLogCallbackFunction(uart3Tx);
     
     ////////////////////////////
     // Green list tests
@@ -166,5 +181,48 @@ void testAppResources(void){
     ////////////////////////////
     test_TMR2_OverflowInterrupt_should_Execute();
     
+    TMR2_LoadInterruptCallback(tick);
+    
+    ////////////////////////////
+    // Async delay with TMR2 interrupt
+    ////////////////////////////
+    logMsg("///////////////////////////////////////////////\n\rTESTE - DELAY ASSINCRONO COM TIMER2\n\r///////////////////////////////////////////////\n\n\r");
+    
+    uint8_t async_delay_ok = 0;
+    char mensagem[300];      
+    uint16_t time_now = tick_getTimerCounter(); 
+    uint16_t delay = 5000 + time_now;
+    uint16_t inicial, final, diferenca;
+    
+    inicial = time_now;
+    
+    sprintf(mensagem,"mili segundos inicial: %u\n\n\r",inicial);
+    logMsg(mensagem);
+    
+    while(!async_delay_ok){
+        if( tick_getTimerCounter() == delay ) {
+            async_delay_ok = 1;            
+        }         
+    }
+    
+    final = tick_getTimerCounter();
+    
+    sprintf(mensagem,"mili segundos final: %u\n\n\r",final);
+    logMsg(mensagem);
+    
+    diferenca = final-inicial;
+    
+    sprintf(mensagem,"diferenca: %u\n\n\r",diferenca);
+    logMsg(mensagem);
+    
+    logMsg("Delay assincrono executado com sucesso!\n\n\r");
+    
+    ////////////////////////////
+    // Receive green list and mount table
+    ////////////////////////////
+    
+    inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+            
+    inicializaMaquinaDeEstados_ESP8266();
     
 }

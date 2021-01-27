@@ -20,12 +20,12 @@ extern "C" {
 #define NUMERO_MAXIMO_DE_REGISTROS_DA_TABELA_DE_ESTACIONAMENTO 1000
     
 #define TAMANHO_EPC_REGISTRADO_NA_TABELA 2 //BYTES 
-        
+      
     typedef union {
-        long tag;
+        uint16_t tag;
         struct{
-            char byte1:8;
-            char byte2:8; 
+            uint8_t byte1:8;
+            uint8_t byte2:8; 
         };
     }EPC_Estacionamento;
     

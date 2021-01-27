@@ -3,6 +3,7 @@
 #define	_TMR2_H_
 
 #include <xc.h> 
+#include "log.h"
 
 #ifdef	__cplusplus
 extern "C" {
