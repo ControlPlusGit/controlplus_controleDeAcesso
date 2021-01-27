@@ -78,7 +78,7 @@ enum estadosDaMaquina{
     unsigned char idLeitor_TabelaDeEstacionamento[20];   
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////      FUNÇÕES      /////////////////////////////////////////////////////
+//////////////////////////////////////////////      FUNCOES     /////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
     void habilitaMaquinaDeEstados_TabelaDeEstacionamento(void){
@@ -113,16 +113,12 @@ enum estadosDaMaquina{
         delayExecucao_TabelaDeEstacionamento = 0;
     }
     void executaMaquinaDeEstados_TabelaDeEstacionamento(void){     
-        //int temp=0;
-//        char mensagemParaDebug[300];
-        // variáveis utilizadas na aritmética para tratar a tabela de exclusão
+        
         int i=0,j=0,numDigitos=0,multiplicarPor10=1; 
         int bufferOperacoesMatematicas[10];
         int numRegistrosTabelaDeEstacionamento = 0;
         int numeroDeRegistrosProcessados=0;
-        
-        //char tabelaDeExclusao[800][4];
-        //char epcPedestre[8];        
+            
         EPC_Estacionamento novoEPC;
         char epcTemp[20];
       
@@ -133,17 +129,9 @@ enum estadosDaMaquina{
             case AGUARDANDO_TAREFA:   
                 if(delayExecucao_TabelaDeEstacionamento > TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO){  
                     zeraContadorExecucao_FSM_TabelaDeEstacionamento();                    
-                            
-                    //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento aguardando\n\r");
-                    //escreverMensagemUSB(mensagemParaDebug);
-                                
+                              
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){     
-                                               
-                        //inicializaMaquinaDeEstados_TabelaDeEstacionamento();
-
-                        //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento liberada\n\r");
-                        //escreverMensagemUSB(mensagemParaDebug);
-
+                        
                         estadoAtual_TabelaDeEstacionamento = ENVIAR_SOLICITACAO_DE_TABELA_DE_ESTACIONAMENTO;
                         estadoAnterior_TabelaDeEstacionamento = AGUARDANDO_TAREFA;   
                     }                           
@@ -152,29 +140,20 @@ enum estadosDaMaquina{
             case ENVIAR_SOLICITACAO_DE_TABELA_DE_ESTACIONAMENTO:  
                 
                 if(delayExecucao_TabelaDeEstacionamento > TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO){
-                    zeraContadorExecucao_FSM_TabelaDeEstacionamento();
-                    
-                    //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento enviando solicitacao\n\r");
-                    //escreverMensagemUSB(mensagemParaDebug);                
+                    zeraContadorExecucao_FSM_TabelaDeEstacionamento();                                  
                     
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){  
-                       
-                        //if(delayExecucao_TabelaDeEstacionamento>500){
+                      
+                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apife.php?parametro=[E2;%c%c%c%c%c%c] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n",
+                                                                        idLeitor_TabelaDeEstacionamento[0],idLeitor_TabelaDeEstacionamento[1],
+                                                                        idLeitor_TabelaDeEstacionamento[2],idLeitor_TabelaDeEstacionamento[3],
+                                                                        idLeitor_TabelaDeEstacionamento[4],idLeitor_TabelaDeEstacionamento[5]);
                         
-//                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"<E2;%c%c%c%c;%c%c%c%c%c%c%c%c>",
-//                                idLeitor_TabelaDeEstacionamento[0],idLeitor_TabelaDeEstacionamento[1],
-//                                idLeitor_TabelaDeEstacionamento[2],idLeitor_TabelaDeEstacionamento[3],
-//                                ((areaDoVeiculo.byte4>>4)+'0'),((areaDoVeiculo.byte4&0x0f)+'0'),((areaDoVeiculo.byte3>>4)+'0'),((areaDoVeiculo.byte3&0x0f)+'0'),((areaDoVeiculo.byte2>>4)+'0'),((areaDoVeiculo.byte2&0x0f)+'0'),((areaDoVeiculo.byte1>>4)+'0'),((areaDoVeiculo.byte1&0x0f)+'0'));
-                        //sprintf(stringSolicitacaoTabelaDeEstacionamento,"<FE;1302>\n\r");
-                        
-                        //escreverMensagemUSB(stringSolicitacaoTabelaDeEstacionamento); // para debug da comunicação
-                        //escreverMensagemEthernet(stringSolicitacaoTabelaDeEstacionamento);
-                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apife.php?parametro=[FE;PT01] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
                         escreverMensagemWifi(stringSolicitacaoTabelaDeEstacionamento);
                         
                         estadoAtual_TabelaDeEstacionamento=AGUARDANDO_TABELA_DE_ESTACIONAMENTO;
                         estadoAnterior_TabelaDeEstacionamento=ENVIAR_SOLICITACAO_DE_TABELA_DE_ESTACIONAMENTO; 
-                        //}
+                
                     } 
                 }
                 
@@ -185,7 +164,7 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){
                         
-                        char* msgStartPosition = strstr(bufferInterrupcaoUART4,"[FE;OK;");                                              
+                        char* msgStartPosition = strstr(bufferInterrupcaoUART4,"[E2;OK;");                                              
                         
                         if(msgStartPosition != 0){
                             
@@ -200,7 +179,7 @@ enum estadosDaMaquina{
                             //sprintf(bufferInterrupcaoUART4,"<E2;3;30000100;30000100;30000100>");
                             //sprintf(bufferInterrupcaoUART4,"<E2;OK;2;30004000;30006000>");
                                     
-                            if(bufferInterrupcaoUART4[7] != '0'){
+                            if(bufferInterrupcaoUART4[msgPosition] != '0'){
                                 
                                 // <E2;OK;2;XXXXXXXX;XXXXXXXX>
                                 i= msgPosition + 7; // PRIMEIRA POSIÇÃO ONDE COMEÇA O NÚMERO DE REGISTROS
