@@ -114,10 +114,14 @@ enum estadosDaMaquina{
     }
     void executaMaquinaDeEstados_TabelaDeEstacionamento(void){     
         
-        int i=0,j=0,numDigitos=0,multiplicarPor10=1; 
+        int i=0,j=0,k=0,numDigitos=0,multiplicarPor10=1; 
         int bufferOperacoesMatematicas[10];
         int numRegistrosTabelaDeEstacionamento = 0;
         int numeroDeRegistrosProcessados=0;
+        
+        char* msgStartPosition;
+        int msgPosition;
+        int numMaiorQueZeroEncontrado;
             
         EPC_Estacionamento novoEPC;
         char epcTemp[20];
@@ -144,10 +148,7 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){  
                       
-                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apife.php?parametro=[E2;%c%c%c%c%c%c] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n",
-                                                                        idLeitor_TabelaDeEstacionamento[0],idLeitor_TabelaDeEstacionamento[1],
-                                                                        idLeitor_TabelaDeEstacionamento[2],idLeitor_TabelaDeEstacionamento[3],
-                                                                        idLeitor_TabelaDeEstacionamento[4],idLeitor_TabelaDeEstacionamento[5]);
+                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apifb.php?parametro=[FB;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
                         
                         escreverMensagemWifi(stringSolicitacaoTabelaDeEstacionamento);
                         
@@ -164,39 +165,45 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){
                         
-                        char* msgStartPosition = strstr(bufferInterrupcaoUART4,"[E2;OK;");                                              
+                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FB;OK;");                                              
                         
                         if(msgStartPosition != 0){
                             
-                            int msgPosition = (int) (msgStartPosition - bufferInterrupcaoUART4);                                
+                            msgPosition = (int) (msgStartPosition - bufferInterrupcaoUART4);                                
                            
-                            resetarErrosDeTimeoutNoWifi();
+                            numMaiorQueZeroEncontrado = NAO;    
                             
-                            //escreverMensagemUSB(bufferInterrupcaoUART4);
-                            //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento confirmacao recebida\n\r");
-                            //escreverMensagemUSB(mensagemParaDebug);                             
-                            //sprintf(bufferInterrupcaoUART4,"<E2;OK;500;30000100;30006000;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30001000;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100;30000100>");
-                            //sprintf(bufferInterrupcaoUART4,"<E2;3;30000100;30000100;30000100>");
-                            //sprintf(bufferInterrupcaoUART4,"<E2;OK;2;30004000;30006000>");
-                                    
-                            if(bufferInterrupcaoUART4[msgPosition] != '0'){
+                            k = 0;
+                            
+                            resetarErrosDeTimeoutNoWifi();
+                                                                
+                            if( bufferInterrupcaoUART4[msgPosition] != '0' ) {
                                 
                                 // <E2;OK;2;XXXXXXXX;XXXXXXXX>
                                 i= msgPosition + 7; // PRIMEIRA POSIÇÃO ONDE COMEÇA O NÚMERO DE REGISTROS
-                                while(bufferInterrupcaoUART4[i] != ';' && bufferInterrupcaoUART4[i] != ']'){                                
-                                    numDigitos++;
-                                    bufferOperacoesMatematicas[i-7] = bufferInterrupcaoUART4[i];                                 
-                                    if(i>=8){
-                                        multiplicarPor10 *= 10;
+                                while( bufferInterrupcaoUART4[i] != ';' && bufferInterrupcaoUART4[i] != ']' ) {                                
+                                    
+                                    if( bufferInterrupcaoUART4[i] == '0' && numMaiorQueZeroEncontrado == NAO ) {
+                                        
+                                    }
+                                    else{    
+                                        if(!numMaiorQueZeroEncontrado){
+                                            numMaiorQueZeroEncontrado = SIM;
+                                        }
+                                        numDigitos++;
+                                        bufferOperacoesMatematicas[k++] = bufferInterrupcaoUART4[i];                                 
+                                        if( numDigitos > 1 ){
+                                            multiplicarPor10 *= 10;
+                                        }                                        
                                     }
                                     i++;
-                                }     
+                                }   
                                 for(i=0;i<numDigitos;i++){
                                    numRegistrosTabelaDeEstacionamento += (bufferOperacoesMatematicas[i]-'0') * multiplicarPor10;
                                    multiplicarPor10 /= 10;
                                 }          
                                 // <E2;OK;1000
-                                i= msgPosition + 7 + numDigitos; // POSIÇÃO DO PRIMEIRO PONTO E VÍRGULA ANTES DOS EPCS NO VETOR bufferInterrupcaoUART4
+                                i= msgPosition + 7 + 4;//numDigitos; // POSIÇÃO DO PRIMEIRO PONTO E VÍRGULA ANTES DOS EPCS NO VETOR bufferInterrupcaoUART4
                                 zeraPointeiroDaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
                                 while(numeroDeRegistrosProcessados < numRegistrosTabelaDeEstacionamento){  
                                     j=0;            // POSICAO DO VETOR epcPedestre

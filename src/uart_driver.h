@@ -280,7 +280,7 @@ extern u16 uartRx4NumBytesAvailable();
  */
 
 #include "setup_usb.h"
-#define TAMANHO_BUFFER_ISR_UART4 2000
+#define TAMANHO_BUFFER_ISR_UART4 5300
 
 extern s8 uartRxNBytes( u8 * buffer, u16 * numBytes);
 extern s8 uartRx2NBytes( u8 * buffer, u16 * numBytes);
