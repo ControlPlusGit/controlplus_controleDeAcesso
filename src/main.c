@@ -31,6 +31,7 @@
 #include "tabelaEstacionamento.h"
 #include "tmr2.h"
 #include "FSM_TabelaDeEstacionamento.h"
+#include "FSM_KeepAlive.h"
 #include "log.h"
 
 #ifdef __PIC24FJ256DA210__
@@ -58,7 +59,13 @@ int main(void){
     
     inicializaMaquinaDeEstados_ESP8266();   
     
-    testAppResources();
+    inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+    
+    inicializaMaquinaDeEstados_DataHora();
+    
+    inicializaMaquinaDeEstados_KeepAlive();
+    
+    //testAppResources();
     
     while(1){
         
@@ -70,10 +77,12 @@ int main(void){
 void tick ( void ){   
     
     globalCounter_ms++;
-    
+        
+    executaMaquinaDeEstados_ESP8266();    
     executaMaquinaDeEstados_TabelaDeEstacionamento();
-    executaMaquinaDeEstados_ESP8266();
     commandHandlerPortaUSB();
+    executaMaquinaDeEstados_DataHora();
+    executaMaquinaDeEstados_KeepAlive();
 }
 
 uint16_t tick_getTimerCounter(void){

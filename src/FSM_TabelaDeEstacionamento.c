@@ -234,24 +234,20 @@ enum estadosDaMaquina{
                             estadoAnterior_TabelaDeEstacionamento = AGUARDANDO_TABELA_DE_ESTACIONAMENTO;                             
                         }
                        else{ // SE NAO RECEBER MENSAGEM OK
-                           if(  bufferInterrupcaoUART4[0]  == '[' && // <E2;OK;1;30000100>
-                                bufferInterrupcaoUART4[1]  == 'E' &&
-                                bufferInterrupcaoUART4[2]  == '2' &&
-                                bufferInterrupcaoUART4[3]  == ';' &&
-                                bufferInterrupcaoUART4[4]  == 'N' &&
-                                bufferInterrupcaoUART4[5]  == 'O' &&
-                                bufferInterrupcaoUART4[6]  == 'K' &&
-                                bufferInterrupcaoUART4[7]  == ';'){   
-                                   limpaBufferNaMaquinaDeEstados_TabelaDeEstacionamento(); 
-                                   resetarErrosDeTimeoutNoWifi();
-                                   removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
-                            }
+                            /* Nao fazemos nada pois devemos usar a tabela interna para permitir
+                             o acesso dos veiculos */
+//                            msgStartPosition = strstr(bufferInterrupcaoUART4,"[FB;NOK;");  
+//                            if(msgStartPosition != 0){ 
+//                                   limpaBufferNaMaquinaDeEstados_TabelaDeEstacionamento(); 
+//                                   resetarErrosDeTimeoutNoWifi();
+//                                   removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
+//                            }
                        }
                     }  
                 }
                 else{
                     ocorreuErroDeTimeoutNoWifi();
-                    removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
+                    //removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
                     zeraContadorExecucao_FSM_TabelaDeEstacionamento();
                     estadoAtual_TabelaDeEstacionamento=ENVIAR_SOLICITACAO_DE_TABELA_DE_ESTACIONAMENTO;
                     estadoAnterior_TabelaDeEstacionamento=AGUARDANDO_TABELA_DE_ESTACIONAMENTO;                                          

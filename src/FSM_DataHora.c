@@ -94,7 +94,7 @@ struct tm objetoDataHora;
             int i=0;
             for(i=0;i<sizeof(bufferInterrupcaoUART4);i++){
                 bufferInterrupcaoUART4[i]=0;
-            }
+            }            
         }
 
     void inicializaMaquinaDeEstados_DataHora(void){    
@@ -102,6 +102,7 @@ struct tm objetoDataHora;
             leitorAcabouDeLigar_DataHora = NAO;
             retornaIdDoLeitor(idLeitor_DataHora);
         }
+        habilitaMaquinaDeEstados_DataHora();
     }
     
     void incrementaContadorExecucao_FSM_DataHora(void){
@@ -132,6 +133,9 @@ struct tm objetoDataHora;
     void executaMaquinaDeEstados_DataHora(void){     
 //        int temp=0;
         char mensagemParaDebug[200];
+        
+        char* msgStartPosition;
+        int msgPosition;
      
         incrementaContadorExecucao_FSM_DataHora();
         
@@ -184,7 +188,7 @@ struct tm objetoDataHora;
                        
                         //if(delayExecucao_DataHora>500){
                         
-                        sprintf(stringSolicitacaoDataHora,"<FE;%c%c%c%c>",idLeitor_DataHora[0],idLeitor_DataHora[1],idLeitor_DataHora[2],idLeitor_DataHora[3]);
+                        sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
                         //sprintf(stringSolicitacaoDataHora,"<FE;1302>\n\r");
 
                         //escreverMensagemEthernet(stringSolicitacaoDataHora);                     
@@ -200,30 +204,27 @@ struct tm objetoDataHora;
             case AGUARDANDO_ACK:                    
                 if(delayExecucao_DataHora < TEMPO_AGUARDANDO_ACK){
                     if(maquinaDeEstadosLiberada_DataHora){
-                       if(   bufferInterrupcaoUART4[0]  == '<' && // <OK;20092020;101520>
-                             bufferInterrupcaoUART4[1]  == 'F' &&
-                             bufferInterrupcaoUART4[2]  == 'E' &&
-                             bufferInterrupcaoUART4[3]  == ';' &&
-                             bufferInterrupcaoUART4[4]  == 'O' &&
-                             bufferInterrupcaoUART4[5]  == 'K' &&
-                             bufferInterrupcaoUART4[6]  == ';' &&
-                             bufferInterrupcaoUART4[15] == ';' &&
-                             bufferInterrupcaoUART4[22] == '>'){         
+                        
+                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FE;OK;");                                              
+                        
+                        if(msgStartPosition != 0){
+                            
+                            msgPosition = (int) (msgStartPosition - bufferInterrupcaoUART4);         
 
                              sprintf(mensagemParaDebug,"FSM_DataHora confirmacao recebida\n\r");
                              //escreverMensagemUSB(mensagemParaDebug);
-                             objetoDataHora.tm_mday = (bufferInterrupcaoUART4[7]  - '0') * 10 + (bufferInterrupcaoUART4[8]  - '0');  
-                             objetoDataHora.tm_mon  = ((bufferInterrupcaoUART4[9]  - '0') * 10 + (bufferInterrupcaoUART4[10]  - '0'));
-                             objetoDataHora.tm_year = ((bufferInterrupcaoUART4[13] - '0') * 10 + (bufferInterrupcaoUART4[14] - '0'));
-                             objetoDataHora.tm_hour = ((bufferInterrupcaoUART4[16] - '0') * 10 + (bufferInterrupcaoUART4[17] - '0'));
-                             objetoDataHora.tm_min  = ((bufferInterrupcaoUART4[18] - '0') * 10 + (bufferInterrupcaoUART4[19] - '0'));
-                             objetoDataHora.tm_sec  = ((bufferInterrupcaoUART4[20] - '0') * 10 + (bufferInterrupcaoUART4[21] - '0'));
+                             objetoDataHora.tm_mday = (bufferInterrupcaoUART4[msgPosition+7]  - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+8]  - '0');  
+                             objetoDataHora.tm_mon  = (bufferInterrupcaoUART4[msgPosition+9]  - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+10] - '0');
+                             objetoDataHora.tm_year = (bufferInterrupcaoUART4[msgPosition+11] - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+12] - '0');
+                             objetoDataHora.tm_hour = (bufferInterrupcaoUART4[msgPosition+14] - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+15] - '0');
+                             objetoDataHora.tm_min  = (bufferInterrupcaoUART4[msgPosition+16] - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+17] - '0');
+                             objetoDataHora.tm_sec  = (bufferInterrupcaoUART4[msgPosition+18] - '0') * 10 + (bufferInterrupcaoUART4[msgPosition+19] - '0');
                                                                                      
                              limpaBufferNaMaquinaDeEstados_DataHora(); 
                              estadoAtual_DataHora = FIM_CICLO;
                              estadoAnterior_DataHora = AGUARDANDO_ACK; 
                              resetarErrosDeTimeoutNoWifi();
-                         }                       
+                        }                       
                     }  
                 }
                 else{

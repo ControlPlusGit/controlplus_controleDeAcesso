@@ -1,12 +1,12 @@
 /* 
- * File:   FSM_TabelaDeEstacionamento.h
+ * File:   FSM_KeepAlive.h
  * Author: Vitor
  *
  * Created on 13 de Fevereiro de 2020, 12:03
  */
 
-#ifndef FSM_TABELADEEXCLUSAO_H
-#define	FSM_TABELADEEXCLUSAO_H
+#ifndef FSM_KEEPALIVE_H
+#define	FSM_KEEPALIVE_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -17,73 +17,73 @@ extern "C" {
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DEFINE: TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: controlar o tempo de execução de cada estado da máquina, aplicando um delay.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #define TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO 10000 // MILISEGUNDOS
+    #define TEMPO_ENTRE_ESTADOS_FSM_KEEP_ALIVE 10 // MILISEGUNDOS
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DEFINE: TEMPO_AGUARDANDO_ACK
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 2000  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 10000  // MILISEGUNDOS
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: inicializaMaquinaDeEstados_TabelaDeEstacionamento
+// FUNÇÃO: inicializaMaquinaDeEstados_KeepAlive
 // PARÂMETROS: nenhum
 // UTILIZADA EM: logicaDeEmpilhadeiraV2
 // FUNÇÃO: inicializa as variáveis necessárias para o funcionamento da máquina de estados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void inicializaMaquinaDeEstados_TabelaDeEstacionamento(void);
+    void inicializaMaquinaDeEstados_KeepAlive(void);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: habilitaMaquinaDeEstados_TabelaDeEstacionamento
+// FUNÇÃO: habilitaMaquinaDeEstados_KeepAlive
 // PARÂMETROS: nenhum
 // UTILIZADA EM: logicaDeEmpilhadeiraV2
 // FUNÇÃO: libera a máquina de estados para execução
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void habilitaMaquinaDeEstados_TabelaDeEstacionamento(void);
+    void habilitaMaquinaDeEstados_KeepAlive(void);
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: executaMaquinaDeEstados_TabelaDeEstacionamento
+// FUNÇÃO: executaMaquinaDeEstados_KeepAlive
 // PARÂMETROS: nenhum
 // UTILIZADA EM: tick
 // FUNÇÃO: executa a máquina de estados. Essa função é executada com interrupção de timer
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void executaMaquinaDeEstados_TabelaDeEstacionamento(void);
+    void executaMaquinaDeEstados_KeepAlive(void);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: bloqueiaMaquinaDeEstados_TabelaDeEstacionamento
+// FUNÇÃO: bloqueiaMaquinaDeEstados_KeepAlive
 // PARÂMETROS: nenhum
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: bloqueia a execução da máquina de estados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void bloqueiaMaquinaDeEstados_TabelaDeEstacionamento(void);
+    void bloqueiaMaquinaDeEstados_KeepAlive(void);
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: limpaBufferNaMaquinaDeEstados_TabelaDeEstacionamento
+// FUNÇÃO: limpaBufferNaMaquinaDeEstados_KeepAlive
 // PARÂMETROS: nenhum
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: limpa o buffer de mensagens recebidas da UART2
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void limpaBufferNaMaquinaDeEstados_TabelaDeEstacionamento(void);
+    void limpaBufferNaMaquinaDeEstados_KeepAlive(void);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: incrementaContadorExecucao_FSM_TabelaDeEstacionamento
+// FUNÇÃO: incrementaContadorExecucao_FSM_KeepAlive
 // PARÂMETROS: nenhum
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
-// FUNÇÃO: incrementa a variavel delayExecucao_TabelaDeEstacionamento
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
+// FUNÇÃO: incrementa a variavel delayExecucao_KeepAlive
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    void incrementaContadorExecucao_FSM_TabelaDeEstacionamento(void);    
+    void incrementaContadorExecucao_FSM_KeepAlive(void);    
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: zeraContadorExecucao_FSM_TabelaDeEstacionamento
+// FUNÇÃO: zeraContadorExecucao_FSM_KeepAlive
 // PARÂMETROS: nenhum
-// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
-// FUNÇÃO: zera a variável delayExecucao_TabelaDeEstacionamento
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
+// FUNÇÃO: zera a variável delayExecucao_KeepAlive
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    void zeraContadorExecucao_FSM_TabelaDeEstacionamento(void);   
+    void zeraContadorExecucao_FSM_KeepAlive(void);   
     
     
 
@@ -91,5 +91,5 @@ extern "C" {
 }
 #endif
 
-#endif	/* FSM_TABELADEEXCLUSAO_H */
+#endif	/* FSM_KEEPALIVE_H */
 

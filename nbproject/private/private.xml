@@ -3,13 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/setup_usb.h</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/FSM_TabelaDeEstacionamento.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/tabelaEstacionamento.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/mem_i2c_24LC256.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/tags.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/src/main.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controleAcessoCondominio/FWCTRACESSO/testInfo</file>
+            <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/setup_usb.c</file>
+            <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/main.c</file>
         </group>
     </open-files>
 </project-private>
