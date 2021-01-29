@@ -43,16 +43,12 @@
 #include "p24FJ256DA210.h"
 #include "errno.h"
 #include "uart_driver.h"
-#include "usb_hal_pic24.h"
 #include "uart.h"
 #include "global.h"
 #include "Compiler.h"
 #include "string.h"
-//#include "empilhadeira.h"
 #include "timer.h"
-//#include "FSM_EventosDeParada.h"
 #include "FSM_DataHora.h"
-//#include "FSM_TabelaDeExclusao.h"
 #include "setup_usb.h"
 /*
  *
