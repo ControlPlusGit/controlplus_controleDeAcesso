@@ -4,6 +4,23 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
+        <itemPath>src/BSP/bsp.h</itemPath>
+        <itemPath>src/BSP/pin_manager.h</itemPath>
+        <itemPath>src/BSP/rfid_bsp.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
+        <itemPath>src/EEPROM/24LC256.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
+        <itemPath>src/I2C1/i2c1_driver.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="I2C3" displayName="I2C3" projectFiles="true">
+        <itemPath>src/I2C3/i2c3_driver.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
+        <itemPath>src/RTC/DS1307.h</itemPath>
+      </logicalFolder>
       <itemPath>src/Compiler.h</itemPath>
       <itemPath>src/FSM_DataHora.h</itemPath>
       <itemPath>src/FSM_ESP8266.h</itemPath>
@@ -46,6 +63,7 @@
       <itemPath>src/uart_stream_driver.h</itemPath>
       <itemPath>src/delay.h</itemPath>
       <itemPath>src/FSM_KeepAlive.h</itemPath>
+      <itemPath>src/system.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -54,6 +72,23 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
+        <itemPath>src/BSP/bsp.c</itemPath>
+        <itemPath>src/BSP/pin_manager.c</itemPath>
+        <itemPath>src/BSP/rfid_bsp.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
+        <itemPath>src/EEPROM/24LC256.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
+        <itemPath>src/I2C1/i2c1_driver.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="I2C3" displayName="I2C3" projectFiles="true">
+        <itemPath>src/I2C3/i2c3_driver.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
+        <itemPath>src/RTC/DS1307.c</itemPath>
+      </logicalFolder>
       <itemPath>src/FSM_DataHora.c</itemPath>
       <itemPath>src/FSM_ESP8266.c</itemPath>
       <itemPath>src/FSM_Ethernet.c</itemPath>
@@ -81,6 +116,8 @@
       <itemPath>src/tuner.c</itemPath>
       <itemPath>src/uart_driver.c</itemPath>
       <itemPath>src/FSM_KeepAlive.c</itemPath>
+      <itemPath>src/delay.c</itemPath>
+      <itemPath>src/system.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -90,6 +127,9 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>src</Elem>
+    <Elem>src/BSP</Elem>
+    <Elem>src/I2C1</Elem>
+    <Elem>src/RTC_DS1307</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -309,6 +349,7 @@
         <property key="UART 4" value="true"/>
         <property key="UCNFG1" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
@@ -323,7 +364,7 @@
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-2abf7"/>
-        <property key="poweroptions.powerenable" value="true"/>
+        <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>

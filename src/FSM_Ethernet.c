@@ -5,7 +5,8 @@
  * Created on 11 de Fevereiro de 2020, 14:29
  */
 
-#include "../../../../../../../../Program Files (x86)/Microchip/xc16/v1.24/support/peripheral_24F/uart.h"
+#include <uart.h>
+#include "delay.h"
 #include "FSM_Ethernet.h"
 #include "uart_driver.h"
 #include <string.h>
@@ -94,21 +95,21 @@ void iniciaESP8266(void){
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"AT+CWMODE_CUR=1\r\n");
         escreveMensagemESP8266(mensagemESP8266);   
-        __delay_ms(5000);
+        delay_ms(5000);
         /*
          CONECTAR NA REDE WIFI
         */   
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"AT+CWJAP_CUR=\"LenovoEngenharia\",\"lenovoEngenharia\"\r\n");
         escreveMensagemESP8266(mensagemESP8266);  
-        __delay_ms(8000);
+        delay_ms(8000);
         /*
          ESTABELECER CONEXÃO COM O SERVIDOR
         */
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"AT+CIPSTART=\"TCP\",\"104.154.47.107\",8000\r\n");
         escreveMensagemESP8266(mensagemESP8266);
-        __delay_ms(2000);
+        delay_ms(2000);
         
         /*
          DESLIGAR ECHO DE MENSAGENS 
@@ -116,7 +117,7 @@ void iniciaESP8266(void){
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"ATE0\r\n");
         escreveMensagemESP8266(mensagemESP8266);
-        __delay_ms(100);
+        delay_ms(100);
         
         /*
          ENTRA EM MODO TRANSPARENTE
@@ -126,7 +127,7 @@ void iniciaESP8266(void){
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"AT+CIPMODE=1\r\n");
         escreveMensagemESP8266(mensagemESP8266);
-        __delay_ms(100);
+        delay_ms(100);
         
         /*
          ENVIAR MENSAGEM PARA O SERVIDOR SEM TAMANHO DEFINIDO
@@ -137,7 +138,7 @@ void iniciaESP8266(void){
         limpaMensagemESP8266(); 
         sprintf(mensagemESP8266,"AT+CIPSEND\r\n");
         escreveMensagemESP8266(mensagemESP8266);
-        __delay_ms(100);
+        delay_ms(100);
     }
 }
 

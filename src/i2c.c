@@ -12,6 +12,8 @@
 #include "i2c.h"
 #include "perifericos.h"
 #include "rtc.h"
+#include "delay.h"
+#include "EEPROM/24LC256.h"
 
 #define ENDERECO_EEPROM_LSB_CONTADOR_POR 1
 #define ENDERECO_EEPROM_MSB_CONTADOR_POR 0
@@ -85,109 +87,16 @@ int EscreveArray (int endereco, char *dados, char quantia){
 }
 
 int EscreverNaEEprom (int endereco, unsigned char dado){
-    unsigned char temporario;
-    //START
-    I2C3CONbits.SEN = 1;
-    contadori2c = 100;
-    while(I2C3CONbits.SEN && (contadori2c != 0) );
-
-    //COMANDO
-    I2C3TRN = 0xA0;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-
-    //MSB ENDERECO
-    temporario = endereco >> 8;
-    I2C3TRN = temporario;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-
-    //LSB ENDERECO
-    temporario = endereco & 0x00FF;
-    I2C3TRN = temporario;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-
-    //BYTE A SER ESCRITO
-    I2C3TRN = dado;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-
-    //STOP
-    I2C3CONbits.PEN = 1;
-    contadori2c = 100;
-    while(I2C3CONbits.PEN && (contadori2c != 0) );
-
-    delay_ms(5);
-    return 0;// OK
-
-    return -1; //Erro
+    
+    return EEPROM_24LC256_I2C_write_uchar(0,endereco,dado);
+    
 }
 
 int LerDadosDaEEprom (int endereco, unsigned char *dado){
-    char ack = 0;   //LUCIANO: Inicializei a variavel ack. Eliminei um warning.
-    unsigned char temporario;
-    //START
-    I2C3CONbits.SEN = 1;
-    contadori2c = 100;
-    while(I2C3CONbits.SEN && (contadori2c != 0) );
-
-    //COMANDO
-    I2C3TRN = 0xA0;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-    ack = ack | I2C3STATbits.ACKSTAT;
-
-    //MSB ENDERECO
-    temporario = endereco >> 8;
-    I2C3TRN = temporario;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-    ack = ack | I2C3STATbits.ACKSTAT;
-
-    //LSB ENDERECO
-    temporario = (endereco & 0x00FF);
-    I2C3TRN = temporario;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-    ack = ack | I2C3STATbits.ACKSTAT;
-
-    //RESTART
-    I2C3CONbits.RSEN = 1; 
-    contadori2c = 100;
-    while (I2C3CONbits.RSEN && (contadori2c != 0) );
-
-    //COMANDO
-    I2C3TRN = 0xA1;
-    contadori2c = 100;
-    while(I2C3STATbits.TRSTAT && (contadori2c != 0) );
-    ack = ack | I2C3STATbits.ACKSTAT;
-
-    //LIGA RECEPCAO
-    I2C3CONbits.RCEN = 1;
-    //while(I2C1CONbits.RCEN);
-    contadori2c = 100;
-    while(!I2C3STATbits.RBF && (contadori2c != 0) );
-  
-    //RECEBE OS DADOS
-    ack = ack | I2C3STATbits.ACKSTAT;
-
-    *dado = I2C3RCV;
-
-    //STOP
-    I2C3CONbits.PEN = 1;
-    contadori2c = 100;
-    while(I2C3CONbits.PEN && (contadori2c != 0) );
-
-
-    delay_ms(5);
-
-    if (ack == 0)
-        return 0;// OK
-    else
-        return -1; //Erro
+    
+    return EEPROM_24LC256_I2C_read_uchar(0,endereco,dado);
+    
 }
-
 
 /*
 void SetarHoraRTC (int minuto, int hora, int dia, int mes, int ano){
@@ -312,7 +221,6 @@ char conversao1307 (char dado){
 
 }
 */
-
 
 void testeI2C (void){
     int segundo;

@@ -10,11 +10,17 @@
 extern "C" {
 #endif /* __cplusplus */
     
-#include "global.h"
+#include "system.h"
+    
+#ifndef FCY
+#define FCY _XTAL_FREQ/2
+#endif
+    
 #include <libpic30.h>
+    
+void delay_ms(uint16_t ms_delay);
 
-#define delay_ms(x) __delay_ms(x)
-#define delay_us(x) __delay_us(x)
+void delay_us(uint16_t us_delay);
     
 #ifdef	__cplusplus
 }

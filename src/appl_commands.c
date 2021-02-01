@@ -62,6 +62,7 @@
 #include <limits.h>
 #include "as3993.h"
 #include "tuner.h"
+#include "delay.h"
 
 unsigned int total_tags;
 //extern unsigned int conta_tag_frente[];
@@ -307,7 +308,7 @@ void pega_pot_refl (void)
     as3993SetBaseFrequency(AS3993_REG_PLLMAIN1, freq);
     nivel_ruido = as3993GetReflectedPowerNoiseLevel();
     as3993AntennaPower(1);
-    delay_us(300);
+//    delay_us(300);
     //pot_refletida = as3993GetReflectedPower();
     r = as3993GetReflectedPower();
     as3993AntennaPower(0);

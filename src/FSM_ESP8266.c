@@ -23,6 +23,7 @@
 #include <time.h>
 #include "platform.h"
 #include "setup_usb.h"
+#include "delay.h"
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
@@ -560,7 +561,7 @@ enum{
                             //solicitarTrocaDeServidor = NAO;                            
                             sprintf(stringMensagemESP8266,"+++"); 
                             escreveMensagemESP8266(stringMensagemESP8266);
-                            __delay_ms(50);                            
+                            delay_ms(50);                            
                             limpaBufferNaMaquinaDeEstados_ESP8266();  
                         }                        
                         

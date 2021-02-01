@@ -185,33 +185,7 @@ void auto_sintonia (void);
 ******************************************************************************
 */
 
-#if EVALBOARD
-/** Definition for the serial enable pin */
-#define NCSPIN                    _LATB6
-/** Definition for the Direct data mode Pin*/
-#define IO3PIN                    _LATE3
-/** Definition for the Direct data mode Pin*/
-#define IO2PIN                    _LATE2
-/** Definition for the Direct mode data bitclock Pin*/
-#define IO5PIN                    _LATE5
-/** Definition for the Direct mode data Pin*/
-#define IO6PIN                    _LATE6
-
-/** Definition for the enable pin */
-#define ENABLE                    _LATD6
-/** Definition for the 8 bit data outport */
-#define DATAOUTPORT               LATE
-/** Definition for the PA enable Pin */
-#define EN_PAPIN(x)                  _LATG2=(x)
-
-#define LED2PIN                   _LATF3
-#define LED3PIN                   _LATD0
-#define PA_ON                     HIGH
-#define PA_OFF                    LOW
-
-
-
-#elif FERMI
+#ifdef FERMI
 /** Definition for the serial enable pin */
 #define NCSPIN                    _LATF8 //_LATB15
 /** Definition for the Direct data mode Pin*/
@@ -220,38 +194,7 @@ void auto_sintonia (void);
 #define ENABLE                    _LATB2 //_LATB13
 /** Definition for the PA enable Pin, this is a dummy pin as the
  * fermi reader pa is always enabled  */
-//#define EN_PAPIN(x)                  _LATB10=(x)
 
-//#define MCULEDPIN(x)              _LATB9=(x)
-
-
-//#define BOARD_NUMLEDS             3
-//#define LED1PIN(x)                _LATB4=(x)
-//#define LED2PIN(x)                _LATA4=(x)
-//#define LED3PIN(x)                _LATB5=(x)
-//#define LED4PIN(x)
-//#endif
-/*
-//----------------------------------------------------------------------
-//#ifdef MARTE
-    //
-    #define SAIDA_RS(x)                 _LATC1=(x)       //saida RS
-    #define SAIDA_ELCD(x)               _LATC2=(x)       //saida ELCD
-    #define LAT_LEDA7_AB78_CAP1(x)      _LATC3=(x)     //saida BD6
-    #define LAT_LEDA8_S1_CAP2_CAP3(x)   _LATC4=(x)     //saida BD7
-    #define SAIDA_DIR(x)                _LATC8=(x)     //saida DIR
-    #define SAIDA_S_LEDS(x)             _LATC9=(x)     //saida S_LEDS
-  
-    #define LAT_LEDA1_ANTAB_S2(x)       _LATB4=(x)    //SAIDA GP1
-    #define LAT_LEDA3_AB58_S4(x)        _LATB5=(x)    //SAIDA GP3
-    #define LAT_LEDA4_AA12_RL1(x)       _LATB9=(x)    //SAIDA GP4
-  //
-    #define LAT_LEDA2_AA14_S3(x)        _LATA4=(x)    //SAIDA GP2
-    #define LAT_LEDA5_AA34_RL2(x)       _LATA8=(x)      //SAIDA BD4
-    #define LAT_LEDA6_AB56_LPA(x)       _LATA9=(x)    //SAIDA BD5
-    #define SAIDA_SEL_AX(x)             _LATA10=(x)   //SAIDA SEL_AX
-    #define SAIDA_SEL_OUT1(x)           _LATA7=(x)   //SAIDA SEL_OUT1
-*/
 //----------------------- novo -----------------------------------------
     #define SAIDA_RS(x)                 _LATD11=(x)     //SAIDA RS
     #define SAIDA_ELCD(x)               _LATD0=(x)      //SAIDA ELCD
@@ -326,133 +269,6 @@ void auto_sintonia (void);
 #define PA_ON                     HIGH
 #define PA_OFF                    LOW
 
-//alterar!!
-//#define SEN_CINPIN(x)           //_LATC0=(x)
-//#define SEN_CLENPIN(x)          //_LATC1=(x)
-//#define SEN_COUTPIN(x)          //_LATC2=(x)
-//
-#endif
-
-#ifdef FEMTO2
-/** Definition for the serial enable pin */
-#define NCSPIN                    _LATB15
-
-/** Definition for the enable pin */
-#define ENABLE                    _LATB8
-
-#define MCULEDPIN(x)              _LATB4=(x)
-
-#define BOARD_NUMLEDS             2
-#define LED1PIN(x)                _LATA4=(x)
-#define LED2PIN(x)                _LATA2=(x)
-#define LED3PIN(x)
-#define LED4PIN(x)
-
-/** Antenna switch is used to toggle antenna port 1 and 2 */
-#define SWITCH_ANTENNA(x)       _LATB2 = ((x)==2?SWITCH_ANT_P2:SWITCH_ANT_P1)
-#define SWITCH_ANT_P1           0x0
-#define SWITCH_ANT_P2           0x1
-
-#define SEN_CINPIN(x)           _LATB5=(x)
-#define SEN_CLENPIN(x)
-#define SEN_COUTPIN(x)          _LATB9=(x)
-
-#define PA_ON                     HIGH
-#define PA_OFF                    LOW
-
-#elif FEMTO2_1
-/** Definition for the serial enable pin */
-#define NCSPIN                    _LATB15
-
-/** Definition for the enable pin */
-#define ENABLE                    _LATB8
-
-#define MCULEDPIN(x)              _LATB1=(x) //changed from V2.0 to V2.1
-
-#define BOARD_NUMLEDS             2
-#define LED1PIN(x)                _LATB0=(x) //changed from V2.0 to V2.1
-#define LED2PIN(x)                _LATA2=(x)
-#define LED3PIN(x)
-#define LED4PIN(x)
-
-/** Antenna switch is used to toggle antenna port 1 and 2 */
-#define SWITCH_ANTENNA(x)       _LATB2 = ((x)==2?SWITCH_ANT_P2:SWITCH_ANT_P1)
-#define SWITCH_ANT_P1           0x0
-#define SWITCH_ANT_P2           0x1
-
-#define SEN_CINPIN(x)           _LATB5=(x)
-#define SEN_CLENPIN(x)
-#define SEN_COUTPIN(x)          _LATB9=(x)
-
-#define PA_ON                     HIGH
-#define PA_OFF                    LOW
-
-#elif MEGA
-/** Definition for the serial enable pin */
-#define NCSPIN                    _LATD9
-/** Definition for the Direct data mode Pin*/
-
-/** Definition for the enable pin */
-#define ENABLE                    _LATA15
-/** Definition for the PA enable Pin, this is a dummy pin as the
- * fermi reader pa is always enabled  */
-#define EN_PAPIN(x)                  _LATA0=(x)
-
-#define MCULEDPIN(x)              _LATG6=(x)
-
-#define BOARD_NUMLEDS             3
-#define LED1PIN(x)                _LATB8=(x)
-#define LED2PIN(x)                _LATD15=(x)
-#define LED3PIN(x)                _LATF5=(x)
-#define LED4PIN(x)
-
-#define PA_ON                     HIGH
-#define PA_OFF                    LOW
-
-#elif RADON
-/** Definition for the serial enable pin */
-#define NCSPIN                    _LATC5
-/** Definition for the Direct data mode Pin*/
-
-/** Definition for the enable pin */
-#define ENABLE                    _LATC3
-/** Definition for the PA enable Pin, this is a dummy pin as the
- * Radon reader pa is always enabled, use LED5  */
-#define EN_PAPIN                  LED2PIN
-
-#define MCULEDPIN(x)              LED1PIN(x)
-#define ANT1LEDPIN(x)             LED6PIN(x)
-#define ANT2LEDPIN(x)             LED5PIN(x)
-
-#define BOARD_NUMLEDS             7
-/* A1 is LED5(schematic) aka D13 */
-#define LED1PIN(x)                _LATA1=(x)
-/* A8 is LED4(schematic) aka D8 */
-#define LED2PIN(x)                _LATA8=(x)
-/* B4 is LED3(schematic) aka D9 */
-#define LED3PIN(x)                _LATB4=(x)
-/* A4 is LED2(schematic) aka D10 */
-#define LED4PIN(x)                _LATA4=(x)
-/* A9 is LED1(schematic) aka D7 */
-#define LED5PIN(x)                _LATA9=(x)
-/* C6 is LED6(schematic) aka D11 */
-#define LED6PIN(x)                _LATC6=(x)
-
-/** Antenna switch is used to toggle antenna port 1 and 2 */
-#define SWITCH_ANTENNA(x)       (_LATC7 = ((x)==2?SWITCH_ANT_P2:SWITCH_ANT_P1), ANT2LEDPIN((x)==2), ANT1LEDPIN((x)!=2))
-#define SWITCH_ANT_P1           0x0
-#define SWITCH_ANT_P2           0x1
-
-#define SEN_CINPIN(x)           _LATC0=(x)
-#define SEN_CLENPIN(x)          _LATC1=(x)
-#define SEN_COUTPIN(x)          _LATC2=(x)
-
-#define SEN_ANT1_CINPIN(x)      _LATB2=(x)
-#define SEN_ANT1_COUTPIN(x)     _LATB3=(x)
-
-
-#define PA_ON                     LOW
-#define PA_OFF                    HIGH
 #endif
 
 

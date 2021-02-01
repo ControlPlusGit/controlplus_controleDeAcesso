@@ -42,6 +42,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "Compiler.h"
+#include "delay.h"
 #if VERBOSE_INIT
 #include <math.h>
 #endif

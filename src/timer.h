@@ -16,8 +16,8 @@ extern "C" {
 #include <xc.h>
 #include <libpic30.h>
     
-#define delay_ms(x) __delay_ms(x)
-#define delay_us(x) __delay_us(x)
+#define delay_ms(x) delay_ms(x)
+#define delay_us(x) delay_us(x)
 
 
 #ifdef	__cplusplus

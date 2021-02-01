@@ -23,6 +23,7 @@
 #include "timer.h"
 #include "config_i2c3.h"
 #include "mem_i2c_24LC256.h"
+#include "delay.h"
 
 /*--------------------------------------------------------------------*/
 /*                 ---+++>>> Variaveis <<<+++---                      */

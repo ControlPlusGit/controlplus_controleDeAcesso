@@ -107,7 +107,7 @@
 #else
 #define SYSCLK    tbd
 #endif
-#define FCY    (SYSCLK)
+//#define FCY    (SYSCLK)
 
 #include "as3993_config.h"
 #include "ams_types.h"

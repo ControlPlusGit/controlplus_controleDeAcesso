@@ -6,6 +6,7 @@
 #include "log.h"
 #include "global.h"
 #include <libpic30.h>
+#include "delay.h"
 
 void (*TMR2_IntCallback)(void);
 
@@ -40,7 +41,7 @@ void test_TMR2_OverflowInterrupt_should_Execute(void){
     
     TMR2_LoadInterruptCallback(TMR2_test_overflowFunction);
     
-    __delay_ms(100);
+    delay_ms(100);
     
     if(i > 2){
         logMsg("///////////////////////////////////////////////\n\rTESTE - INTERRUPCAO OVERFLOW DO TIMER2\n\r///////////////////////////////////////////////\n\n\r");

@@ -14,6 +14,9 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>src</sourceRootElem>
+                <sourceRootElem>src/BSP</sourceRootElem>
+                <sourceRootElem>src/I2C1</sourceRootElem>
+                <sourceRootElem>src/RTC_DS1307</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

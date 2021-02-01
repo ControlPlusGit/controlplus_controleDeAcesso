@@ -45,6 +45,7 @@
   */
 #include "as3993_config.h"
 #include "global.h"
+#include "delay.h"
 #include <uart.h>
 #include "tuner.h"
 #include "as3993_public.h"
