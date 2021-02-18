@@ -34,26 +34,26 @@ void TMR2_Initialize(void){
     T2CONbits.TON = 1;
 }
 
-int i=0;
-char mensagem[100];
-
-void test_TMR2_OverflowInterrupt_should_Execute(void){
-    
-    TMR2_LoadInterruptCallback(TMR2_test_overflowFunction);
-    
-    delay_ms(100);
-    
-    if(i > 2){
-        logMsg("///////////////////////////////////////////////\n\rTESTE - INTERRUPCAO OVERFLOW DO TIMER2\n\r///////////////////////////////////////////////\n\n\r");
-
-        logMsg("\rInterrupcao ocorrendo conforme esperado\r\n\n");
-    }
-    
-}
-
-volatile void TMR2_test_overflowFunction(void){
-    i++;
-}
+//int i=0;
+//char mensagem[100];
+//
+//void test_TMR2_OverflowInterrupt_should_Execute(void){
+//    
+//    TMR2_LoadInterruptCallback(TMR2_test_overflowFunction);
+//    
+//    delay_ms(100);
+//    
+//    if(i > 2){
+//        logMsg("///////////////////////////////////////////////\n\rTESTE - INTERRUPCAO OVERFLOW DO TIMER2\n\r///////////////////////////////////////////////\n\n\r");
+//
+//        logMsg("\rInterrupcao ocorrendo conforme esperado\r\n\n");
+//    }
+//    
+//}
+//
+//volatile void TMR2_test_overflowFunction(void){
+//    i++;
+//}
 
 
 

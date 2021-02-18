@@ -18,6 +18,7 @@
 #include <time.h>
 #include "tabelaEstacionamento.h"
 #include "FSM_ESP8266.h"
+#include "FLASH/flash.h"
 
 extern TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
 
@@ -259,7 +260,9 @@ enum estadosDaMaquina{
                 if(delayExecucao_TabelaDeEstacionamento > TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO){
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){
                         zeraContadorExecucao_FSM_TabelaDeEstacionamento();
-
+                        
+                        gravarListaDeVeiculosLiberados(); // Grava informações na tabela flash
+                        
                         //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento finalizando...\n\r");
                         //escreverMensagemUSB(mensagemParaDebug);
 

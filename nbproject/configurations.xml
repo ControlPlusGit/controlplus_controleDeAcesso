@@ -12,6 +12,9 @@
       <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
         <itemPath>src/EEPROM/24LC256.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
+        <itemPath>src/FLASH/flash.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.h</itemPath>
       </logicalFolder>
@@ -79,6 +82,9 @@
       </logicalFolder>
       <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
         <itemPath>src/EEPROM/24LC256.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
+        <itemPath>src/FLASH/flash.s</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.c</itemPath>

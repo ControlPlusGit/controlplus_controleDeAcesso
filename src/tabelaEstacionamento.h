@@ -45,6 +45,10 @@ extern "C" {
     void zeraPointeiroDaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *tabela);
     
     void testTabelaDeEPC_should_IncludeSearchExclude(void);
+    
+    int8_t obtemListaDeVeiculosLiberados(void);
+
+    int8_t gravarListaDeVeiculosLiberados(void);
 
 #ifdef	__cplusplus
 }

@@ -13,6 +13,8 @@
 
 #include "RTC/DS1307.h"
 #include "EEPROM/24LC256.h"
+#include "as3993_public.h"
+#include "appl_commands.h"
 
 #include "FSM_ESP8266.h"
 #include "FSM_TabelaDeEstacionamento.h"
@@ -38,7 +40,10 @@ uint16_t tick_getTimerCounter(void){
 }
 
 void SYSTEM_Initialize(void){
+    
     uint32_t baudrate, realrate;
+    
+    uint16_t readerInitStatus;
     
     CNPU1bits.CN15PUE = 1; 
     CNPU2bits.CN16PUE = 1;
@@ -48,11 +53,22 @@ void SYSTEM_Initialize(void){
     CNPU4bits.CN57PUE = 1;
     CNPU2bits.CN28PUE = 1;
     
+    INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
+    
     platformInit();
     
     SPI1_Initialize();
+       
+    readerInitStatus = as3993Initialize(115200ULL);
     
-    INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
+    initCommands(); 
+       
+    delay_ms(10);
+
+    if(readerInitStatus){
+        readerInitStatus = as3993Initialize(BAUDRATE);
+    }
+    as3993SetSensitivity(125);
     
     TMR2_LoadInterruptCallback(tick);
     
@@ -60,6 +76,7 @@ void SYSTEM_Initialize(void){
    
     i2c1_driver_init(100000); // Inicializa o RTC com 100KHz
     
+    // Carrega as funcoes da microchip para a biblioteca de abstracao
     RTC_DS1307_load_callbacks(  i2c1_driver_start,
                                 i2c1_driver_restart,
                                 i2c1_driver_stop,
@@ -72,6 +89,7 @@ void SYSTEM_Initialize(void){
     
     i2c3_driver_init(100000); // Inicializa a EEPROM com 100 KHz
     
+    // Carrega as funcoes da microchip para a biblioteca de abstracao
     EEPROM_24LC256_load_callbacks(i2c3_driver_start,
                                   i2c3_driver_restart,
                                   i2c3_driver_stop,

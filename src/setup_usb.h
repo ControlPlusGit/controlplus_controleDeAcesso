@@ -316,7 +316,7 @@ void limpaBufferRxUSB(void);
 char escreveIpNaMemoria(unsigned int endereco, unsigned char dado0, unsigned char dado1, unsigned char dado2);
 void obtemAjusteDeCapacitores(unsigned int endereco);
 void obtemIpRemoto(unsigned char endereco);
-void obtemParametrosDaMemoria(void);
+void obtemParametrosDaMemoriaEEPROM(void);
 void exibirParametrosObtidos(void);
 
 void habilitaDebugInterfaceWifiViaUSB(void);

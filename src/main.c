@@ -4,16 +4,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "uart_driver.h"
-#include <uart.h>
-#include "as3993.h"
-#include "gen2.h"
-#include "appl_commands.h"
-#include "global.h"
-#include "config_i2c3.h"
-#include "mem_i2c_24LC256.h"
-#include "tags.h"
-
 #include "FSM_DataHora.h"
 #include "FSM_Ethernet.h"
 #include "FSM_ESP8266.h"
@@ -29,9 +19,11 @@
 #include "tabelaEstacionamento.h"
 #include "tmr2.h"
 #include "log.h"
+#include "delay.h"
+
 #include "RTC/DS1307.h"  
 #include "EEPROM/24LC256.h"
-#include "delay.h"
+#include "FLASH/flash.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -43,7 +35,7 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
 // Green list criada a partir de tabelaEstacionamento.h
 /////////////////////////////////////////////
     TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
-
+    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberadosTest;
 /////////////////////////////////////////////
 // RTC DS1307 library variables
 /////////////////////////////////////////////
@@ -60,22 +52,8 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
     //EEPROM_24LC256_I2C_write_uchar(0,200,0x55);
     //EEPROM_24LC256_I2C_read_uchar(0,200,&var);
    
-
 void marsOne_init(void){
-    
-    uint16_t readerInitStatus;
-    
-    readerInitStatus = as3993Initialize(115200ULL);
-    
-    initCommands(); 
-       
-    delay_ms(10);
-
-    if(readerInitStatus){
-        readerInitStatus = as3993Initialize(BAUDRATE);
-    }
-    as3993SetSensitivity(125);
-    
+        
     ////////////////////////////////////////////////////////
     // Rotina de inicializacao visual do leitor
     ////////////////////////////////////////////////////////
@@ -95,13 +73,21 @@ void marsOne_init(void){
     BSP_RS485_setDirection(RS485_INPUT);        
 }
 
+
+int8_t obtemDadosDaMemoriaFLASH(void){
+    obtemListaDeVeiculosLiberados();
+    return 0;
+}
+
 int main(void){
-    
+   
     SYSTEM_Initialize();
     
-    marsOne_init();    
- 
-    obtemParametrosDaMemoria();
+    marsOne_init();         
+     
+    obtemDadosDaMemoriaFLASH();
+    
+    obtemParametrosDaMemoriaEEPROM();
     
     inicializaMaquinaDeEstados_ESP8266();   
     
@@ -117,5 +103,7 @@ int main(void){
     
     return 0;
 }
+
+
 
 

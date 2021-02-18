@@ -347,7 +347,7 @@ void commandHandlerPortaUSB(void){
                     break;
                     
                 case CMD_OBTER_PARAMETROS:
-                    obtemParametrosDaMemoria();
+                    obtemParametrosDaMemoriaEEPROM();
                     exibirParametrosObtidos();
                     break;
                     
@@ -1398,7 +1398,7 @@ void obtemIpRemoto(unsigned char endereco){
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));
 }
 
-void obtemParametrosDaMemoria(void){
+void obtemParametrosDaMemoriaEEPROM(void){
     unsigned int endereco;
     unsigned char vetor;
     unsigned char aux;
@@ -1554,7 +1554,6 @@ void obtemParametrosDaMemoria(void){
     LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_7, &rssiMinAntena7);
     LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_8, &rssiMinAntena8);
 }
-
 
 void exibirParametrosObtidos(void){
     char mensagem[100];
