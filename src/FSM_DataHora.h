@@ -15,9 +15,9 @@ extern "C" {
 #define NAO 0
 #define SIM 1
     
-#define TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA 1
+#define TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA 1000
     
-#define TEMPO_AGUARDANDO_ACK 2000
+#define TEMPO_AGUARDANDO_ACK 300000ULL
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: inicializaMaquinaDeEstados_DataHora

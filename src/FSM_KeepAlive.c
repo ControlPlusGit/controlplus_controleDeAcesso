@@ -37,7 +37,7 @@ enum estadosDaMaquina{
 // UTILIZADA EM: executaMaquinaDeEstados_KeepAlive, incrementaContadorExecucao_FSM_KeepAlive e zeraContadorExecucao_FSM_KeepAlive
 // FUNÇÃO: causar um delay no envio de mensagens no estadoAtual = ENVIAR_KEEP_ALIVE
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned int delayExecucao_KeepAlive = 0;
+    uint32_t delayExecucao_KeepAlive = 0;
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIAVEL: leitorAcabouDeLigar_KeepAlive

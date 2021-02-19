@@ -20,14 +20,14 @@ extern "C" {
 // UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
 // FUNÇÃO: controlar o tempo de execução de cada estado da máquina, aplicando um delay.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #define TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO 100000 // MILISEGUNDOS
+    #define TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO 10 // MILISEGUNDOS
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DEFINE: TEMPO_AGUARDANDO_ACK
 // UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
 // FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 2000  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 300000ULL  // MILISEGUNDOS
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: inicializaMaquinaDeEstados_TabelaDeEstacionamento

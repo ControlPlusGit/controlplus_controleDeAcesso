@@ -41,7 +41,7 @@ enum estadosDaMaquina{
 // UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamento, incrementaContadorExecucao_FSM_TabelaDeEstacionamento e zeraContadorExecucao_FSM_TabelaDeEstacionamento
 // FUNÇÃO: causar um delay no envio de mensagens no estadoAtual = ENVIAR_SOLICITACAO_DE_TABELA_DE_EXCLUSAO
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned int delayExecucao_TabelaDeEstacionamento = 0;
+    uint32_t delayExecucao_TabelaDeEstacionamento = 0;
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIAVEL: leitorAcabouDeLigar_TabelaDeEstacionamento
