@@ -27,8 +27,8 @@ extern "C" {
 // UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
 // FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 300000ULL  // MILISEGUNDOS
-    //#define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 10000  // MILISEGUNDOS    
+    //#define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 300000ULL  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 10000  // MILISEGUNDOS    
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: inicializaMaquinaDeEstados_TabelaDeEstacionamento
 // PARÂMETROS: nenhum

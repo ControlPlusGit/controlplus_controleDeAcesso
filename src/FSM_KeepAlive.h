@@ -27,8 +27,8 @@ extern "C" {
 // UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    #define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
-    //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 2000  // MILISEGUNDOS
+    //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 2000  // MILISEGUNDOS
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: inicializaMaquinaDeEstados_KeepAlive
