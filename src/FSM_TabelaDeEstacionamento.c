@@ -149,7 +149,7 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_TabelaDeEstacionamento){  
                       
-                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apifb.php?parametro=[FB;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
+                        sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apifb.php?parametro=[FB;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n");
                         
                         escreverMensagemWifi(stringSolicitacaoTabelaDeEstacionamento);
                         

@@ -188,7 +188,7 @@ struct tm objetoDataHora;
                        
                         //if(delayExecucao_DataHora>500){
                         
-                        sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
+                        sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n");
                         //sprintf(stringSolicitacaoDataHora,"<FE;1302>\n\r");
 
                         //escreverMensagemEthernet(stringSolicitacaoDataHora);                     

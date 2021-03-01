@@ -137,7 +137,7 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_KeepAlive){  
                       
-                        sprintf(stringSolicitacaoKeepAlive,"GET /tag/php/apifd.php?parametro=[FD;000001;A0] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n\r\n");
+                        sprintf(stringSolicitacaoKeepAlive,"GET /tag/php/apifd.php?parametro=[FD;000001;A0] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n");
                         
                         escreverMensagemWifi(stringSolicitacaoKeepAlive);
                         
