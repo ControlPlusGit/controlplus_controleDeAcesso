@@ -79,6 +79,8 @@ int8_t obtemDadosDaMemoriaFLASH(void){
     return 0;
 }
 
+uint8_t num_of_tags;
+
 int main(void){
    
     SYSTEM_Initialize();
@@ -97,8 +99,23 @@ int main(void){
     
     inicializaMaquinaDeEstados_KeepAlive(); 
             
+    // Seleciona a antena 1
+    SEL_BBA_SetHigh();
+    SEL_A1_4_SetHigh();
+    SEL_A1_2_SetHigh();
+    SEL_A3_4_SetLow();
+    
     while(1){
-            
+        LIGA_PA_SetHigh();
+        //num_of_tags = inventoryGen2();
+        if(num_of_tags>=1){
+            int i=0;
+            LED_TAG_SetHigh();
+            i=1;
+        }
+        LIGA_PA_SetLow();
+        delay_ms(10);
+        LED_TAG_SetLow();
     }
     
     return 0;

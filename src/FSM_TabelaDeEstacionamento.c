@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> 
-#include "rtc.h"
+//#include "rtc.h"
 #include <time.h>
 #include "tabelaEstacionamento.h"
 #include "FSM_ESP8266.h"

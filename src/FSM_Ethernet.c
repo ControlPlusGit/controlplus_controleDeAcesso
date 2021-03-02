@@ -11,7 +11,6 @@
 #include "uart_driver.h"
 #include <string.h>
 #include <stdio.h>
-#include "global.h"
 #include <libpic30.h>
 #include "FSM_ESP8266.h"
 #include "setup_usb.h"

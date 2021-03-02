@@ -4,7 +4,6 @@
 
 #include "tmr2.h"
 #include "log.h"
-#include "global.h"
 #include <libpic30.h>
 #include "delay.h"
 

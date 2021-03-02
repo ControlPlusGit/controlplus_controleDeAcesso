@@ -7,23 +7,21 @@
 
 #include <uart.h>
 #include "FSM_Ethernet.h"
-#include "timer.h"
-//#include "FSM_TabelaDeExclusao.h"
-//#include "FSM_EventosDeParada.h"
+#include "delay.h"
 #include "FSM_DataHora.h"
 #include "FSM_ESP8266.h"
 #include "uart_driver.h"
 #include <stdint.h>
-//#include "empilhadeira.h"
-#include "i2c.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> 
-#include "rtc.h"
 #include <time.h>
-#include "platform.h"
+#include "BSP/pin_manager.h"
 #include "setup_usb.h"
 #include "delay.h"
+#include "RTC/rtc.h"
+#include "RTC/DS1307.h"
+#include "BSP/bsp.h"
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
@@ -118,7 +116,9 @@ enum{
     //Teste conexao WiFi entre APs - 11/03/2020 - ArcelorMittal Juiz de Fora
     
     int numVezesReconectou = 0;
-    struct tm *dataHora_ESP8266;
+    
+    Calendar dataHora_ESP8266;
+    
     char stringLogWifi[300];
     
     
@@ -251,10 +251,10 @@ enum{
         
         if(contadorDelayLeds>500 && statusConexaoWifi_ESP8266 == DESCONECTADO){
             contadorDelayLeds = 0;
-            LED_WIFI = ~LED_WIFI;
+            LED_ZIG_Toggle();
         }
         if(statusConexaoWifi_ESP8266 == CONECTADO){
-            LED_WIFI = 1;
+            LED_ZIG_SetHigh();
         }
         
         switch(estadoAtual_ESP8266)
@@ -526,8 +526,9 @@ enum{
                              
                              if(logConectividadeWifi){
                                 numVezesReconectou++;
-                                dataHora_ESP8266 = localtime(&Tempo);
-                                sprintf(stringLogWifi,"\rNumero de conexoes realizadas: %02d\n\rConectou as: %02d:%02d:%02d\n",numVezesReconectou,dataHora_ESP8266->tm_hour,dataHora_ESP8266->tm_min,dataHora_ESP8266->tm_sec);                             
+                                //dataHora_ESP8266 = localtime(&Tempo);
+                                RTC_calendarRequest(&dataHora_ESP8266);
+                                sprintf(stringLogWifi,"\rNumero de conexoes realizadas: %02d\n\rConectou as: %02d:%02d:%02d\n",numVezesReconectou,dataHora_ESP8266.tm_hour,dataHora_ESP8266.tm_min,dataHora_ESP8266.tm_sec);                             
                                 escreverMensagemUSB(stringLogWifi);  
                              }
                         }
@@ -603,8 +604,9 @@ enum{
                                      limpaBufferNaMaquinaDeEstados_ESP8266(); 
                                      solicitarTrocaDeServidor = NAO;
                                      if(logConectividadeWifi){
-                                         dataHora_ESP8266 = localtime(&Tempo);
-                                         sprintf(stringLogWifi,"\rPerda de conexao wi-fi as: %02d:%02d:%02d\n",dataHora_ESP8266->tm_hour,dataHora_ESP8266->tm_min,dataHora_ESP8266->tm_sec);
+                                         //dataHora_ESP8266 = localtime(&Tempo);
+                                         RTC_calendarRequest(&dataHora_ESP8266);
+                                         sprintf(stringLogWifi,"\rPerda de conexao wi-fi as: %02d:%02d:%02d\n",dataHora_ESP8266.tm_hour,dataHora_ESP8266.tm_min,dataHora_ESP8266.tm_sec);
                                          escreverMensagemUSB(stringLogWifi);
                                      }
                                      statusConexaoWifi_ESP8266 = DESCONECTADO;

@@ -5,17 +5,16 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-//#include "FSM_TabelaDeExclusao.h"
-#include "i2c.h"
 #include "uart_driver.h"
 #include "FSM_DataHora.h"
 #include "FSM_ESP8266.h"
 #include "FSM_Ethernet.h"
-//#include "FSM_EventosDeParada.h"
+
+#include "EEPROM/eeprom.h"
 
 #include "setup_usb.h"
 
-void realizaAutoSintoniaDosCapacitores(int Metodo);
+//void realizaAutoSintoniaDosCapacitores(int Metodo);
 
 char bufferRxUSB[TAMANHO_BUFFER_COMANDOS_USB];
 
@@ -461,7 +460,7 @@ void setaModoDeOperacao(void){
 
 void realizarCalibracaoAutomatica(void){
     if(bufferRxUSB[8] == '\r' && bufferRxUSB[9] == '\n'){
-        realizaAutoSintoniaDosCapacitores(bufferRxUSB[7]-'0'); 
+        //realizaAutoSintoniaDosCapacitores(bufferRxUSB[7]-'0'); 
         retornaOk();
         return;
     }

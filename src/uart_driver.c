@@ -40,14 +40,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "p24FJ256DA210.h"
-#include "errno.h"
+#include <stdint.h>
+#include <xc.h>
 #include "uart_driver.h"
-#include "uart.h"
-#include "global.h"
-#include "Compiler.h"
+#include <uart.h>
 #include "string.h"
-#include "timer.h"
+#include "delay.h"
 #include "FSM_DataHora.h"
 #include "setup_usb.h"
 /*
@@ -57,9 +55,9 @@
 * LOCAL DEFINES
 ******************************************************************************
 */
-s8 uartRxNBytes( u8 *, u16 *);
-s8 uartRx2NBytes( u8 *, u16 *);
-s8 uartRx3NBytes( u8 *, u16 * numBytes);
+int8_t uartRxNBytes( uint8_t *, uint16_t *);
+int8_t uartRx2NBytes( uint8_t *, uint16_t *);
+int8_t uartRx3NBytes( uint8_t *, uint16_t * numBytes);
 
 extern char ComandoObtidoParaAEmpilhadeira;
 
@@ -67,9 +65,9 @@ extern volatile int operador_atual_outro;
 extern int conta_recebe_operador;
 extern void desliga_led_zig(void);
 extern void  liga_led_zig(void);
-void uart4Tx(u8);
+void uart4Tx(uint8_t);
 extern void poe_dado_XY(int,int,int);
-extern u8 status_dir;
+extern uint8_t status_dir;
 extern void desliga_dir();
 extern void liga_dir();
 extern void compararRespostaDoModemEmTempoReal(char *);
@@ -91,28 +89,28 @@ extern unsigned char pont_pac;
 extern unsigned char qt_tags_portal;
 extern unsigned char pacote_zerado;
 extern unsigned char qt_pac_total;
-extern u8 conta_tentativas_tx;
+extern uint8_t conta_tentativas_tx;
 /*
 ******************************************************************************
 * LOCAL VARIABLES
 ******************************************************************************
 */
 #ifdef UART_RECEIVE_ENABLED
-static u8 rxBuffer[UART_RX_BUFFER_SIZE];
-u8 __attribute__((far)) rx2Buffer[UART_RX_BUFFER_SIZE];
-u8 __attribute__((far)) rx3Buffer[UART_RX_BUFFER_SIZE];
-u8 __attribute__((far)) rx4Buffer[UART_RX_BUFFER_SIZE];
+static uint8_t rxBuffer[UART_RX_BUFFER_SIZE];
+uint8_t __attribute__((far)) rx2Buffer[UART_RX_BUFFER_SIZE];
+uint8_t __attribute__((far)) rx3Buffer[UART_RX_BUFFER_SIZE];
+uint8_t __attribute__((far)) rx4Buffer[UART_RX_BUFFER_SIZE];
 
-static u16 rxCount;
-static u16 rx2Count;
-static u16 rx3Count;
-static u16 rx4Count;
+static uint16_t rxCount;
+static uint16_t rx2Count;
+static uint16_t rx3Count;
+static uint16_t rx4Count;
 
-static u8 rxError;
+static uint8_t rxError;
 /*
-static u8 rx2Error;
-static u8 rx3Error;
-static u8 rx4Error;
+static uint8_t rx2Error;
+static uint8_t rx3Error;
+static uint8_t rx4Error;
  * */
 
 extern struct EstruturaProtocolo Teste;
@@ -128,10 +126,10 @@ char teste[20];
 int contadorDeTeste;
 
 
-s8 uartTxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
+int8_t uartTxInitialize (uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate)
 {
-    u32 br1, br2;
-    u16 breg;
+    uint32_t br1, br2;
+    uint16_t breg;
     
     contadorDeTeste = 0;
 
@@ -175,14 +173,14 @@ s8 uartTxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
     
     IEC0bits.U1RXIE = 1;
 
-    return ERR_NONE;
+    return 0;
 }
 
 #ifdef UART_RECEIVE_ENABLED
-s8 uartRxInitialize ()
+int8_t uartRxInitialize ()
 {
     rxCount = 0;
-    rxError = ERR_NONE;
+    rxError = 0;
     /* clear receive buffer */
     U1RX_Clear_Intr_Status_Bit;
     while ( DataRdyUART1() )
@@ -190,15 +188,15 @@ s8 uartRxInitialize ()
         ReadUART1();
     }
 
-    return ERR_NONE;
+    return 0;
 }
 #endif
 
 /*
-s8 uartInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
+int8_t uartInitialize (uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate)
 {
-    u32 actbaud;
-    s8 result = uartTxInitialize(sysclk, baudrate, &actbaud);
+    uint32_t actbaud;
+    int8_t result = uartTxInitialize(sysclk, baudrate, &actbaud);
     *actbaudrate = actbaud;
 #ifdef UART_RECEIVE_ENABLED
     if (result == ERR_NONE)
@@ -211,7 +209,7 @@ s8 uartInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
  * */
 
 
-//s8 uartTxDeinitialize ()
+//int8_t uartTxDeinitialize ()
 //{
 //    /* disable UART */
 //    UART_WRITE_REG(MODE, 0x0);
@@ -222,15 +220,15 @@ s8 uartInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
 //}
 
 
-//s8 uartDeinitialize ()
+//int8_t uartDeinitialize ()
 //{
 //    return uartTxDeinitialize();
 //}
 
-s8 uart2TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
+int8_t uart2TxInitialize (uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate)
 {
-    u32 br1, br2;
-    u16 breg;
+    uint32_t br1, br2;
+    uint16_t breg;
 
     /* Disable UART for configuration */
     UART2_WRITE_REG(MODE, 0x0);
@@ -274,13 +272,13 @@ s8 uart2TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
     UART2_WRITE_REG(STA, UART2_READ_REG(STA) | 0x0400);
     IEC1bits.U2RXIE = 1;
 
-    return ERR_NONE;
+    return 0;
 }
 
-s8 uart3TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
+int8_t uart3TxInitialize (uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate)
 {
-    u32 br1, br2;
-    u16 breg;
+    uint32_t br1, br2;
+    uint16_t breg;
 
     /* Disable UART for configuration */
     UART3_WRITE_REG(MODE, 0x0);
@@ -323,13 +321,13 @@ s8 uart3TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
     UART3_WRITE_REG(STA, UART3_READ_REG(STA) | 0x0400);
     IEC5bits.U3RXIE = 1;
 
-    return ERR_NONE;
+    return 0;
 }
 
-s8 uart4TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
+int8_t uart4TxInitialize (uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate)
 {
-    u32 br1, br2;
-    u16 breg;
+    uint32_t br1, br2;
+    uint16_t breg;
 
     /* Disable UART for configuration */
     UART4_WRITE_REG(MODE, 0x0);
@@ -372,29 +370,29 @@ s8 uart4TxInitialize (u32 sysclk, u32 baudrate, u32* actbaudrate)
     //IEC0bits.U1RXIE = 1;
     IEC5bits.U4RXIE = 1;
 
-    return ERR_NONE;
+    return 0;
 }
 
-void uart1Tx (u8 dado){
+void uart1Tx (uint8_t dado){
     U1TXREG = dado;
     //while( (U1STA & 0x0100) );
     while( (U1STA & 0x0100) == 0);
 }
 
-void uart2Tx (u8 dado){
+void uart2Tx (uint8_t dado){
     U2TXREG = dado;
     //while( (U2STA & 0x0100) );
     while( (U2STA & 0x0200) );
 }
 
 
-void uart3Tx (u8 dado){
+void uart3Tx (uint8_t dado){
     U3TXREG = dado;
     //while( (U3STA & 0x0100) );
     while( (U3STA & 0x0200) );
 }
 
-void uart4Tx (u8 dado){
+void uart4Tx (uint8_t dado){
     U4TXREG = dado;
     //while( (U4STA & 0x0100) ){
     while( (U4STA & 0x0200) ){
@@ -403,9 +401,9 @@ void uart4Tx (u8 dado){
 }
 
 
-u16 uartRx2NumBytesAvailable ()
+uint16_t uartRx2NumBytesAvailable ()
 {
-    u16 num;
+    uint16_t num;
     DisableIntU2RX;
     num = rx2Count;
     EnableIntU2RX;
@@ -413,18 +411,18 @@ u16 uartRx2NumBytesAvailable ()
 }
 
 
-u16 uartRx3NumBytesAvailable ()
+uint16_t uartRx3NumBytesAvailable ()
 {
-    u16 num;
+    uint16_t num;
     DisableIntU3RX;
     num = rx3Count;
     EnableIntU3RX;
     return num;
 }
 
-u16 uartRx4NumBytesAvailable ()
+uint16_t uartRx4NumBytesAvailable ()
 {
-    u16 num;
+    uint16_t num;
     DisableIntU4RX;
     num = rx4Count;
     EnableIntU4RX;
@@ -432,9 +430,9 @@ u16 uartRx4NumBytesAvailable ()
 }
 
 
-s8 uartRxNBytes ( u8 * buffer, u16 * numBytes )
+int8_t uartRxNBytes ( uint8_t * buffer, uint16_t * numBytes )
 {
-    u16 maxCopy = *numBytes;
+    uint16_t maxCopy = *numBytes;
     DisableIntU4RX;
     if ( rxCount <= maxCopy )
     { /* copy whole received data into buffer */
@@ -449,12 +447,12 @@ s8 uartRxNBytes ( u8 * buffer, u16 * numBytes )
 	memmove( rxBuffer, rxBuffer + maxCopy, rxCount );
     }
     EnableIntU4RX;
-    return ERR_NONE;
+    return 0;
 }
 
-s8 uartRx2NBytes ( u8 * buffer, u16 * numBytes )
+int8_t uartRx2NBytes ( uint8_t * buffer, uint16_t * numBytes )
 {
-    u16 maxCopy = *numBytes;
+    uint16_t maxCopy = *numBytes;
     DisableIntU2RX;
     if ( rx2Count <= maxCopy )
     { /* copy whole received data into buffer */
@@ -469,7 +467,7 @@ s8 uartRx2NBytes ( u8 * buffer, u16 * numBytes )
 	//memmove( rx2Buffer, rx2Buffer + maxCopy, rx2Count );
     }
     EnableIntU2RX;
-    return ERR_NONE;
+    return 0;
 }
 
 void LimpaBufferRX3 (void){
@@ -480,9 +478,9 @@ void LimpaBufferRX3 (void){
 
 }
 
-s8 uartRx3NBytes ( u8 * buffer, u16 * numBytes )
+int8_t uartRx3NBytes ( uint8_t * buffer, uint16_t * numBytes )
 {
-    u16 maxCopy = *numBytes;
+    uint16_t maxCopy = *numBytes;
     DisableIntU3RX;
     if ( rx3Count <= maxCopy )
     { /* copy whole received data into buffer */
@@ -498,12 +496,12 @@ s8 uartRx3NBytes ( u8 * buffer, u16 * numBytes )
     }
     EnableIntU3RX;
     //IEC5bits.U3ERIE = 1;
-    return ERR_NONE;
+    return 0;
 }
 
-s8 uartRx4NBytes ( u8 * buffer, u16 * numBytes )
+int8_t uartRx4NBytes ( uint8_t * buffer, uint16_t * numBytes )
 {
-    u16 maxCopy = *numBytes;
+    uint16_t maxCopy = *numBytes;
     DisableIntU4RX;
     if ( rx4Count <= maxCopy )
     { /* copy whole received data into buffer */
@@ -518,21 +516,21 @@ s8 uartRx4NBytes ( u8 * buffer, u16 * numBytes )
 	memmove( rx4Buffer, rx4Buffer + maxCopy, rx4Count );
     }
     EnableIntU4RX;
-    return ERR_NONE;
+    return 0;
 }
 
 
 
 
 /*
-s8 uartTxByte ( u8 dat )
+int8_t uartTxByte ( uint8_t dat )
 {
     uartTx( dat );
     return ERR_NONE;
 }
 */
 /*
-s8 uartTxString ( const char * text )
+int8_t uartTxString ( const char * text )
 {
     while ( *text != '\0' )
     {
@@ -543,7 +541,7 @@ s8 uartTxString ( const char * text )
 }
 */
 /*
-s8 uartTxNBytes ( const u8 * buffer, u16 length )
+int8_t uartTxNBytes ( const uint8_t * buffer, uint16_t length )
 {
     while ( length-- )
     {
@@ -559,9 +557,9 @@ s8 uartTxNBytes ( const u8 * buffer, u16 length )
 //#define UART_RECEIVE_ENABLED
 #ifdef UART_RECEIVE_ENABLED
 
-u16 uartRxNumBytesAvailable ()
+uint16_t uartRxNumBytesAvailable ()
 {
-    u16 num;
+    uint16_t num;
     DisableIntU4RX;//1
     num = rxCount;
     EnableIntU4RX;//1
@@ -569,9 +567,9 @@ u16 uartRxNumBytesAvailable ()
 }
 
 /*
-s8 uartRxNBytes ( u8 * buffer, u16 * numBytes )
+int8_t uartRxNBytes ( uint8_t * buffer, uint16_t * numBytes )
 {
-    u16 maxCopy = *numBytes;
+    uint16_t maxCopy = *numBytes;
     DisableIntU1RX;
     if ( rxCount <= maxCopy )
     {  copy whole received data into buffer
@@ -613,7 +611,7 @@ void _U4RXInterrupt (void)
  * */
 #endif
 
-void INTERRUPT _U1ErrInterrupt (void){
+void __attribute__((interrupt, no_auto_psv)) _U1ErrInterrupt (void){
     //int data;     //LUCIANO: Variavel declarada e nao utilizada. Eliminei um warning.
 
     IFS4bits.U1ERIF = 0;
@@ -633,7 +631,7 @@ void INTERRUPT _U1ErrInterrupt (void){
 }
 
 
-void INTERRUPT _U1RXInterrupt (void){    
+void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt (void){    
     
     U1RX_Clear_Intr_Status_Bit;
     
@@ -661,7 +659,7 @@ void INTERRUPT _U1RXInterrupt (void){
 }
  char bufferInterrupcaoUART2[100];
  
-void INTERRUPT _U2RXInterrupt (void){ // Porta usada para receber dados de ETH
+void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt (void){ // Porta usada para receber dados de ETH
  
     U2RX_Clear_Intr_Status_Bit;
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
@@ -694,7 +692,7 @@ void INTERRUPT _U2RXInterrupt (void){ // Porta usada para receber dados de ETH
     }    
 }
 
-void INTERRUPT _U3ErrInterrupt (void){
+void __attribute__((interrupt, no_auto_psv)) _U3ErrInterrupt (void){
     int data;
 
     IFS5bits.U3ERIF = 0;
@@ -715,7 +713,7 @@ void INTERRUPT _U3ErrInterrupt (void){
 
 char bufferInterrupcaoUART3[TAMANHO_BUFFER_COMANDOS_USB];
 
-void INTERRUPT _U3RXInterrupt (void){ //Porta usada para receber dados da USB
+void __attribute__((interrupt, no_auto_psv)) _U3RXInterrupt (void){ //Porta usada para receber dados da USB
     
     U3RX_Clear_Intr_Status_Bit;
     int EsperaChegadaDeDados = 500;   
@@ -759,7 +757,7 @@ extern int ResultadoProtocolo;
 
 char __attribute__((far)) bufferInterrupcaoUART4[TAMANHO_BUFFER_ISR_UART4];
 
-void INTERRUPT _U4RXInterrupt (void){ // Wifi
+void __attribute__((interrupt, no_auto_psv)) _U4RXInterrupt (void){ // Wifi
     U4RX_Clear_Intr_Status_Bit;
     unsigned int EsperaChegadaDeDados;
     int posicaoBufferUART4=0;
@@ -817,7 +815,7 @@ void cleanRX4InterruptBuffer(void){
 }
 
 
-void INTERRUPT _U4TXInterrupt (void){
+void __attribute__((interrupt, no_auto_psv)) _U4TXInterrupt (void){
     char Dado=0;
     //Dado = trabalhaNaInterrupcaoDeWifi();
     //uart4Tx(Dado);

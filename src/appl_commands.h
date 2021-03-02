@@ -68,6 +68,7 @@ extern u8 writeRegister(u8 addr, u8 value, u16 * txSize, u8 * txData);
 void comecaInvetorio(void);
 void TerminaInvetorio(void);
 
+u8 inventoryGen2(void);
 
 u8 inventorioSimplificado(void);
 

@@ -38,9 +38,6 @@
 
 #include "as3993_config.h"
 #include "platform.h"
-#include "global.h"
-#include "logger.h"
-#include "timer.h"
 #include "delay.h"
 #include "PPS.h"
 #include "spi1.h"
@@ -290,7 +287,11 @@ void platformInit(void)
     EN(LOW);
     NCS_DESELECT();
 
-    initExtInterrupt();
+    // Init external interrupt
+    _INT1EP  = 0;       // on positive edge
+    _INT1IP  = 6;       // high priority
+    _INT1IF  = 0;       // clear pending interrupts    
+    _INT1IE = 1;
 
     delay_us(100);
 }

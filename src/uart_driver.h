@@ -57,7 +57,8 @@
 * INCLUDES
 ******************************************************************************
 */
-#include "ams_types.h"
+//#include "ams_types.h"
+#include <stdint.h>
 
 /*
 ******************************************************************************
@@ -117,10 +118,10 @@ The driver has to be polled in this time frame. */
  *
  *****************************************************************************
  */
-extern s8 uartTxInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
-extern s8 uart2TxInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
-extern s8 uart3TxInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
-extern s8 uart4TxInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
+int8_t uartTxInitialize(uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate);
+int8_t uart2TxInitialize(uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate);
+int8_t uart3TxInitialize(uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate);
+int8_t uart4TxInitialize(uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate);
 
 
 /*!
@@ -135,7 +136,7 @@ extern s8 uart4TxInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
  *
  *****************************************************************************
  */
-extern s8 uartRxInitialize();
+int8_t uartRxInitialize();
 
 /*!
  *****************************************************************************
@@ -152,7 +153,7 @@ extern s8 uartRxInitialize();
  *
  *****************************************************************************
  */
-extern s8 uartInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
+int8_t uartInitialize(uint32_t sysclk, uint32_t baudrate, uint32_t* actbaudrate);
 
 /*!
  *****************************************************************************
@@ -165,7 +166,7 @@ extern s8 uartInitialize(u32 sysclk, u32 baudrate, u32* actbaudrate);
  *
  *****************************************************************************
  */
-extern s8 uartTxDeinitialize();
+int8_t uartTxDeinitialize();
 
 /*!
  *****************************************************************************
@@ -177,7 +178,7 @@ extern s8 uartTxDeinitialize();
  *
  *****************************************************************************
  */
-extern s8 uartDeinitialize();
+int8_t uartDeinitialize();
 
 /*!
  *****************************************************************************
@@ -191,7 +192,7 @@ extern s8 uartDeinitialize();
  *
  *****************************************************************************
  */
-extern s8 uartTxString(const char * text);
+int8_t uartTxString(const char * text);
 
 /*!
  *****************************************************************************
@@ -208,7 +209,7 @@ extern s8 uartTxString(const char * text);
  *
  *****************************************************************************
  */
-extern s8 uartTxNBytes(const u8* buffer, u16 length);
+int8_t uartTxNBytes(const uint8_t* buffer, uint16_t length);
 
 
 /*!
@@ -223,7 +224,7 @@ extern s8 uartTxNBytes(const u8* buffer, u16 length);
  *
  *****************************************************************************
  */
-extern s8 uartTxByte(u8 dat);
+int8_t uartTxByte(uint8_t dat);
 
 /*!
  *****************************************************************************
@@ -258,9 +259,9 @@ extern s8 uartTxByte(u8 dat);
  *
  *****************************************************************************
  */
-extern u16 uartRxNumBytesAvailable();
-extern u16 uartRx3NumBytesAvailable();
-extern u16 uartRx4NumBytesAvailable();
+uint16_t uartRxNumBytesAvailable();
+uint16_t uartRx3NumBytesAvailable();
+uint16_t uartRx4NumBytesAvailable();
 
 /*!
  *****************************************************************************
@@ -282,14 +283,14 @@ extern u16 uartRx4NumBytesAvailable();
 #include "setup_usb.h"
 #define TAMANHO_BUFFER_ISR_UART4 5300
 
-extern s8 uartRxNBytes( u8 * buffer, u16 * numBytes);
-extern s8 uartRx2NBytes( u8 * buffer, u16 * numBytes);
-extern s8 uartRx3NBytes( u8 * buffer, u16 * numBytes);
+int8_t uartRxNBytes( uint8_t * buffer, uint16_t * numBytes);
+int8_t uartRx2NBytes( uint8_t * buffer, uint16_t * numBytes);
+int8_t uartRx3NBytes( uint8_t * buffer, uint16_t * numBytes);
 
-void uart1Tx (u8 dado);
-void uart2Tx (u8 dado);
-void uart3Tx (u8 dado);
-void uart4Tx (u8 dado);
+void uart1Tx (uint8_t dado);
+void uart2Tx (uint8_t dado);
+void uart3Tx (uint8_t dado);
+void uart4Tx (uint8_t dado);
 
 void cleanRX4InterruptBuffer(void);
 

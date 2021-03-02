@@ -10,7 +10,6 @@
 #include "tuner.h"
 
 #include "i2c.h"
-#include "perifericos.h"
 #include "rtc.h"
 #include "delay.h"
 #include "EEPROM/24LC256.h"
@@ -86,17 +85,7 @@ int EscreveArray (int endereco, char *dados, char quantia){
     return 0;
 }
 
-int EscreverNaEEprom (int endereco, unsigned char dado){
-    
-    return EEPROM_24LC256_I2C_write_uchar(0,endereco,dado);
-    
-}
 
-int LerDadosDaEEprom (int endereco, unsigned char *dado){
-    
-    return EEPROM_24LC256_I2C_read_uchar(0,endereco,dado);
-    
-}
 
 /*
 void SetarHoraRTC (int minuto, int hora, int dia, int mes, int ano){

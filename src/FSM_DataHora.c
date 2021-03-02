@@ -17,9 +17,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> 
-#include "rtc.h"
+//#include "rtc.h"
 #include <time.h>
 #include "setup_usb.h"
+#include "RTC/rtc.h"
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,

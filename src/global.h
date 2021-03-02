@@ -102,10 +102,8 @@
 #define SYSCLK_12MHZ                12000000ULL
 #define SYSCLK_8MHZ                 8000000ULL
 #define SYSCLK_4MHZ                 4000000ULL
-#if 1
+#ifndef SYSCLK
 #define SYSCLK    SYSCLK_16MHZ
-#else
-#define SYSCLK    tbd
 #endif
 //#define FCY    (SYSCLK)
 

@@ -4880,6 +4880,186 @@
 #define OPTO2_SetDigitalOutput() (_TRISG7 = 0)
 
 /**
+  @Summary
+    Sets the GPIO pin, RB2, high using LATB2.
+
+  @Description
+    Sets the GPIO pin, RB2, high using LATB2.
+
+  @Preconditions
+    The RB2 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RB2 high (1)
+    AS3993_EN_SetHigh();
+    </code>
+
+*/
+#define AS3993_EN_SetHigh()          (_LATB2 = 1)
+/**
+  @Summary
+    Sets the GPIO pin, RB2, low using LATB2.
+
+  @Description
+    Sets the GPIO pin, RB2, low using LATB2.
+
+  @Preconditions
+    The RB2 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RB2 low (0)
+    AS3993_EN_SetLow();
+    </code>
+
+*/
+#define AS3993_EN_SetLow()           (_LATB2 = 0)
+/**
+  @Summary
+    Toggles the GPIO pin, RB2, using LATB2.
+
+  @Description
+    Toggles the GPIO pin, RB2, using LATB2.
+
+  @Preconditions
+    The RB2 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RB2
+    AS3993_EN_Toggle();
+    </code>
+
+*/
+#define AS3993_EN_Toggle()           (_LATB2 ^= 1)
+/**
+  @Summary
+    Reads the value of the GPIO pin, RB2.
+
+  @Description
+    Reads the value of the GPIO pin, RB2.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RB2
+    postValue = AS3993_EN_GetValue();
+    </code>
+
+*/
+#define AS3993_EN_GetValue()         _RB2
+/**
+  @Summary
+    Configures the GPIO pin, RB2, as an input.
+
+  @Description
+    Configures the GPIO pin, RB2, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RB2 as an input
+    AS3993_EN_SetDigitalInput();
+    </code>
+
+*/
+#define AS3993_EN_SetDigitalInput()  (_TRISB2 = 1)
+/**
+  @Summary
+    Configures the GPIO pin, RB2, as an output.
+
+  @Description
+    Configures the GPIO pin, RB2, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RB2 as an output
+    AS3993_EN_SetDigitalOutput();
+    </code>
+
+*/
+#define AS3993_EN_SetDigitalOutput() (_TRISB2 = 0)
+/**
+  @Summary
+    Sets the GPIO pin, RD8, high using LATD8.
+
+  @Description
+    Sets the GPIO pin, RD8, high using LATD8.
+
+  @Preconditions
+    The RD8 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RD8 high (1)
+    SCK_SPI1_SetHigh();
+    </code>
+
+*/
+
+/** Definition for the serial enable pin */
+#define NCSPIN                    _LATF8 //_LATB15
+
+/** Macro for setting NCS pin, serial enable line */
+#define NCS(x)                    NCSPIN=(x)
+/** Macro for activating AS3993 for SPI communication */
+#define NCS_SELECT()              NCS(0)
+/** Macro for deactivating AS3993 for SPI communication */
+#define NCS_DESELECT()            NCS(1)
+
+/**
     Section: Function Prototypes
 */
 /**

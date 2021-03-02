@@ -9,8 +9,12 @@
         <itemPath>src/BSP/pin_manager.h</itemPath>
         <itemPath>src/BSP/rfid_bsp.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f4" displayName="DELAY" projectFiles="true">
+        <itemPath>src/delay.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
         <itemPath>src/EEPROM/24LC256.h</itemPath>
+        <itemPath>src/EEPROM/eeprom.h</itemPath>
       </logicalFolder>
       <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
         <itemPath>src/FLASH/flash.h</itemPath>
@@ -21,6 +25,7 @@
         <itemPath>src/FSM_Ethernet.h</itemPath>
         <itemPath>src/FSM_KeepAlive.h</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.h</itemPath>
+        <itemPath>src/setup_usb.h</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.h</itemPath>
@@ -28,8 +33,12 @@
       <logicalFolder name="I2C3" displayName="I2C3" projectFiles="true">
         <itemPath>src/I2C3/i2c3_driver.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f5" displayName="LOG" projectFiles="true">
+        <itemPath>src/log.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
         <itemPath>src/RTC/DS1307.h</itemPath>
+        <itemPath>src/RTC/rtc.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="SPI1" projectFiles="true">
         <itemPath>src/spi1.h</itemPath>
@@ -37,41 +46,11 @@
       <logicalFolder name="f3" displayName="TMR2" projectFiles="true">
         <itemPath>src/tmr2.h</itemPath>
       </logicalFolder>
-      <itemPath>src/Compiler.h</itemPath>
-      <itemPath>src/GenericTypeDefs.h</itemPath>
       <itemPath>src/PIC24F_periph_features.h</itemPath>
       <itemPath>src/PPS.h</itemPath>
-      <itemPath>src/PwrMgnt.h</itemPath>
-      <itemPath>src/ams_math_macros.h</itemPath>
-      <itemPath>src/ams_types.h</itemPath>
-      <itemPath>src/appl_commands.h</itemPath>
-      <itemPath>src/as3993.h</itemPath>
-      <itemPath>src/as3993_config.h</itemPath>
-      <itemPath>src/as3993_public.h</itemPath>
-      <itemPath>src/bitbang.h</itemPath>
-      <itemPath>src/bootloadable.h</itemPath>
-      <itemPath>src/config_i2c3.h</itemPath>
-      <itemPath>src/errno.h</itemPath>
-      <itemPath>src/errno_as3993.h</itemPath>
-      <itemPath>src/flash_access.h</itemPath>
-      <itemPath>src/gen2.h</itemPath>
-      <itemPath>src/global.h</itemPath>
-      <itemPath>src/i2c.h</itemPath>
-      <itemPath>src/log.h</itemPath>
-      <itemPath>src/logger.h</itemPath>
-      <itemPath>src/mem_i2c_24LC256.h</itemPath>
       <itemPath>src/p24FJ256DA210.h</itemPath>
-      <itemPath>src/perifericos.h</itemPath>
-      <itemPath>src/platform.h</itemPath>
-      <itemPath>src/rtc.h</itemPath>
-      <itemPath>src/setup_usb.h</itemPath>
-      <itemPath>src/spi_driver.h</itemPath>
-      <itemPath>src/system_clock.h</itemPath>
       <itemPath>src/tabelaEstacionamento.h</itemPath>
-      <itemPath>src/tuner.h</itemPath>
       <itemPath>src/uart_driver.h</itemPath>
-      <itemPath>src/uart_stream_driver.h</itemPath>
-      <itemPath>src/delay.h</itemPath>
       <itemPath>src/system.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -81,13 +60,22 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f6" displayName="APP" projectFiles="true">
+        <itemPath>src/main.c</itemPath>
+        <itemPath>src/system.c</itemPath>
+        <itemPath>src/tabelaEstacionamento.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
         <itemPath>src/BSP/bsp.c</itemPath>
         <itemPath>src/BSP/pin_manager.c</itemPath>
         <itemPath>src/BSP/rfid_bsp.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f4" displayName="DELAY" projectFiles="true">
+        <itemPath>src/delay.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
         <itemPath>src/EEPROM/24LC256.c</itemPath>
+        <itemPath>src/EEPROM/eeprom.c</itemPath>
       </logicalFolder>
       <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
         <itemPath>src/FLASH/flash.s</itemPath>
@@ -98,6 +86,7 @@
         <itemPath>src/FSM_Ethernet.c</itemPath>
         <itemPath>src/FSM_KeepAlive.c</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.c</itemPath>
+        <itemPath>src/setup_usb.c</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.c</itemPath>
@@ -105,8 +94,12 @@
       <logicalFolder name="I2C3" displayName="I2C3" projectFiles="true">
         <itemPath>src/I2C3/i2c3_driver.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f5" displayName="LOG" projectFiles="true">
+        <itemPath>src/log.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
         <itemPath>src/RTC/DS1307.c</itemPath>
+        <itemPath>src/RTC/rtc.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="SPI1" projectFiles="true">
         <itemPath>src/spi1.c</itemPath>
@@ -114,28 +107,9 @@
       <logicalFolder name="f3" displayName="TMR2" projectFiles="true">
         <itemPath>src/tmr2.c</itemPath>
       </logicalFolder>
-      <itemPath>src/appl_commands.c</itemPath>
-      <itemPath>src/appl_commands_table.c</itemPath>
-      <itemPath>src/as3993.c</itemPath>
-      <itemPath>src/bootloadable.c</itemPath>
-      <itemPath>src/config_i2c3.c</itemPath>
-      <itemPath>src/flash_access.c</itemPath>
-      <itemPath>src/gen2.c</itemPath>
-      <itemPath>src/global.c</itemPath>
-      <itemPath>src/i2c.c</itemPath>
-      <itemPath>src/log.c</itemPath>
-      <itemPath>src/main.c</itemPath>
-      <itemPath>src/mem_i2c_24LC256.c</itemPath>
-      <itemPath>src/perifericos.c</itemPath>
-      <itemPath>src/platform.c</itemPath>
-      <itemPath>src/rtc.c</itemPath>
-      <itemPath>src/setup_usb.c</itemPath>
-      <itemPath>src/system_clock.c</itemPath>
-      <itemPath>src/tabelaEstacionamento.c</itemPath>
-      <itemPath>src/tuner.c</itemPath>
-      <itemPath>src/uart_driver.c</itemPath>
-      <itemPath>src/delay.c</itemPath>
-      <itemPath>src/system.c</itemPath>
+      <logicalFolder name="f7" displayName="UART" projectFiles="true">
+        <itemPath>src/uart_driver.c</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -367,6 +341,7 @@
         <property key="UART 4" value="true"/>
         <property key="UCNFG1" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
