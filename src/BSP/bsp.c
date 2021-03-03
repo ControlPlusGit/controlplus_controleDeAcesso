@@ -224,3 +224,4 @@ void BSP_RS485_setDirection(uint8_t direction) {
             break;
     }
 }
+ 

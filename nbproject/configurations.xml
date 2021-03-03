@@ -4,6 +4,10 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f7" displayName="APP" projectFiles="true">
+        <itemPath>src/system.h</itemPath>
+        <itemPath>src/tabelaEstacionamento.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
         <itemPath>src/BSP/bsp.h</itemPath>
         <itemPath>src/BSP/pin_manager.h</itemPath>
@@ -15,6 +19,10 @@
       <logicalFolder name="EEPROM" displayName="EEPROM" projectFiles="true">
         <itemPath>src/EEPROM/24LC256.h</itemPath>
         <itemPath>src/EEPROM/eeprom.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="EXT_INT" displayName="EXT_INT" projectFiles="true">
+        <itemPath>src/EXT_INT/ext_int.h</itemPath>
+        <itemPath>src/EXT_INT/interrupt_manager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
         <itemPath>src/FLASH/flash.h</itemPath>
@@ -36,6 +44,10 @@
       <logicalFolder name="f5" displayName="LOG" projectFiles="true">
         <itemPath>src/log.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="RFID" displayName="RFID" projectFiles="true">
+        <itemPath>src/RFID/as3993.h</itemPath>
+        <itemPath>src/RFID/gen2.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
         <itemPath>src/RTC/DS1307.h</itemPath>
         <itemPath>src/RTC/rtc.h</itemPath>
@@ -46,12 +58,12 @@
       <logicalFolder name="f3" displayName="TMR2" projectFiles="true">
         <itemPath>src/tmr2.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f6" displayName="UART" projectFiles="true">
+        <itemPath>src/uart_driver.h</itemPath>
+      </logicalFolder>
       <itemPath>src/PIC24F_periph_features.h</itemPath>
       <itemPath>src/PPS.h</itemPath>
       <itemPath>src/p24FJ256DA210.h</itemPath>
-      <itemPath>src/tabelaEstacionamento.h</itemPath>
-      <itemPath>src/uart_driver.h</itemPath>
-      <itemPath>src/system.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -77,6 +89,10 @@
         <itemPath>src/EEPROM/24LC256.c</itemPath>
         <itemPath>src/EEPROM/eeprom.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="EXT_INT" displayName="EXT_INT" projectFiles="true">
+        <itemPath>src/EXT_INT/ext_int.c</itemPath>
+        <itemPath>src/EXT_INT/interrupt_manager.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="FLASH" displayName="FLASH" projectFiles="true">
         <itemPath>src/FLASH/flash.s</itemPath>
       </logicalFolder>
@@ -96,6 +112,10 @@
       </logicalFolder>
       <logicalFolder name="f5" displayName="LOG" projectFiles="true">
         <itemPath>src/log.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="RFID" displayName="RFID" projectFiles="true">
+        <itemPath>src/RFID/as3993.c</itemPath>
+        <itemPath>src/RFID/gen2.c</itemPath>
       </logicalFolder>
       <logicalFolder name="RTC" displayName="RTC" projectFiles="true">
         <itemPath>src/RTC/DS1307.c</itemPath>

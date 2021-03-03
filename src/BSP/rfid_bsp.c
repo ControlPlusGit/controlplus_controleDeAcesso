@@ -112,5 +112,24 @@ void BSP_RFID_selectDigitalCapacitor_Cout(void){
     BSP_RFID_selectDigitalCapacitor(DIGITAL_CAPACITOR_2);
 }
 
+void BSP_RFID_setAS3993_enablePin(uint8_t val){
+    switch(val){
+        case 0:
+            AS3993_EN_SetLow();
+        break;
+        case 1:
+            AS3993_EN_SetHigh();
+        break;
+    }
+}
+
+uint8_t BSP_RFID_AS3993_isEnabled(void){
+    return AS3993_EN_GetValue();
+}
+
+void BSP_RFID_setAS3993_SPI_enablePin(uint8_t val){
+    NCS(val);
+}
+
 
 
