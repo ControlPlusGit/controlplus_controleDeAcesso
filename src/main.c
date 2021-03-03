@@ -24,6 +24,8 @@
 #include "RTC/DS1307.h"  
 #include "EEPROM/24LC256.h"
 #include "FLASH/flash.h"
+#include "RFID/as3993.h"
+#include "RFID/gen2.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
