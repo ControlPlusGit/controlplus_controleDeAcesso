@@ -107,14 +107,14 @@ int main(void){
     
     while(1){
         LIGA_PA_SetHigh();
-        //num_of_tags = inventoryGen2();
+        num_of_tags = inventoryGen2();
         if(num_of_tags>=1){
             int i=0;
             LED_TAG_SetHigh();
             i=1;
         }
         LIGA_PA_SetLow();
-        delay_ms(10);
+        delay_ms(100);
         LED_TAG_SetLow();
     }
     
