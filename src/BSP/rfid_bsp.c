@@ -3,6 +3,9 @@
 #include <xc.h>
 #include "pin_manager.h"
 #include "rfid_bsp.h"
+#include "../delay.h"
+#include "../RFID/as3993.h"
+#include "../RFID/gen2.h"
 
 #define SEL_BBA(x) if(x){SEL_BBA_SetHigh();}else{SEL_BBA_SetLow();}
 
@@ -13,6 +16,9 @@
 #define SEL_B5_8(x) if(x){SEL_B5_8_SetHigh();}else{SEL_B5_8_SetLow();}
 #define SEL_B5_6(x) if(x){SEL_B5_6_SetHigh();}else{SEL_B5_6_SetLow();}
 #define SEL_B7_8(x) if(x){SEL_B7_8_SetHigh();}else{SEL_B7_8_SetLow();}
+
+
+BSP_RFID_Antennas BSP_RFID_antennas;
 
 BSP_RFID_Status BSP_RFID_status;
 
@@ -50,45 +56,45 @@ static void BSP_RFID_selectDigitalCapacitor(uint8_t num_capacitor){
     }
 }
 
-BSP_RFID_Status BSP_RFID_selectAntenna(uint8_t num_antenna){
+BSP_RFID_Status BSP_RFID_selectAntenna(BSP_RFID_Antennas num_antenna){
     switch (num_antenna)
     {
-            case 1:                         //Seleciona a antena 1
+            case ANTENNA_1:                         //Seleciona a antena 1
                 SEL_BBA(1);                 //sel. grupo 1-4
                 SEL_A1_4(1);                //sel. 1-2
                 SEL_A1_2(1);                //sel. A1
             break;
-            case 2:                         //Seleciona a antena 2
+            case ANTENNA_2:                         //Seleciona a antena 2
                 SEL_BBA(1);                 //sel. grupo 1-4
                 SEL_A1_4(1);                //sel. 1-2
                 SEL_A1_2(0);                //sel. A2
             break;
-            case 3:                         //Seleciona a antena 3
+            case ANTENNA_3:                         //Seleciona a antena 3
                 SEL_BBA(1);                 //sel. grupo 1-4
                 SEL_A1_4(0);                //sel. 3-4
                 SEL_A3_4(1);                //sel. A3
             break;
-            case 4:                         //Seleciona a antena 4
+            case ANTENNA_4:                         //Seleciona a antena 4
                 SEL_BBA(1);                 //sel. grupo 1-4
                 SEL_A1_4(0);                //sel. 3-4
                 SEL_A3_4(0);                //sel. A4
             break;
-            case 5:                         //Seleciona a antena 5
+            case ANTENNA_5:                         //Seleciona a antena 5
                 SEL_BBA(0);                 //sel. grupo 5-8
                 SEL_B5_8(1);                //sel. 5-6
                 SEL_B5_6(1);                //sel. A5
             break;
-            case 6:                         //Seleciona a antena 6
+            case ANTENNA_6:                         //Seleciona a antena 6
                 SEL_BBA(0);                 //sel. grupo 5-8
                 SEL_B5_8(1);                //sel. 5-6
                 SEL_B5_6(0);                //sel. A6
             break;
-            case 7:                         //Seleciona a antena 7
+            case ANTENNA_7:                         //Seleciona a antena 7
                 SEL_BBA(0);                 //sel. grupo 5-8
                 SEL_B5_8(0);                //sel. 7-8
                 SEL_B7_8(1);                //sel. A7
             break;
-            case 8:                         //Seleciona a antena 8
+            case ANTENNA_8:                         //Seleciona a antena 8
                 SEL_BBA(0);                 //sel. grupo 5-8
                 SEL_B5_8(0);                //sel. 7-8
                 SEL_B7_8(0);                //sel. A8
@@ -129,6 +135,24 @@ uint8_t BSP_RFID_AS3993_isEnabled(void){
 
 void BSP_RFID_setAS3993_SPI_enablePin(uint8_t val){
     NCS(val);
+}
+
+uint8_t BSP_RFID_searchForTags(void){
+    
+    uint8_t num_of_tags;
+    
+    LIGA_PA_SetHigh();
+    num_of_tags = inventoryGen2();
+    if(num_of_tags>=1){
+        int i=0;
+        LED_TAG_SetHigh();
+        i=1;
+    }
+    LIGA_PA_SetLow();
+    delay_ms(100);
+    LED_TAG_SetLow();
+    
+    return num_of_tags;
 }
 
 

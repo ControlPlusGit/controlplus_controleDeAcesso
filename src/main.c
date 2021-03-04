@@ -38,6 +38,7 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
 /////////////////////////////////////////////
     TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
     TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberadosTest;
+    
 /////////////////////////////////////////////
 // RTC DS1307 library variables
 /////////////////////////////////////////////
@@ -81,10 +82,69 @@ int8_t obtemDadosDaMemoriaFLASH(void){
     return 0;
 }
 
-uint8_t num_of_tags;
+uint8_t realizaLeituraDeAntena(uint8_t antena){
+    BSP_RFID_selectAntenna(antena);        
+    return BSP_RFID_searchForTags();
+}
+
+int8_t verificaTagValida(uint8_t *tag){
+    uint8_t i;
+    uint8_t *p = tag;
+    
+    if( *tag == 0x30 ){
+        tag += 3;
+        for( i = 3; i < MAXTAG-1; i++){            
+            if( *tag != 0x00 )
+            {
+                return -1;
+            }
+            else{
+                tag++;
+            }
+        }
+    }
+    
+    tag = p;
+    
+    return 1;
+}
+
+void logicaDeMovimentoDeEntrada(void){
+    
+    uint8_t num_of_tags;
+    
+    EPC_Estacionamento epc;
+            
+    // Start
+     
+    // Le antenas de entrada e saida    
+    num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
+    
+    if(num_of_tags > 0){
+
+        int i;
+
+        for( i = 0; i < MAXTAG; i++){
+            
+            if( verificaTagValida( tags_[i].epc ) ){ // Tag veicular valida?
+                
+                epc.byte1 = tags_[i].epc[2];
+                epc.byte2 = tags_[i].epc[1];
+                
+                if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epc)){ // Veiculo esta na lista?
+                    
+                    while(1);
+                    
+                }
+            }                    
+        }            
+    }
+}
 
 int main(void){
-   
+    
+    uint8_t num_of_tags;
+    
     SYSTEM_Initialize();
     
     marsOne_init();         
@@ -100,24 +160,11 @@ int main(void){
     inicializaMaquinaDeEstados_DataHora();
     
     inicializaMaquinaDeEstados_KeepAlive(); 
-            
-    // Seleciona a antena 1
-    SEL_BBA_SetHigh();
-    SEL_A1_4_SetHigh();
-    SEL_A1_2_SetHigh();
-    SEL_A3_4_SetLow();
-    
+                    
     while(1){
-        LIGA_PA_SetHigh();
-        num_of_tags = inventoryGen2();
-        if(num_of_tags>=1){
-            int i=0;
-            LED_TAG_SetHigh();
-            i=1;
-        }
-        LIGA_PA_SetLow();
-        delay_ms(100);
-        LED_TAG_SetLow();
+        
+        logicaDeMovimentoDeEntrada();
+        
     }
     
     return 0;

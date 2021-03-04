@@ -228,7 +228,7 @@ enum estadosDaMaquina{
                                 }                                 
                             }
                             else{
-                                removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados);
+                                //removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados); Nao removo porque a tabela deve persistir no leitor o tempo todo
                             }
                             limpaBufferNaMaquinaDeEstados_TabelaDeEstacionamento(); 
                             estadoAtual_TabelaDeEstacionamento = FIM_CICLO;
@@ -262,7 +262,7 @@ enum estadosDaMaquina{
                         zeraContadorExecucao_FSM_TabelaDeEstacionamento();
                         
                         gravarListaDeVeiculosLiberados(); // Grava informações na tabela flash
-                        
+                        bloqueiaMaquinaDeEstados_TabelaDeEstacionamento();
                         //sprintf(mensagemParaDebug,"FSM_TabelaDeEstacionamento finalizando...\n\r");
                         //escreverMensagemUSB(mensagemParaDebug);
 

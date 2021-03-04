@@ -35,11 +35,25 @@
         BSP_RFID_ERROR
     }BSP_RFID_Status;
     
+    typedef enum {
+        ANTENNA_1 = 0,
+        ANTENNA_2,
+        ANTENNA_3,
+        ANTENNA_4,
+        ANTENNA_5,
+        ANTENNA_6,
+        ANTENNA_7,
+        ANTENNA_8,
+        ANTENNA_MAX,
+    }BSP_RFID_Antennas;
+    
+    extern BSP_RFID_Antennas BSP_RFID_antennas;
+    
     extern BSP_RFID_Status BSP_RFID_status;
 
     extern BSP_RFID_OnboardDigitalCapacitors OnboardDigitalCapacitors;
 
-    BSP_RFID_Status BSP_RFID_selectAntenna(uint8_t num_antenna);    
+    BSP_RFID_Status BSP_RFID_selectAntenna(BSP_RFID_Antennas num_antenna);    
 
     void BSP_RFID_selectDigitalCapacitor_Cin(void);
 
@@ -52,6 +66,8 @@
     uint8_t BSP_RFID_AS3993_isEnabled(void);
 
     void BSP_RFID_setAS3993_SPI_enablePin(uint8_t val);
+    
+    uint8_t BSP_RFID_searchForTags(void);
     
     //static void BSP_RFID_selectDigitalCapacitor(uint8_t num_capacitor);
         
