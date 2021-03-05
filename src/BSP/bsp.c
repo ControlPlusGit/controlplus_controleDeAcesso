@@ -3,6 +3,7 @@
 #include <xc.h>
 #include "bsp.h"
 #include "pin_manager.h" // include all pin macros
+#include "../delay.h"
 
 BSP_OnboardLeds OnboardLeds;
 
@@ -203,10 +204,20 @@ void BSP_setLed(uint8_t numLed, uint8_t state){
 uint8_t BSP_readDigitalInput(uint8_t num_input){
     switch(num_input){
         case INPUT_1:
-                return OPTO1_GetValue();
+            if(OPTO1_GetValue()){
+                delay_ms(20);
+                if(OPTO1_GetValue()){
+                    return OPTO1_GetValue();
+                }
+            }                
             break;
         case INPUT_2:
-                return OPTO2_GetValue();
+            if(OPTO2_GetValue()){
+                delay_ms(20);
+                if(OPTO2_GetValue()){
+                    return OPTO2_GetValue();
+                }
+            }  
             break;
         default:
             return 0;

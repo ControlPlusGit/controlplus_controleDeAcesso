@@ -111,42 +111,184 @@ int8_t verificaTagValida(uint8_t *tag){
     return 1;
 }
 
-void logicaDeMovimentoDeEntrada(void){
+#define FLUXO_DE_SUCESSO 0
+#define FLUXO_DE_INSUCESSO 1
+
+int8_t (*functionPointer)(void);
+
+typedef struct{
+    uint16_t *action;
+    uint16_t wait_ms;
+    uint16_t next[2];
+}State;
+
+typedef State Maquina;
+
+enum{
+    LER_ANTENA = 0,
+    VERIFICAR_TAG_VALIDA,
+    VERIFICAR_TAG_PRESENTE_NA_GREENLIST,
+    ABRIR_PORTAO1_DESLIGA_PORTAO2,
+    AGUARDA_FECHAMENTO_PORTAO1,
+    ABRIR_PORTAO2_DESLIGA_PORTAO1,
+    AGUARDA_FECHAMENTO_PORTAO2,
+    REGISTRA_EVENTO,
+    FIM,
+}app_states;
+
+EPC_Estacionamento epcEntrada;
+EPC_Estacionamento epcSaida;
+
+int8_t ler_antena(void){
     
-    uint8_t num_of_tags;
-    
-    EPC_Estacionamento epc;
+    uint8_t num_of_tags;    
             
-    // Start
-     
-    // Le antenas de entrada e saida    
     num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
     
     if(num_of_tags > 0){
-
-        int i;
-
-        for( i = 0; i < MAXTAG; i++){
-            
-            if( verificaTagValida( tags_[i].epc ) ){ // Tag veicular valida?
-                
-                epc.byte1 = tags_[i].epc[2];
-                epc.byte2 = tags_[i].epc[1];
-                
-                if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epc)){ // Veiculo esta na lista?
-                    
-                    while(1);
-                    
-                }
-            }                    
-        }            
+        return FLUXO_DE_SUCESSO;
     }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }   
+}
+
+int8_t verificarTagValida(void){
+    int i;
+
+    for( i = 0; i < MAXTAG; i++){
+
+        if( verificaTagValida( tags_[i].epc ) ){ // Tag veicular valida?
+            epcEntrada.byte1 = tags_[i].epc[2];
+            epcEntrada.byte2 = tags_[i].epc[1];
+            return FLUXO_DE_SUCESSO;
+        }
+        else{
+            return FLUXO_DE_INSUCESSO;
+        }        
+    }    
+}
+
+int8_t verificarTagPresenteNaGreenList(void){
+    
+    if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcEntrada)){ // Veiculo esta na lista?    
+        return FLUXO_DE_SUCESSO;    
+    }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }
+}
+int8_t abrirPortao1DesligarPortao2(void){
+    
+    BSP_setRelay(RELAY_1, ON);
+    BSP_setRelay(RELAY_2, OFF);
+    
+    return FLUXO_DE_SUCESSO;
+}
+int8_t aguardaFechamentoPortao1(void){
+    
+    BSP_setRelay(RELAY_1, OFF);
+    BSP_setRelay(RELAY_2, OFF);
+    
+    if( !BSP_readDigitalInput(INPUT_1) ){
+        return FLUXO_DE_SUCESSO;
+    }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }
+}
+int8_t abrirPortao2DesligarPortao1(void){
+    
+    BSP_setRelay(RELAY_2, ON);
+    BSP_setRelay(RELAY_1, OFF);
+    
+    return FLUXO_DE_SUCESSO;
+}
+int8_t aguardaFechamentoPortao2(void){
+    
+    BSP_setRelay(RELAY_2, OFF);
+    BSP_setRelay(RELAY_1, OFF);
+    
+    if( !BSP_readDigitalInput(INPUT_2) ){
+        return FLUXO_DE_SUCESSO;
+    }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }
+    
+    return FLUXO_DE_SUCESSO;
+}
+int8_t registraEventoEntrada(void){return FLUXO_DE_SUCESSO;}
+int8_t registraEventoSaida(void){return FLUXO_DE_SUCESSO;}
+int8_t fim(void){return FLUXO_DE_SUCESSO;}
+
+Maquina maqMovimentoEntrada[20] = {
+                                    [LER_ANTENA]                            = { (uint16_t*)ler_antena,                      200, {VERIFICAR_TAG_VALIDA,FIM}                                 },
+                                    [VERIFICAR_TAG_VALIDA]                  = { (uint16_t*)verificarTagValida,              200, {VERIFICAR_TAG_PRESENTE_NA_GREENLIST,FIM}                  },
+                                    [VERIFICAR_TAG_PRESENTE_NA_GREENLIST]   = { (uint16_t*)verificarTagPresenteNaGreenList, 200, {ABRIR_PORTAO1_DESLIGA_PORTAO2,FIM}                        },
+                                    [ABRIR_PORTAO1_DESLIGA_PORTAO2]         = { (uint16_t*)abrirPortao1DesligarPortao2,     200, {AGUARDA_FECHAMENTO_PORTAO1,FIM}                           },
+                                    [AGUARDA_FECHAMENTO_PORTAO1]            = { (uint16_t*)aguardaFechamentoPortao1,        200, {ABRIR_PORTAO2_DESLIGA_PORTAO1,AGUARDA_FECHAMENTO_PORTAO1} },
+                                    [ABRIR_PORTAO2_DESLIGA_PORTAO1]         = { (uint16_t*)abrirPortao2DesligarPortao1,     200, {AGUARDA_FECHAMENTO_PORTAO2,FIM}                           },
+                                    [AGUARDA_FECHAMENTO_PORTAO2]            = { (uint16_t*)aguardaFechamentoPortao2,        200, {REGISTRA_EVENTO,AGUARDA_FECHAMENTO_PORTAO2}               },
+                                    [REGISTRA_EVENTO]                       = { (uint16_t*)registraEventoEntrada,           200, {LER_ANTENA,FIM}                                           }, 
+                                    [FIM]                                   = { (uint16_t*)fim,                             200, {LER_ANTENA,LER_ANTENA}                                    },
+                                  };
+
+uint16_t delayLogicaDeEntrada = 0;
+
+uint16_t estadoAtual = LER_ANTENA;
+
+uint16_t fluxoMaqEntrada = FLUXO_DE_SUCESSO;
+
+void logicaDeMovimentoDeEntrada(void){
+        
+    if( delayLogicaDeEntrada == 0){
+        fluxoMaqEntrada = FLUXO_DE_SUCESSO;   
+        functionPointer = (int8_t(*)(void)) maqMovimentoEntrada[estadoAtual].action;
+        delayLogicaDeEntrada = tick_getTimerCounter_ms() + maqMovimentoEntrada[estadoAtual].wait_ms;
+    }
+    
+    if( delayLogicaDeEntrada > tick_getTimerCounter_ms() )
+    {
+       if( (*functionPointer)() == FLUXO_DE_SUCESSO){
+           fluxoMaqEntrada = FLUXO_DE_SUCESSO;
+       }
+       else{
+           fluxoMaqEntrada = FLUXO_DE_INSUCESSO;
+       }
+    }
+    else{
+        delayLogicaDeEntrada = 0;
+        estadoAtual = maqMovimentoEntrada[estadoAtual].next[fluxoMaqEntrada];
+    }
+    
+//   
+//    EPC_Estacionamento epc;
+//            
+//    // Start
+//    
+//        int i;
+//
+//        for( i = 0; i < MAXTAG; i++){
+//            
+//            if( verificaTagValida( tags_[i].epc ) ){ // Tag veicular valida?
+//                
+//                epc.byte1 = tags_[i].epc[2];
+//                epc.byte2 = tags_[i].epc[1];
+//                
+//                if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epc)){ // Veiculo esta na lista?
+//                    
+//                    while(1);
+//                    
+//                }
+//            }                    
+//        }            
+//    }
+    
 }
 
 int main(void){
-    
-    uint8_t num_of_tags;
-    
+            
     SYSTEM_Initialize();
     
     marsOne_init();         
@@ -164,6 +306,8 @@ int main(void){
     inicializaMaquinaDeEstados_KeepAlive(); 
                     
     while(1){
+        
+        // Logica implementada considerando uma gaiola com clausura
         
         logicaDeMovimentoDeEntrada();
         
