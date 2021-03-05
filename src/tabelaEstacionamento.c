@@ -104,7 +104,7 @@ static __prog__ uint8_t memoriaFlash_Page2[FLASH_ERASE_PAGE_SIZE_IN_PC_UNITS] __
         flash_storage_address_page2 = FLASH_GetErasePageAddress((uint32_t)&memoriaFlash_Page2[0]);
 
         // read the data to verify the data
-        for( i = 0; i < listaDeVeiculosLiberados.ponteiroTabela; i++ ){
+        for( i = 0; i < NUMERO_MAXIMO_DE_REGISTROS_DA_TABELA_DE_ESTACIONAMENTO; i++ ){
 
             if( i < 512 ){
                 readEPC.tag = FLASH_ReadWord16( flash_storage_address_page1 + i * 2U );
