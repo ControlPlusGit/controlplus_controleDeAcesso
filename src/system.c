@@ -28,6 +28,8 @@
 #include "BSP/pin_manager.h"
 
 uint16_t globalCounter_ms = 0;
+uint16_t globalCounter_seg = 0;
+uint16_t globalCounter_min = 0;
 
 void EX_INT1_CallBack(void){
      as3993Isr();
@@ -36,7 +38,25 @@ void EX_INT1_CallBack(void){
 volatile void tick ( void ){   
     
     globalCounter_ms++;
-        
+    
+    if(globalCounter_ms > 1000){        
+        if(globalCounter_seg >= 60){
+            globalCounter_seg = 0;
+        }      
+        else{
+            globalCounter_seg++;
+        }
+    }
+    
+    if(globalCounter_seg >= 60){
+        if(globalCounter_min >= 60){
+            globalCounter_min = 0;
+        }      
+        else{
+            globalCounter_min++;
+        }
+    }   
+            
     executaMaquinaDeEstados_ESP8266();    
     executaMaquinaDeEstados_TabelaDeEstacionamento();
     commandHandlerPortaUSB();
@@ -44,8 +64,16 @@ volatile void tick ( void ){
     executaMaquinaDeEstados_KeepAlive();
 }
 
-uint16_t tick_getTimerCounter(void){
+uint16_t tick_getTimerCounter_ms(void){
     return globalCounter_ms;
+}
+
+uint16_t tick_getTimerCounter_seg(void){
+    return globalCounter_seg;
+}
+
+uint16_t tick_getTimerCounter_min(void){
+    return globalCounter_min;
 }
 
 void AS3993_Init(void){

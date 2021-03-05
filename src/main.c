@@ -76,7 +76,6 @@ void marsOne_init(void){
     BSP_RS485_setDirection(RS485_INPUT);        
 }
 
-
 int8_t obtemDadosDaMemoriaFLASH(void){
     obtemListaDeVeiculosLiberados();
     return 0;
@@ -102,6 +101,9 @@ int8_t verificaTagValida(uint8_t *tag){
                 tag++;
             }
         }
+    }
+    else{
+        return -1;
     }
     
     tag = p;

@@ -37,7 +37,11 @@
  */
 void SYSTEM_Initialize(void);
 
-uint16_t tick_getTimerCounter(void);
+uint16_t tick_getTimerCounter_ms(void);
+
+uint16_t tick_getTimerCounter_seg(void);
+
+uint16_t tick_getTimerCounter_min(void);
 
 #endif	/* SYSTEM_H */
 /**
