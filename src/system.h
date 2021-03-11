@@ -35,6 +35,15 @@
  * @Example
     SYSTEM_Initialize(void);
  */
+
+extern uint16_t delayLogicaDeSaida;
+extern uint8_t flagIniciarContadorDelayEntrada;
+extern uint8_t flagIniciarContadorDelaySaida;
+
+extern uint16_t delayLogicaDeEntrada;
+extern uint8_t flagDelayEntradaCompleto;
+extern uint8_t flagDelaySaidaCompleto;
+
 void SYSTEM_Initialize(void);
 
 uint16_t tick_getTimerCounter_ms(void);

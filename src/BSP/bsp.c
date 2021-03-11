@@ -205,7 +205,7 @@ uint8_t BSP_readDigitalInput(uint8_t num_input){
     switch(num_input){
         case INPUT_1:
             if(OPTO1_GetValue()){
-                delay_ms(20);
+                delay_ms(100);
                 if(OPTO1_GetValue()){
                     return OPTO1_GetValue();
                 }
@@ -213,7 +213,7 @@ uint8_t BSP_readDigitalInput(uint8_t num_input){
             break;
         case INPUT_2:
             if(OPTO2_GetValue()){
-                delay_ms(20);
+                delay_ms(100);
                 if(OPTO2_GetValue()){
                     return OPTO2_GetValue();
                 }
@@ -223,6 +223,7 @@ uint8_t BSP_readDigitalInput(uint8_t num_input){
             return 0;
             break;
     }
+    return 0;
 }
 
 void BSP_RS485_setDirection(uint8_t direction) {
