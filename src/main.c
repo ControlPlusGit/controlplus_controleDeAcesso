@@ -161,9 +161,6 @@ EPC_Estacionamento epcLido;
 #define MOVIMENTO_ENTRADA 1
 #define MOVIMENTO_SAIDA 0
 
-uint8_t movimentoSendoRealizado_Entrada = NAO;
-uint8_t movimentoSendoRealizado_Saida = NAO;
-
 #define SAIDA_PORTAO_ENTRADA RELAY_1
 #define SAIDA_ALARME_PORTAO_ENTRADA RELAY_3
 #define ENTRADA_SENSOR_FECHAMENTO_PORTAO_ENTRADA INPUT_1
@@ -174,40 +171,22 @@ uint8_t movimentoSendoRealizado_Saida = NAO;
 #define ENTRADA_SENSOR_FECHAMENTO_PORTAO_SAIDA INPUT_2
 #define ENTRADA_SENSOR_BARREIRA_PORTAO_SAIDA INPUT_4
 
-uint8_t numTagsLidas = 0;
+uint8_t movimentoSendoRealizado_Entrada = NAO;
+uint8_t movimentoSendoRealizado_Saida = NAO;
+
+uint8_t num_of_tags = 0; 
+
+uint8_t numQuebrasBarreiraEntrada = 0;
+uint8_t bordaSubidaBarreiraEntrada = 0;
+
+uint8_t numQuebrasBarreiraSaida = 0;
+uint8_t bordaSubidaBarreiraSaida = 0;
 
 int8_t adicionaNovaTagNaLista(TabelaDeEpcDeEstacionamento *lista, EPC_Estacionamento tag){
     if(!buscarRegistroNaTabelaDeEpcDeEstacionamentoDesordenada(lista, tag)){
         adicionarRegistroNaTabelaDeEpcDeEstacionamento(lista, tag);
     }
     return 0;
-}
-
-uint8_t num_of_tags = 0; 
-
-int8_t ler_antena(void){
-            
-    num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
-    
-    if(num_of_tags > 0){        
-        movimentoSendoRealizado_Entrada = SIM;        
-        return FLUXO_DE_SUCESSO;
-    }
-    else{
-        return FLUXO_DE_INSUCESSO;
-    }   
-}
-int8_t ler_antena_saida(void){ 
-            
-    num_of_tags = realizaLeituraDeAntena(ANTENNA_2);   
-    
-    if(num_of_tags > 0){
-        movimentoSendoRealizado_Saida = SIM;
-        return FLUXO_DE_SUCESSO;
-    }
-    else{
-        return FLUXO_DE_INSUCESSO;
-    }   
 }
 int8_t ler_antena_durante_movimento(uint8_t movimento){    
     switch(movimento){
@@ -233,6 +212,62 @@ int8_t ler_antena_durante_movimento(uint8_t movimento){
             break;
     }
     return FLUXO_DE_SUCESSO;
+}
+int8_t detectar_quebra_de_barreira(uint8_t movimento){
+    switch(movimento){
+        case MOVIMENTO_ENTRADA:
+                if(movimentoSendoRealizado_Entrada){
+                    if(!BSP_readDigitalInput(ENTRADA_SENSOR_BARREIRA_PORTAO_ENTRADA) && !bordaSubidaBarreiraEntrada){
+                        bordaSubidaBarreiraEntrada = 1;
+                        numQuebrasBarreiraEntrada++;                                                
+                    }
+                    else{
+                        if(BSP_readDigitalInput(ENTRADA_SENSOR_BARREIRA_PORTAO_ENTRADA) && bordaSubidaBarreiraEntrada){
+                            bordaSubidaBarreiraEntrada = 0;
+                        }
+                    }
+                }
+            break;
+        case MOVIMENTO_SAIDA:
+                if(movimentoSendoRealizado_Saida){
+                    if(!BSP_readDigitalInput(ENTRADA_SENSOR_BARREIRA_PORTAO_SAIDA) && !bordaSubidaBarreiraSaida){
+                        bordaSubidaBarreiraSaida = 1;
+                        numQuebrasBarreiraSaida++;                                                
+                    }
+                    else{
+                        if(BSP_readDigitalInput(ENTRADA_SENSOR_BARREIRA_PORTAO_SAIDA) && bordaSubidaBarreiraSaida){
+                            bordaSubidaBarreiraSaida = 0;
+                        }
+                    }
+                }   
+            break;
+    }
+    return FLUXO_DE_SUCESSO;
+}
+
+int8_t ler_antena(void){
+            
+    num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
+    
+    if(num_of_tags > 0){        
+        movimentoSendoRealizado_Entrada = SIM;        
+        return FLUXO_DE_SUCESSO;
+    }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }   
+}
+int8_t ler_antena_saida(void){ 
+            
+    num_of_tags = realizaLeituraDeAntena(ANTENNA_2);   
+    
+    if(num_of_tags > 0){
+        movimentoSendoRealizado_Saida = SIM;
+        return FLUXO_DE_SUCESSO;
+    }
+    else{
+        return FLUXO_DE_INSUCESSO;
+    }   
 }
 int8_t verificarTagValida(void){
     int i;
@@ -274,6 +309,8 @@ int8_t aguardaFechamentoPortao1(void){
     
     ler_antena_durante_movimento(MOVIMENTO_ENTRADA);
     
+    detectar_quebra_de_barreira(MOVIMENTO_ENTRADA);
+    
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
     BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
     
@@ -285,6 +322,24 @@ int8_t aguardaFechamentoPortao1(void){
     }
 }
 int8_t abrirPortao2DesligarPortao1(void){
+    int i;
+    int quantTagsLidas = 0;
+    
+    if(movimentoSendoRealizado_Entrada){
+        quantTagsLidas = listaDeVeiculosLidosDuranteMovimento.ponteiroTabela;
+        if(numQuebrasBarreiraEntrada <= quantTagsLidas){
+            if(numQuebrasBarreiraEntrada == quantTagsLidas){
+                
+            }
+            else{
+                for(i = numQuebrasBarreiraEntrada; i < quantTagsLidas; i++){
+                    listaDeVeiculosLidosDuranteMovimento.epc[i].tag = 0; 
+                    listaDeVeiculosLidosDuranteMovimento.ponteiroTabela--;                    
+                }  
+                listaDeVeiculosLidosDuranteMovimento.ponteiroTabela++; 
+            }                     
+        }
+    }
     
     BSP_setRelay(SAIDA_PORTAO_SAIDA, ON);
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
@@ -294,6 +349,8 @@ int8_t abrirPortao2DesligarPortao1(void){
 int8_t aguardaFechamentoPortao2(void){
     
     ler_antena_durante_movimento(MOVIMENTO_SAIDA);
+    
+    detectar_quebra_de_barreira(MOVIMENTO_SAIDA);
     
     BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
@@ -314,7 +371,9 @@ int8_t registraEventoSaida(void){
     return FLUXO_DE_SUCESSO;
 }
 int8_t fim(void){
-    numTagsLidas = 0; 
+    num_of_tags = 0; 
+    numQuebrasBarreiraEntrada = 0;
+    numQuebrasBarreiraSaida = 0;
     removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento);
     movimentoSendoRealizado_Entrada = NAO; 
     movimentoSendoRealizado_Saida = NAO; 
