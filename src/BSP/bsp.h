@@ -329,6 +329,8 @@
     typedef enum {
     INPUT_1 = 1,
     INPUT_2,
+    INPUT_3,
+    INPUT_4,
     NUM_MAX_INPUTS
     }BSP_OnboardDigitalInputs;
 

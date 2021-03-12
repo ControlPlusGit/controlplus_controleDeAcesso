@@ -115,10 +115,14 @@ void PIN_MANAGER_Initialize (void){
     _TRISF4 = 0;
     _TRISD14 = 0;
 
-    _ANSG7 = 0;       //OPTO1 ANALOG DISABLE
-    _ANSG6 = 0;       //OPTO2 ANALOG DISABLE
-    _TRISG6 = 1;      //OPTO1 INPUT
-    _TRISG7 = 1;      //OPTO2 INPUT
+    _ANSG7   = 0;      //OPTO1 ANALOG DISABLE
+    _ANSG6   = 0;      //OPTO2 ANALOG DISABLE
+    _ANSB5   = 0;      //OPTO3 ANALOG DISABLE
+    _ANSC13  = 0;      //OPTO4 ANALOG DISABLE
+    _TRISG6  = 1;      //OPTO1 INPUT
+    _TRISG7  = 1;      //OPTO2 INPUT
+    _TRISB5  = 1;      //OPTO3 INPUT
+    _TRISC13 = 1;      //OPTO4 INPUT
 
     _TRISG13 = 0;     //saida DIR
 

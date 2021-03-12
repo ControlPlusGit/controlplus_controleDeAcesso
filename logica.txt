@@ -1,0 +1,27 @@
+lê antena de entrada
+	encontrou tag válida?
+		SIM
+			tag está na lista?
+				SIM
+					aciona o portão 1
+					aguarda
+					enquanto portão 1 não fechar, aguarda
+					aciona o portão 2
+					aguarda
+					enquanto portão 2 não fechar, aguarda
+					registra evento
+				NAO
+					não faz nada
+		NAO
+			não faz nada
+lê antena de saída
+	encontrou tag válida?
+		sim
+			aciona portão 2
+			aguarda
+			enquanto portão 2 não fechar, aguarda
+			aciona o portão 1
+			aguarda
+			enquanto portão 1 não fechar, aguarda
+			registra evento
+		

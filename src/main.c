@@ -142,6 +142,17 @@ EPC_Estacionamento epcSaida;
 uint8_t movimentoSendoRealizado_Entrada = NAO;
 uint8_t movimentoSendoRealizado_Saida = NAO;
 
+#define SAIDA_PORTAO_ENTRADA RELAY_1
+#define SAIDA_ALARME_PORTAO_ENTRADA RELAY_3
+#define ENTRADA_SENSOR_FECHAMENTO_PORTAO_ENTRADA INPUT_1
+#define ENTRADA_SENSOR_BARREIRA_PORTAO_ENTRADA INPUT_3
+
+#define SAIDA_PORTAO_SAIDA RELAY_2
+#define SAIDA_ALARME_PORTAO_SAIDA RELAY_4
+#define ENTRADA_SENSOR_FECHAMENTO_PORTAO_SAIDA INPUT_2
+#define ENTRADA_SENSOR_BARREIRA_PORTAO_SAIDA INPUT_4
+
+
 int8_t ler_antena(void){
     
     uint8_t num_of_tags = 0;    
@@ -198,17 +209,17 @@ int8_t verificarTagPresenteNaGreenList(void){
 }
 int8_t abrirPortao1DesligarPortao2(void){
     
-    BSP_setRelay(RELAY_1, ON);
-    BSP_setRelay(RELAY_2, OFF);
+    BSP_setRelay(SAIDA_PORTAO_ENTRADA, ON);
+    BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
     
     return FLUXO_DE_SUCESSO;
 }
 int8_t aguardaFechamentoPortao1(void){
     
-    BSP_setRelay(RELAY_1, OFF);
-    BSP_setRelay(RELAY_2, OFF);
+    BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
+    BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
     
-    if( !BSP_readDigitalInput(INPUT_1) ){
+    if( !BSP_readDigitalInput(ENTRADA_SENSOR_FECHAMENTO_PORTAO_ENTRADA) ){
         return FLUXO_DE_SUCESSO;
     }
     else{
@@ -217,17 +228,17 @@ int8_t aguardaFechamentoPortao1(void){
 }
 int8_t abrirPortao2DesligarPortao1(void){
     
-    BSP_setRelay(RELAY_2, ON);
-    BSP_setRelay(RELAY_1, OFF);
+    BSP_setRelay(SAIDA_PORTAO_SAIDA, ON);
+    BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
     
     return FLUXO_DE_SUCESSO;
 }
 int8_t aguardaFechamentoPortao2(void){
     
-    BSP_setRelay(RELAY_2, OFF);
-    BSP_setRelay(RELAY_1, OFF);
+    BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
+    BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
     
-    if( !BSP_readDigitalInput(INPUT_2) ){
+    if( !BSP_readDigitalInput(ENTRADA_SENSOR_FECHAMENTO_PORTAO_SAIDA) ){
         return FLUXO_DE_SUCESSO;
     }
     else{

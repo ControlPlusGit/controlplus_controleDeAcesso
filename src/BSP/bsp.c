@@ -219,6 +219,22 @@ uint8_t BSP_readDigitalInput(uint8_t num_input){
                 }
             }  
             break;
+        case INPUT_3:
+            if(OPTO1_GetValue()){
+                delay_ms(100);
+                if(OPTO1_GetValue()){
+                    return OPTO1_GetValue();
+                }
+            }                
+            break;
+        case INPUT_4:
+            if(OPTO2_GetValue()){
+                delay_ms(100);
+                if(OPTO2_GetValue()){
+                    return OPTO2_GetValue();
+                }
+            }  
+            break;
         default:
             return 0;
             break;
