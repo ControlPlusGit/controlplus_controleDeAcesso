@@ -42,6 +42,10 @@ extern "C" {
     
     int buscarRegistroNaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *tabela, EPC_Estacionamento _epc);
     
+    int buscarRegistroNaTabelaDeEpcDeEstacionamentoDesordenada(TabelaDeEpcDeEstacionamento *tabela, EPC_Estacionamento _epc);
+    
+    int removerRegistroNaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *tabela, EPC_Estacionamento _epc);
+    
     void zeraPointeiroDaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *tabela);
     
     void testTabelaDeEPC_should_IncludeSearchExclude(void);

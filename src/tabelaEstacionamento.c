@@ -51,6 +51,44 @@ static __prog__ uint8_t memoriaFlash_Page2[FLASH_ERASE_PAGE_SIZE_IN_PC_UNITS] __
         else{
             return 0;
         }
+    }   
+    
+    int buscarRegistroNaTabelaDeEpcDeEstacionamentoDesordenada(TabelaDeEpcDeEstacionamento *tabela, EPC_Estacionamento _epc){
+        int i=0;
+        
+        if(tabela != 0 && _epc.tag != 0){            
+            for(i = 0; i < tabela->ponteiroTabela; i++){
+                if(tabela->epc[i].tag == _epc.tag)
+                {
+                    return 1;
+                }
+            }                    
+        }
+        else{
+            return 0;
+        }
+        return 0;
+    }
+    
+    int removerRegistroNaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *tabela, EPC_Estacionamento _epc){
+        int i=0,j=0;
+        
+        if(tabela != 0 && _epc.tag != 0){            
+            for(i = 0; i < tabela->ponteiroTabela; i++){
+                if(tabela->epc[i].tag == _epc.tag)
+                {
+                    tabela->epc[i].tag = 0;
+                    for(j = i; j < tabela->ponteiroTabela-1; j++){
+                        tabela->epc[j].tag = tabela->epc[j+1].tag;
+                    }
+                    tabela->ponteiroTabela--;
+                }
+            }                    
+        }
+        else{
+            return 0;
+        }
+        return 0;
     }
     
     int binarySearchNaTabelaDeEpcDeEstacionamento(TabelaDeEpcDeEstacionamento *arr, int l, int r, long _epc){ 

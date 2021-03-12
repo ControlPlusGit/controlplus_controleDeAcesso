@@ -36,8 +36,9 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
 /////////////////////////////////////////////
 // Green list criada a partir de tabelaEstacionamento.h
 /////////////////////////////////////////////
-    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
-    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberadosTest;
+    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;     // lista principal ordenada com as tags lidas
+    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberadosTest; // utilizada para check na gravacao de dados na flash
+    TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLidosDuranteMovimento; // lista desordenada com as tags em movimento
     
 /////////////////////////////////////////////
 // RTC DS1307 library variables
@@ -54,7 +55,25 @@ _CONFIG3(WPFP_WPFP0 & SOSCSEL_LPSOSC & WUTSEL_LEG & ALTPMP_ALPMPDIS & WPDIS_WPDI
     // Para leitura e escrita na eeprom, usar linhas abaixo  
     //EEPROM_24LC256_I2C_write_uchar(0,200,0x55);
     //EEPROM_24LC256_I2C_read_uchar(0,200,&var);
-   
+
+void marsOne_init(void);
+uint8_t realizaLeituraDeAntena(uint8_t antena);
+int8_t obtemDadosDaMemoriaFLASH(void);
+int8_t verificaTagValida(uint8_t *tag);
+int8_t ler_antena(void);
+int8_t ler_antena_saida(void);
+int8_t ler_antena_durante_movimento(uint8_t movimento);
+int8_t verificarTagValida(void);
+int8_t verificarTagPresenteNaGreenList(void);
+int8_t abrirPortao1DesligarPortao2(void);
+int8_t aguardaFechamentoPortao1(void);
+int8_t abrirPortao2DesligarPortao1(void);
+int8_t aguardaFechamentoPortao2(void);
+int8_t registraEventoEntrada(void);
+int8_t registraEventoSaida(void);
+int8_t fim(void);
+    
+    
 void marsOne_init(void){
         
     ////////////////////////////////////////////////////////
@@ -92,7 +111,7 @@ int8_t verificaTagValida(uint8_t *tag){
     
     if( *tag == 0x30 ){
         tag += 3;
-        for( i = 3; i < MAXTAG-1; i++){            
+        for( i = 3; i < EPCLENGTH-1; i++){            
             if( *tag != 0x00 )
             {
                 return -1;
@@ -116,6 +135,7 @@ int8_t verificaTagValida(uint8_t *tag){
 
 int8_t (*functionPointerEntrada)(void);
 int8_t (*functionPointerSaida)(void);
+
 typedef struct{
     uint16_t *action;
     uint16_t wait_ms;
@@ -136,8 +156,10 @@ enum{
     FIM,
 }app_states;
 
-EPC_Estacionamento epcEntrada;
-EPC_Estacionamento epcSaida;
+EPC_Estacionamento epcLido;
+
+#define MOVIMENTO_ENTRADA 1
+#define MOVIMENTO_SAIDA 0
 
 uint8_t movimentoSendoRealizado_Entrada = NAO;
 uint8_t movimentoSendoRealizado_Saida = NAO;
@@ -152,25 +174,30 @@ uint8_t movimentoSendoRealizado_Saida = NAO;
 #define ENTRADA_SENSOR_FECHAMENTO_PORTAO_SAIDA INPUT_2
 #define ENTRADA_SENSOR_BARREIRA_PORTAO_SAIDA INPUT_4
 
+uint8_t numTagsLidas = 0;
+
+int8_t adicionaNovaTagNaLista(TabelaDeEpcDeEstacionamento *lista, EPC_Estacionamento tag){
+    if(!buscarRegistroNaTabelaDeEpcDeEstacionamentoDesordenada(lista, tag)){
+        adicionarRegistroNaTabelaDeEpcDeEstacionamento(lista, tag);
+    }
+    return 0;
+}
+
+uint8_t num_of_tags = 0; 
 
 int8_t ler_antena(void){
-    
-    uint8_t num_of_tags = 0;    
             
     num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
     
-    if(num_of_tags > 0){
-        movimentoSendoRealizado_Entrada = SIM;
+    if(num_of_tags > 0){        
+        movimentoSendoRealizado_Entrada = SIM;        
         return FLUXO_DE_SUCESSO;
     }
     else{
         return FLUXO_DE_INSUCESSO;
     }   
 }
-
-int8_t ler_antena_saida(void){
-    
-    uint8_t num_of_tags = 0;    
+int8_t ler_antena_saida(void){ 
             
     num_of_tags = realizaLeituraDeAntena(ANTENNA_2);   
     
@@ -182,32 +209,61 @@ int8_t ler_antena_saida(void){
         return FLUXO_DE_INSUCESSO;
     }   
 }
+int8_t ler_antena_durante_movimento(uint8_t movimento){    
+    switch(movimento){
+        case MOVIMENTO_ENTRADA:
+                if(movimentoSendoRealizado_Entrada){
+                    if(!ler_antena()){
+                        if(!verificarTagValida()){
+                            if(!verificarTagPresenteNaGreenList()){
 
+                            }
+                        }
+                    }        
+                }
+            break;
+        case MOVIMENTO_SAIDA:
+                if(movimentoSendoRealizado_Saida){
+                    if(!ler_antena_saida()){
+                        if(!verificarTagValida()){
+
+                        }
+                    }
+                }   
+            break;
+    }
+    return FLUXO_DE_SUCESSO;
+}
 int8_t verificarTagValida(void){
     int i;
+    uint8_t resultado;
+    
+    for( i = 0; i < num_of_tags; i++){
 
-    for( i = 0; i < MAXTAG; i++){
-
-        if( verificaTagValida( tags_[i].epc ) ){ // Tag veicular valida?
-            epcEntrada.byte1 = tags_[i].epc[2];
-            epcEntrada.byte2 = tags_[i].epc[1];
-            return FLUXO_DE_SUCESSO;
+        if( verificaTagValida( tags_[i].epc ) > 0 ){ // Tag veicular valida?
+            epcLido.byte1 = tags_[i].epc[2];
+            epcLido.byte2 = tags_[i].epc[1];
+            adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento,epcLido);
+            resultado = FLUXO_DE_SUCESSO;
         }
         else{
-            return FLUXO_DE_INSUCESSO;
+            resultado = FLUXO_DE_INSUCESSO;
         }        
     }    
+    return resultado;
 }
 int8_t verificarTagPresenteNaGreenList(void){
     
-    if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcEntrada)){ // Veiculo esta na lista?    
+    if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)){ // Veiculo esta na lista?  
+        adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento,epcLido);
         return FLUXO_DE_SUCESSO;    
     }
     else{
+        removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento,epcLido);
         return FLUXO_DE_INSUCESSO;
     }
 }
-int8_t abrirPortao1DesligarPortao2(void){
+int8_t abrirPortao1DesligarPortao2(void){    
     
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, ON);
     BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
@@ -215,6 +271,8 @@ int8_t abrirPortao1DesligarPortao2(void){
     return FLUXO_DE_SUCESSO;
 }
 int8_t aguardaFechamentoPortao1(void){
+    
+    ler_antena_durante_movimento(MOVIMENTO_ENTRADA);
     
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
     BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
@@ -235,6 +293,8 @@ int8_t abrirPortao2DesligarPortao1(void){
 }
 int8_t aguardaFechamentoPortao2(void){
     
+    ler_antena_durante_movimento(MOVIMENTO_SAIDA);
+    
     BSP_setRelay(SAIDA_PORTAO_SAIDA, OFF);
     BSP_setRelay(SAIDA_PORTAO_ENTRADA, OFF);
     
@@ -247,9 +307,19 @@ int8_t aguardaFechamentoPortao2(void){
     
     return FLUXO_DE_SUCESSO;
 }
-int8_t registraEventoEntrada(void){return FLUXO_DE_SUCESSO;}
-int8_t registraEventoSaida(void){return FLUXO_DE_SUCESSO;}
-int8_t fim(void){movimentoSendoRealizado_Entrada = NAO; movimentoSendoRealizado_Saida = NAO; return FLUXO_DE_SUCESSO;}
+int8_t registraEventoEntrada(void){
+    return FLUXO_DE_SUCESSO;
+}
+int8_t registraEventoSaida(void){
+    return FLUXO_DE_SUCESSO;
+}
+int8_t fim(void){
+    numTagsLidas = 0; 
+    removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento);
+    movimentoSendoRealizado_Entrada = NAO; 
+    movimentoSendoRealizado_Saida = NAO; 
+    return FLUXO_DE_SUCESSO;
+}
 
 Maquina maqMovimentoEntrada[20] = {
                                     [LER_ANTENA]                            = { (uint16_t*)ler_antena,                      10, {VERIFICAR_TAG_VALIDA,FIM}                                },
