@@ -223,7 +223,7 @@ void PIN_MANAGER_Initialize (void){
     _TRISF8 = 0;//NCS
     _TRISC13 = 1;// O NET GP1 esta nesse pino tambem e o deixo como entrada para nao influenciar na operacao
     _TRISB4 = 0;//                          ALTERAR!!!!
-    _TRISB5 = 0;
+   // _TRISB5 = 0;
     _TRISB2 = 0;
     _TRISB6 = 0;
     _TRISB14 = 1;// IRQ

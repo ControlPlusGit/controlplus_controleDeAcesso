@@ -204,34 +204,34 @@ void BSP_setLed(uint8_t numLed, uint8_t state){
 uint8_t BSP_readDigitalInput(uint8_t num_input){
     switch(num_input){
         case INPUT_1:
-            if(OPTO1_GetValue()){
+            if(!OPTO1_GetValue()){
                 delay_ms(100);
-                if(OPTO1_GetValue()){
-                    return OPTO1_GetValue();
+                if(!OPTO1_GetValue()){
+                    return 1;
                 }
             }                
             break;
         case INPUT_2:
-            if(OPTO2_GetValue()){
+            if(!OPTO2_GetValue()){
                 delay_ms(100);
-                if(OPTO2_GetValue()){
-                    return OPTO2_GetValue();
+                if(!OPTO2_GetValue()){
+                    return 1;
                 }
             }  
             break;
         case INPUT_3:
-            if(OPTO1_GetValue()){
+            if(!OPTO3_GetValue()){
                 delay_ms(100);
-                if(OPTO1_GetValue()){
-                    return OPTO1_GetValue();
+                if(!OPTO3_GetValue()){
+                    return 1;
                 }
             }                
             break;
         case INPUT_4:
-            if(OPTO2_GetValue()){
+            if(!OPTO4_GetValue()){
                 delay_ms(100);
-                if(OPTO2_GetValue()){
-                    return OPTO2_GetValue();
+                if(!OPTO4_GetValue()){
+                    return 1;
                 }
             }  
             break;

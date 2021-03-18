@@ -43,6 +43,14 @@ uint16_t delayLogicaDeEntrada = 0;
 uint8_t flagIniciarContadorDelayEntrada = NAO;
 uint8_t flagDelayEntradaCompleto = NAO;
 
+uint16_t timerSaida1 = 0;
+uint8_t flagIniciarContadorTimerSaida1 = NAO;
+uint8_t flagDelayTimerSaida1Completo = NAO;
+
+uint16_t timerSaida2 = 0;
+uint8_t flagIniciarContadorTimerSaida2 = NAO;
+uint8_t flagDelayTimerSaida2Completo = NAO;
+
 volatile void tick ( void ){   
     
     globalCounter_ms++;
@@ -64,6 +72,20 @@ volatile void tick ( void ){
             globalCounter_min++;
         }
     }   
+    
+    if(flagIniciarContadorTimerSaida2 == SIM){
+        if(timerSaida1 == globalCounter_ms){
+            flagIniciarContadorTimerSaida2 = NAO;
+            flagDelayTimerSaida2Completo = SIM;
+        }
+    }
+    
+    if(flagIniciarContadorTimerSaida1 == SIM){
+        if(timerSaida1 == globalCounter_ms){
+            flagIniciarContadorTimerSaida1 = NAO;
+            flagDelayTimerSaida1Completo = SIM;
+        }
+    }
     
     if(flagIniciarContadorDelayEntrada == SIM){
         if(delayLogicaDeEntrada == globalCounter_ms){
