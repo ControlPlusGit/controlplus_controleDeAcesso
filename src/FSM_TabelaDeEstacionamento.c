@@ -20,6 +20,24 @@
 #include "FSM_ESP8266.h"
 #include "FLASH/flash.h"
 
+#define NAO 0
+#define SIM 1
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DEFINE: TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA
+// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// FUNÇÃO: controlar o tempo de execução de cada estado da máquina, aplicando um delay.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #define TEMPO_ENTRE_ESTADOS_FSM_TABELA_DE_ESTACIONAMENTO 10 // MILISEGUNDOS
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DEFINE: TEMPO_AGUARDANDO_ACK
+// UTILIZADA EM: executaMaquinaDeEstados_TabelaDeEstacionamentos
+// FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    //#define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 300000ULL  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_TABELA_DE_EXCLUSAO_FSM_TABELA_DE_ESTACIONAMENTO 10000  // MILISEGUNDOS    
+
 extern TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
 
 enum estadosDaMaquina{

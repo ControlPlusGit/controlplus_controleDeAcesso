@@ -18,6 +18,24 @@
 #include <time.h>
 #include "FSM_ESP8266.h"
 
+#define NAO 0
+#define SIM 1
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DEFINE: TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
+// FUNÇÃO: controlar o tempo de execução de cada estado da máquina, aplicando um delay.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #define TEMPO_ENTRE_ESTADOS_FSM_KEEP_ALIVE 100 // MILISEGUNDOS
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DEFINE: TEMPO_AGUARDANDO_ACK
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
+// FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
+    #define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 2000  // MILISEGUNDOS
+
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
         ENVIAR_KEEP_ALIVE,        

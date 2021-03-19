@@ -36,22 +36,6 @@
     SYSTEM_Initialize(void);
  */
 
-extern uint16_t delayLogicaDeSaida;
-extern uint8_t flagIniciarContadorDelayEntrada;
-extern uint8_t flagIniciarContadorDelaySaida;
-
-extern uint16_t delayLogicaDeEntrada;
-extern uint8_t flagDelayEntradaCompleto;
-extern uint8_t flagDelaySaidaCompleto;
-
-extern uint16_t timerSaida1;
-extern uint8_t flagIniciarContadorTimerSaida1;
-extern uint8_t flagDelayTimerSaida1Completo;
-
-extern uint16_t timerSaida2;
-extern uint8_t flagIniciarContadorTimerSaida2;
-extern uint8_t flagDelayTimerSaida2Completo;
-
 void SYSTEM_Initialize(void);
 
 uint16_t tick_getTimerCounter_ms(void);

@@ -11,14 +11,6 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-#define NAO 0
-#define SIM 1
-    
-#define TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA 1000
-    
-//#define TEMPO_AGUARDANDO_ACK 300000ULL
-#define TEMPO_AGUARDANDO_ACK 5000
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: inicializaMaquinaDeEstados_DataHora

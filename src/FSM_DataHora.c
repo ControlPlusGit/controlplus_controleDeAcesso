@@ -22,6 +22,14 @@
 #include "setup_usb.h"
 #include "RTC/rtc.h"
 
+#define NAO 0
+#define SIM 1
+    
+#define TEMPO_ENTRE_ESTADOS_FSM_DATA_HORA 1000
+    
+//#define TEMPO_AGUARDANDO_ACK 300000ULL
+#define TEMPO_AGUARDANDO_ACK 5000
+
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
         VERIFICA_SE_JA_ATUALIZOU_O_RELOGIO,

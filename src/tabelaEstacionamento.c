@@ -6,6 +6,9 @@
 #include "tabelaEstacionamento.h"
 #include "log.h"
 
+#define SIM 1
+#define NAO 0
+
 extern TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberados;
 extern TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLiberadosTest;
 

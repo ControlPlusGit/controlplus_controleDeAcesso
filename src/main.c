@@ -12,6 +12,7 @@
 #include "setup_usb.h"
 
 #include "system.h"
+#include "clp.h"
 #include "BSP/pin_manager.h"
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
@@ -26,6 +27,7 @@
 #include "FLASH/flash.h"
 #include "RFID/as3993.h"
 #include "RFID/gen2.h"
+#include "clp.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -141,26 +143,58 @@ int8_t adicionaNovaTagNaLista(TabelaDeEpcDeEstacionamento *lista, EPC_Estacionam
     return 0;
 }
 
+uint8_t clpLiberado = 0;
+
+uint32_t duracao = 200;
+TEMPORIZADOR(tmpTeste,duracao)
+
+ENTRADA_DIGITAL(entrada1)
+SAIDA_DIGITAL(saida1)
+
+void executaCLP(void){
+    SEL(BSP_readDigitalInput(INPUT_1))
+    MEMO(entrada1)
+
+    SEL(entrada1)
+    SUBIDA
+    OU (dsp_tmpTeste)  
+    EN (fim_tmpTeste)
+    MEMO(dsp_tmpTeste)
+
+    SEL(fim_tmpTeste)
+    SUBIDA
+    EN(1)
+    MEMO(saida1)
+
+    if(fim_tmpTeste & 0x1){
+        MEMO(saida1)
+    }
+}
+
 int main(void){
             
     SYSTEM_Initialize();
     
-    marsOne_init();         
+    //marsOne_init();         
      
-    obtemDadosDaMemoriaFLASH();
+    //obtemDadosDaMemoriaFLASH();
     
-    obtemParametrosDaMemoriaEEPROM();
+    //obtemParametrosDaMemoriaEEPROM();
     
-    inicializaMaquinaDeEstados_ESP8266();   
+    //inicializaMaquinaDeEstados_ESP8266();   
     
-    inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+    //inicializaMaquinaDeEstados_TabelaDeEstacionamento();
     
-    inicializaMaquinaDeEstados_DataHora();
+    //inicializaMaquinaDeEstados_DataHora();
     
-    inicializaMaquinaDeEstados_KeepAlive(); 
-                    
+    //inicializaMaquinaDeEstados_KeepAlive(); 
+    
+    CADASTRAR_TEMPORIZADOR(timer_tmpTeste)
+            
+    clpLiberado = 1;
+    
     while(1){
-       
+        delay_ms(1000);
     }
     
     return 0;

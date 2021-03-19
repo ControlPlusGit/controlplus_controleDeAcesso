@@ -23,6 +23,25 @@
 #include "RTC/DS1307.h"
 #include "BSP/bsp.h"
 
+#define NAO 0
+#define SIM 1
+
+#define LIGADO 1
+#define DESLIGADO 0
+
+#define CONECTADO 1
+#define DESCONECTADO 0
+
+#define NUM_MAX_ERROS_TIMEOUT 4
+
+#define NUM_MAX_ERROS_MAQUINA_TIMEOUT 2
+
+#define TEMPO_ENTRE_ESTADOS_FSM_ESP8266 100
+
+#define TEMPO_AGUARDANDO_ACK_ESP8266 500
+
+#define TEMPO_AGUARDANDO_ACK_MSG_WIFI_ESP8266 20000
+
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
         VERIFICA_SE_JA_INICIALIZOU,

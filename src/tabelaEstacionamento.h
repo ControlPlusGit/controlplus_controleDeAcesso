@@ -13,9 +13,6 @@ extern "C" {
 #endif
     
 #include <stdint.h>
-
-#define SIM 1
-#define NAO 0
     
 #define NUMERO_MAXIMO_DE_REGISTROS_DA_TABELA_DE_ESTACIONAMENTO 1000
     

@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "system.h"
+#include "clp.h"
 
 #include "uart_driver.h" //REMOVER FUTURAMENTE
 #include "spi1.h"
@@ -26,6 +27,9 @@
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
 #include "BSP/pin_manager.h"
+
+extern void executaCLP(void);
+extern uint8_t clpLiberado;
 
 uint16_t globalCounter_ms = 0;
 uint16_t globalCounter_seg = 0;
@@ -56,6 +60,12 @@ volatile void tick ( void ){
             globalCounter_min++;
         }
     }   
+    
+    // FLUXO DO CLP
+    if(clpLiberado){
+        executaCLP();
+        verificarTemporizadores();
+    }
     
     executaMaquinaDeEstados_ESP8266();    
     executaMaquinaDeEstados_TabelaDeEstacionamento();
