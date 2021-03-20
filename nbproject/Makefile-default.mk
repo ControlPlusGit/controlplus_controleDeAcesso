@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=src/main.c src/system.c src/tabelaEstacionamento.c src/BSP/bsp.c src/BSP/pin_manager.c src/BSP/rfid_bsp.c src/delay.c src/EEPROM/24LC256.c src/EEPROM/eeprom.c src/EXT_INT/ext_int.c src/EXT_INT/interrupt_manager.c src/FLASH/flash.s src/FSM_DataHora.c src/FSM_ESP8266.c src/FSM_Ethernet.c src/FSM_KeepAlive.c src/FSM_TabelaDeEstacionamento.c src/setup_usb.c src/I2C1/i2c1_driver.c src/I2C3/i2c3_driver.c src/log.c src/RFID/as3993.c src/RFID/gen2.c src/RTC/DS1307.c src/RTC/rtc.c src/spi1.c src/tmr2.c src/uart_driver.c src/clp.c
+SOURCEFILES_QUOTED_IF_SPACED=src/main.c src/system.c src/tabelaEstacionamento.c src/BSP/bsp.c src/BSP/pin_manager.c src/BSP/rfid_bsp.c src/clp.c src/delay.c src/EEPROM/24LC256.c src/EEPROM/eeprom.c src/EXT_INT/ext_int.c src/EXT_INT/interrupt_manager.c src/FLASH/flash.s src/FSM_DataHora.c src/FSM_ESP8266.c src/FSM_Ethernet.c src/FSM_KeepAlive.c src/FSM_TabelaDeEstacionamento.c src/setup_usb.c src/I2C1/i2c1_driver.c src/I2C3/i2c3_driver.c src/log.c src/RFID/as3993.c src/RFID/gen2.c src/RTC/DS1307.c src/RTC/rtc.c src/spi1.c src/tmr2.c src/uart_driver.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/main.o ${OBJECTDIR}/src/system.o ${OBJECTDIR}/src/tabelaEstacionamento.o ${OBJECTDIR}/src/BSP/bsp.o ${OBJECTDIR}/src/BSP/pin_manager.o ${OBJECTDIR}/src/BSP/rfid_bsp.o ${OBJECTDIR}/src/delay.o ${OBJECTDIR}/src/EEPROM/24LC256.o ${OBJECTDIR}/src/EEPROM/eeprom.o ${OBJECTDIR}/src/EXT_INT/ext_int.o ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o ${OBJECTDIR}/src/FLASH/flash.o ${OBJECTDIR}/src/FSM_DataHora.o ${OBJECTDIR}/src/FSM_ESP8266.o ${OBJECTDIR}/src/FSM_Ethernet.o ${OBJECTDIR}/src/FSM_KeepAlive.o ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o ${OBJECTDIR}/src/setup_usb.o ${OBJECTDIR}/src/I2C1/i2c1_driver.o ${OBJECTDIR}/src/I2C3/i2c3_driver.o ${OBJECTDIR}/src/log.o ${OBJECTDIR}/src/RFID/as3993.o ${OBJECTDIR}/src/RFID/gen2.o ${OBJECTDIR}/src/RTC/DS1307.o ${OBJECTDIR}/src/RTC/rtc.o ${OBJECTDIR}/src/spi1.o ${OBJECTDIR}/src/tmr2.o ${OBJECTDIR}/src/uart_driver.o ${OBJECTDIR}/src/clp.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/src/main.o.d ${OBJECTDIR}/src/system.o.d ${OBJECTDIR}/src/tabelaEstacionamento.o.d ${OBJECTDIR}/src/BSP/bsp.o.d ${OBJECTDIR}/src/BSP/pin_manager.o.d ${OBJECTDIR}/src/BSP/rfid_bsp.o.d ${OBJECTDIR}/src/delay.o.d ${OBJECTDIR}/src/EEPROM/24LC256.o.d ${OBJECTDIR}/src/EEPROM/eeprom.o.d ${OBJECTDIR}/src/EXT_INT/ext_int.o.d ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o.d ${OBJECTDIR}/src/FLASH/flash.o.d ${OBJECTDIR}/src/FSM_DataHora.o.d ${OBJECTDIR}/src/FSM_ESP8266.o.d ${OBJECTDIR}/src/FSM_Ethernet.o.d ${OBJECTDIR}/src/FSM_KeepAlive.o.d ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o.d ${OBJECTDIR}/src/setup_usb.o.d ${OBJECTDIR}/src/I2C1/i2c1_driver.o.d ${OBJECTDIR}/src/I2C3/i2c3_driver.o.d ${OBJECTDIR}/src/log.o.d ${OBJECTDIR}/src/RFID/as3993.o.d ${OBJECTDIR}/src/RFID/gen2.o.d ${OBJECTDIR}/src/RTC/DS1307.o.d ${OBJECTDIR}/src/RTC/rtc.o.d ${OBJECTDIR}/src/spi1.o.d ${OBJECTDIR}/src/tmr2.o.d ${OBJECTDIR}/src/uart_driver.o.d ${OBJECTDIR}/src/clp.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/src/main.o ${OBJECTDIR}/src/system.o ${OBJECTDIR}/src/tabelaEstacionamento.o ${OBJECTDIR}/src/BSP/bsp.o ${OBJECTDIR}/src/BSP/pin_manager.o ${OBJECTDIR}/src/BSP/rfid_bsp.o ${OBJECTDIR}/src/clp.o ${OBJECTDIR}/src/delay.o ${OBJECTDIR}/src/EEPROM/24LC256.o ${OBJECTDIR}/src/EEPROM/eeprom.o ${OBJECTDIR}/src/EXT_INT/ext_int.o ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o ${OBJECTDIR}/src/FLASH/flash.o ${OBJECTDIR}/src/FSM_DataHora.o ${OBJECTDIR}/src/FSM_ESP8266.o ${OBJECTDIR}/src/FSM_Ethernet.o ${OBJECTDIR}/src/FSM_KeepAlive.o ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o ${OBJECTDIR}/src/setup_usb.o ${OBJECTDIR}/src/I2C1/i2c1_driver.o ${OBJECTDIR}/src/I2C3/i2c3_driver.o ${OBJECTDIR}/src/log.o ${OBJECTDIR}/src/RFID/as3993.o ${OBJECTDIR}/src/RFID/gen2.o ${OBJECTDIR}/src/RTC/DS1307.o ${OBJECTDIR}/src/RTC/rtc.o ${OBJECTDIR}/src/spi1.o ${OBJECTDIR}/src/tmr2.o ${OBJECTDIR}/src/uart_driver.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/src/main.o.d ${OBJECTDIR}/src/system.o.d ${OBJECTDIR}/src/tabelaEstacionamento.o.d ${OBJECTDIR}/src/BSP/bsp.o.d ${OBJECTDIR}/src/BSP/pin_manager.o.d ${OBJECTDIR}/src/BSP/rfid_bsp.o.d ${OBJECTDIR}/src/clp.o.d ${OBJECTDIR}/src/delay.o.d ${OBJECTDIR}/src/EEPROM/24LC256.o.d ${OBJECTDIR}/src/EEPROM/eeprom.o.d ${OBJECTDIR}/src/EXT_INT/ext_int.o.d ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o.d ${OBJECTDIR}/src/FLASH/flash.o.d ${OBJECTDIR}/src/FSM_DataHora.o.d ${OBJECTDIR}/src/FSM_ESP8266.o.d ${OBJECTDIR}/src/FSM_Ethernet.o.d ${OBJECTDIR}/src/FSM_KeepAlive.o.d ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o.d ${OBJECTDIR}/src/setup_usb.o.d ${OBJECTDIR}/src/I2C1/i2c1_driver.o.d ${OBJECTDIR}/src/I2C3/i2c3_driver.o.d ${OBJECTDIR}/src/log.o.d ${OBJECTDIR}/src/RFID/as3993.o.d ${OBJECTDIR}/src/RFID/gen2.o.d ${OBJECTDIR}/src/RTC/DS1307.o.d ${OBJECTDIR}/src/RTC/rtc.o.d ${OBJECTDIR}/src/spi1.o.d ${OBJECTDIR}/src/tmr2.o.d ${OBJECTDIR}/src/uart_driver.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/src/main.o ${OBJECTDIR}/src/system.o ${OBJECTDIR}/src/tabelaEstacionamento.o ${OBJECTDIR}/src/BSP/bsp.o ${OBJECTDIR}/src/BSP/pin_manager.o ${OBJECTDIR}/src/BSP/rfid_bsp.o ${OBJECTDIR}/src/delay.o ${OBJECTDIR}/src/EEPROM/24LC256.o ${OBJECTDIR}/src/EEPROM/eeprom.o ${OBJECTDIR}/src/EXT_INT/ext_int.o ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o ${OBJECTDIR}/src/FLASH/flash.o ${OBJECTDIR}/src/FSM_DataHora.o ${OBJECTDIR}/src/FSM_ESP8266.o ${OBJECTDIR}/src/FSM_Ethernet.o ${OBJECTDIR}/src/FSM_KeepAlive.o ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o ${OBJECTDIR}/src/setup_usb.o ${OBJECTDIR}/src/I2C1/i2c1_driver.o ${OBJECTDIR}/src/I2C3/i2c3_driver.o ${OBJECTDIR}/src/log.o ${OBJECTDIR}/src/RFID/as3993.o ${OBJECTDIR}/src/RFID/gen2.o ${OBJECTDIR}/src/RTC/DS1307.o ${OBJECTDIR}/src/RTC/rtc.o ${OBJECTDIR}/src/spi1.o ${OBJECTDIR}/src/tmr2.o ${OBJECTDIR}/src/uart_driver.o ${OBJECTDIR}/src/clp.o
+OBJECTFILES=${OBJECTDIR}/src/main.o ${OBJECTDIR}/src/system.o ${OBJECTDIR}/src/tabelaEstacionamento.o ${OBJECTDIR}/src/BSP/bsp.o ${OBJECTDIR}/src/BSP/pin_manager.o ${OBJECTDIR}/src/BSP/rfid_bsp.o ${OBJECTDIR}/src/clp.o ${OBJECTDIR}/src/delay.o ${OBJECTDIR}/src/EEPROM/24LC256.o ${OBJECTDIR}/src/EEPROM/eeprom.o ${OBJECTDIR}/src/EXT_INT/ext_int.o ${OBJECTDIR}/src/EXT_INT/interrupt_manager.o ${OBJECTDIR}/src/FLASH/flash.o ${OBJECTDIR}/src/FSM_DataHora.o ${OBJECTDIR}/src/FSM_ESP8266.o ${OBJECTDIR}/src/FSM_Ethernet.o ${OBJECTDIR}/src/FSM_KeepAlive.o ${OBJECTDIR}/src/FSM_TabelaDeEstacionamento.o ${OBJECTDIR}/src/setup_usb.o ${OBJECTDIR}/src/I2C1/i2c1_driver.o ${OBJECTDIR}/src/I2C3/i2c3_driver.o ${OBJECTDIR}/src/log.o ${OBJECTDIR}/src/RFID/as3993.o ${OBJECTDIR}/src/RFID/gen2.o ${OBJECTDIR}/src/RTC/DS1307.o ${OBJECTDIR}/src/RTC/rtc.o ${OBJECTDIR}/src/spi1.o ${OBJECTDIR}/src/tmr2.o ${OBJECTDIR}/src/uart_driver.o
 
 # Source Files
-SOURCEFILES=src/main.c src/system.c src/tabelaEstacionamento.c src/BSP/bsp.c src/BSP/pin_manager.c src/BSP/rfid_bsp.c src/delay.c src/EEPROM/24LC256.c src/EEPROM/eeprom.c src/EXT_INT/ext_int.c src/EXT_INT/interrupt_manager.c src/FLASH/flash.s src/FSM_DataHora.c src/FSM_ESP8266.c src/FSM_Ethernet.c src/FSM_KeepAlive.c src/FSM_TabelaDeEstacionamento.c src/setup_usb.c src/I2C1/i2c1_driver.c src/I2C3/i2c3_driver.c src/log.c src/RFID/as3993.c src/RFID/gen2.c src/RTC/DS1307.c src/RTC/rtc.c src/spi1.c src/tmr2.c src/uart_driver.c src/clp.c
+SOURCEFILES=src/main.c src/system.c src/tabelaEstacionamento.c src/BSP/bsp.c src/BSP/pin_manager.c src/BSP/rfid_bsp.c src/clp.c src/delay.c src/EEPROM/24LC256.c src/EEPROM/eeprom.c src/EXT_INT/ext_int.c src/EXT_INT/interrupt_manager.c src/FLASH/flash.s src/FSM_DataHora.c src/FSM_ESP8266.c src/FSM_Ethernet.c src/FSM_KeepAlive.c src/FSM_TabelaDeEstacionamento.c src/setup_usb.c src/I2C1/i2c1_driver.c src/I2C3/i2c3_driver.c src/log.c src/RFID/as3993.c src/RFID/gen2.c src/RTC/DS1307.c src/RTC/rtc.c src/spi1.c src/tmr2.c src/uart_driver.c
 
 
 
@@ -136,6 +136,13 @@ ${OBJECTDIR}/src/BSP/rfid_bsp.o: src/BSP/rfid_bsp.c  nbproject/Makefile-${CND_CO
 	@${RM} ${OBJECTDIR}/src/BSP/rfid_bsp.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  src/BSP/rfid_bsp.c  -o ${OBJECTDIR}/src/BSP/rfid_bsp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/BSP/rfid_bsp.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
 	@${FIXDEPS} "${OBJECTDIR}/src/BSP/rfid_bsp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/src/clp.o: src/clp.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/src" 
+	@${RM} ${OBJECTDIR}/src/clp.o.d 
+	@${RM} ${OBJECTDIR}/src/clp.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  src/clp.c  -o ${OBJECTDIR}/src/clp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/clp.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
+	@${FIXDEPS} "${OBJECTDIR}/src/clp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/src/delay.o: src/delay.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -284,13 +291,6 @@ ${OBJECTDIR}/src/uart_driver.o: src/uart_driver.c  nbproject/Makefile-${CND_CONF
 	${MP_CC} $(MP_EXTRA_CC_PRE)  src/uart_driver.c  -o ${OBJECTDIR}/src/uart_driver.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/uart_driver.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
 	@${FIXDEPS} "${OBJECTDIR}/src/uart_driver.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/src/clp.o: src/clp.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/clp.o.d 
-	@${RM} ${OBJECTDIR}/src/clp.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  src/clp.c  -o ${OBJECTDIR}/src/clp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/clp.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
-	@${FIXDEPS} "${OBJECTDIR}/src/clp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 else
 ${OBJECTDIR}/src/main.o: src/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -333,6 +333,13 @@ ${OBJECTDIR}/src/BSP/rfid_bsp.o: src/BSP/rfid_bsp.c  nbproject/Makefile-${CND_CO
 	@${RM} ${OBJECTDIR}/src/BSP/rfid_bsp.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  src/BSP/rfid_bsp.c  -o ${OBJECTDIR}/src/BSP/rfid_bsp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/BSP/rfid_bsp.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
 	@${FIXDEPS} "${OBJECTDIR}/src/BSP/rfid_bsp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/src/clp.o: src/clp.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/src" 
+	@${RM} ${OBJECTDIR}/src/clp.o.d 
+	@${RM} ${OBJECTDIR}/src/clp.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  src/clp.c  -o ${OBJECTDIR}/src/clp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/clp.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
+	@${FIXDEPS} "${OBJECTDIR}/src/clp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/src/delay.o: src/delay.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/src" 
@@ -480,13 +487,6 @@ ${OBJECTDIR}/src/uart_driver.o: src/uart_driver.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/src/uart_driver.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  src/uart_driver.c  -o ${OBJECTDIR}/src/uart_driver.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/uart_driver.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
 	@${FIXDEPS} "${OBJECTDIR}/src/uart_driver.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/src/clp.o: src/clp.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/src" 
-	@${RM} ${OBJECTDIR}/src/clp.o.d 
-	@${RM} ${OBJECTDIR}/src/clp.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  src/clp.c  -o ${OBJECTDIR}/src/clp.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/src/clp.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   
-	@${FIXDEPS} "${OBJECTDIR}/src/clp.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

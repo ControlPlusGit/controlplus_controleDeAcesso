@@ -14,15 +14,13 @@ extern "C" {
 
 #include <stdint.h>
     
-#define TAMANHO_MAX_NOME_DE_VARIAVEL 100
-#define NUM_MAX_VARIAVEIS 50
+#define NUM_MAX_VARIAVEIS 100
 #define NUM_MAX_TEMPORIZADORES 20
 #define NUM_MAX_ENTRADAS_DIGITAIS 4
 #define NUM_MAX_SAIDAS_DIGITAIS 4
     
 typedef struct{
-    uint16_t *var;
-    uint8_t nome[TAMANHO_MAX_NOME_DE_VARIAVEL];    
+    uint8_t *var;
 }Variavel;
 
 typedef struct{
@@ -42,15 +40,20 @@ typedef struct{
     uint16_t numTempFinal;
 }VetorTemporizador;
 
-uint8_t registraEntradaDigital(uint8_t *nome, uint8_t *var);
-uint8_t registraSaidaDigital(uint8_t *nome, uint8_t *var);
 uint8_t registraTemporizador(Temporizador *temp);
 int8_t verificarTemporizadores(void);
+void CLP_inicializaTemporizadores(void);
+void CLP_executa(void);
+void CLP_liberaExecucao(void);
+void CLP_atualizaEntradas(void);
+void CLP_executaLogica(void);
+void CLP_atualizaSaidas(void);
 
 #define TEMPORIZADOR(x,y) uint8_t dsp_##x; uint8_t fim_##x; Temporizador timer_##x = {&dsp_##x,&fim_##x,&y,0};
-#define CADASTRAR_TEMPORIZADOR(x) registraTemporizador(&x);
+#define CADASTRAR_TEMPORIZADOR(x) registraTemporizador(&timer_##x);
 #define ENTRADA_DIGITAL(x) uint8_t x;
 #define SAIDA_DIGITAL(x) uint8_t x;
+#define SINAL_DIGITAL(x) uint8_t x;
 
 extern uint8_t ELC; //Estado logico corrente
 
