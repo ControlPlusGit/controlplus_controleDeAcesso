@@ -88,18 +88,28 @@ void CLP_atualizaEntradas(void){
     leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3);
     leitorMarsOne_INPUT4 = BSP_readDigitalInput(INPUT_4);
     
-    entradaSensorPortaoRuaAberto  =   leitorMarsOne_INPUT1 & 1;
-    entradaSensorPortaoRuaFechado = ~(leitorMarsOne_INPUT1 & 1);
+    SEL(leitorMarsOne_INPUT1)
+    MEMO(entradaSensorPortaoRuaAberto)    
+    SED(leitorMarsOne_INPUT1)
+    MEMO(entradaSensorPortaoRuaFechado)
     
-    entradaSensorPortaoInternoAberto     =   leitorMarsOne_INPUT2 & 1;
-    sensorFechamentoPortaoInternoFechado = ~(leitorMarsOne_INPUT2 & 1);
-    
-    entradaSensorBarreiraPortaoRuaAberto  =   leitorMarsOne_INPUT3 & 1;
-    entradaSensorBarreiraPortaoRuaFechado = ~(leitorMarsOne_INPUT3 & 1);
-    
-    entradaSensorBarreiraPortaoInternoAberto  =   leitorMarsOne_INPUT4 & 1;
-    entradaSensorBarreiraPortaoInternoFechado = ~(leitorMarsOne_INPUT4 & 1);
+    SEL(leitorMarsOne_INPUT2)
+    MEMO(entradaSensorPortaoInternoAberto)    
+    SED(leitorMarsOne_INPUT2)
+    MEMO(sensorFechamentoPortaoInternoFechado)
+            
+    SEL(leitorMarsOne_INPUT3)
+    MEMO(entradaSensorBarreiraPortaoRuaAberto)    
+    SED(leitorMarsOne_INPUT3)
+    MEMO(entradaSensorBarreiraPortaoRuaFechado)
+            
+    SEL(leitorMarsOne_INPUT4)
+    MEMO(entradaSensorBarreiraPortaoInternoAberto)    
+    SED(leitorMarsOne_INPUT4)
+    MEMO(entradaSensorBarreiraPortaoInternoFechado)
 }
+
+uint8_t numQuebrasBarreiraPortaoRua = 0, numQuebrasBarreiraPortaoInterno = 0;
 
 void CLP_executaLogica(void){    
     
@@ -112,10 +122,9 @@ void CLP_executaLogica(void){
         EN(autoVerificaSensorBarreiraPortaoRua)
         EN(autoVerificaSensorPortaoRuaFechado)
         EN(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
-        EN(autoVerificaSensorBarreiraPortaoInterno_1)
+        EN(autoVerificaSensorBarreiraPortaoInterno)
         EN(autoAcionaAberturaPortaoInterno)
         EN(autoVerificaSensorPortaoInternoAberto)
-        EN(autoVerificaSensorBarreiraPortaoInterno_2)
         EN(autoVerificaSensorFechamentoPortaoInternoFechado)
         EN(autoRegistraEventoEntradaVeiculo)
         MEMO(autoAguardaInicioLogica)
@@ -159,16 +168,16 @@ void CLP_executaLogica(void){
         SEL(autoVerificaSensorPortaoRuaFechado)
         E(entradaSensorPortaoRuaFechado)
         OU(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
-        EN(autoVerificaSensorBarreiraPortaoInterno_1)
+        EN(autoVerificaSensorBarreiraPortaoInterno)
         MEMO(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
 
         SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
         E(entradaVeiculosRuaLiberada)
-        OU(autoVerificaSensorBarreiraPortaoInterno_1)
+        OU(autoVerificaSensorBarreiraPortaoInterno)
         EN(autoAcionaAberturaPortaoInterno)
-        MEMO(autoVerificaSensorBarreiraPortaoInterno_1)
+        MEMO(autoVerificaSensorBarreiraPortaoInterno)
 
-        SEL(autoVerificaSensorBarreiraPortaoInterno_1)
+        SEL(autoVerificaSensorBarreiraPortaoInterno)
         E(entradaSensorBarreiraPortaoInternoAberto)
         OU(autoAcionaAberturaPortaoInterno)
         EN(autoVerificaSensorPortaoInternoAberto)
@@ -177,17 +186,11 @@ void CLP_executaLogica(void){
         SEL(autoAcionaAberturaPortaoInterno)
         E(fim_tmpAguardaPortaoInternoAbrir)
         OU(autoVerificaSensorPortaoInternoAberto)
-        EN(autoVerificaSensorBarreiraPortaoInterno_2)
+        EN(autoVerificaSensorFechamentoPortaoInternoFechado)
         MEMO(autoVerificaSensorPortaoInternoAberto)
 
         SEL(autoVerificaSensorPortaoInternoAberto)
         E(entradaSensorPortaoInternoAberto)
-        OU(autoVerificaSensorBarreiraPortaoInterno_2)
-        EN(autoVerificaSensorFechamentoPortaoInternoFechado)
-        MEMO(autoVerificaSensorBarreiraPortaoInterno_2)
-
-        SEL(autoVerificaSensorBarreiraPortaoInterno_2)
-        E(entradaSensorBarreiraPortaoInternoAberto)
         OU(autoVerificaSensorFechamentoPortaoInternoFechado)
         EN(autoRegistraEventoEntradaVeiculo)
         MEMO(autoVerificaSensorFechamentoPortaoInternoFechado)
@@ -234,6 +237,25 @@ void CLP_executaLogica(void){
     
     
     // </editor-fold>
+        
+    SEL(entradaSensorBarreiraPortaoRuaAberto)
+    SUBIDA
+    ENTAO_EXECUTA_BLOCO{
+        numQuebrasBarreiraPortaoRua++;
+    }
+        
+    SEL(entradaSensorBarreiraPortaoInternoAberto)
+    SUBIDA
+    ENTAO_EXECUTA_BLOCO{
+        numQuebrasBarreiraPortaoInterno++;
+    }
+    
+    SEL(autoAguardaInicioLogica)
+    SUBIDA
+    ENTAO_EXECUTA_BLOCO{
+        numQuebrasBarreiraPortaoRua = 0;
+        numQuebrasBarreiraPortaoInterno = 0;
+    }
        
     // <editor-fold defaultstate="collapsed" desc="FUNCOES CONFORME PASSO">
     
@@ -248,62 +270,110 @@ void CLP_executaLogica(void){
     // <editor-fold defaultstate="collapsed" desc="autoLerAntenasPortaoRua">
 
     SEL(autoLerAntenasPortaoRua)
-    SUBIDA
+    OU(autoAcionaAberturaPortaoRua)
+    OU(autoVerificaSensorPortaoRuaAberto)
+    OU(autoVerificaSensorBarreiraPortaoRua)
     ENTAO_EXECUTA_BLOCO {
+        uint8_t i;
+        uint8_t resultado = 0;
+        EPC_Estacionamento epcLido;
+        
+        #ifndef DEBUG
+            realizaLeituraDeAntena(ANTENNA_1);  
+        #else
+            EPC_Estacionamento epc;
+            
+            tags_[0].epc[0] = 0x30;
+            tags_[0].epc[1] = 0x00;
+            tags_[0].epc[2] = 0x04;
+            
+            tags_[MAXTAG-1].epc[0] = 0x30;
+            tags_[MAXTAG-1].epc[1] = 0x00;
+            tags_[MAXTAG-1].epc[2] = 0x18;
+            
+            epc.byte1 = tags_[0].epc[2];
+            epc.byte2 = tags_[0].epc[1];           
+            
+            adicionarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados,epc);
+            
+            epc.byte1 = tags_[MAXTAG-1].epc[2];
+            epc.byte2 = tags_[MAXTAG-1].epc[1];
+            
+            adicionarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados,epc);
+        #endif
+                    
+        for( i = 0; i < MAXTAG; i++){
 
-    }// </editor-fold>
+            if( verificaTagValida( tags_[i].epc ) > 0 ){ // Tag veicular valida?
+                epcLido.byte1 = tags_[i].epc[2];
+                epcLido.byte2 = tags_[i].epc[1];
+                if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)){ // Veiculo esta na lista?  
+                    adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);        
+                    resultado = 1;    
+                }
+                else{      
+                    removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);          
+                    resultado = 0;
+                }
+            }
+            else{
+                resultado = 0;
+            }        
+        }    
+        tagEncontradaNaRua = resultado;
+    }
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSeTagValidaFoiEncontrada">
 
     SEL(autoVerificaSeTagValidaFoiEncontrada)
     SUBIDA
     ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+        
+    }
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoAcionaAberturaPortaoRua">    
 
     SEL(autoAcionaAberturaPortaoRua)
+    E(entradaSensorPortaoRuaFechado)
     SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    MEMO(solicSaidaAbrirPortaoRua)
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorPortaoRuaAberto">    
 
-    SEL(autoVerificaSensorPortaoRuaAberto)
-    SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    // ESSE PASSO NAO FAZ NADA, APENAS VERIFICA SE O PORTAO ABRIU, NO PROPRIO SEQUENCIADOR
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorBarreiraPortaoRua">    
 
-    SEL(autoVerificaSensorBarreiraPortaoRua)
-    SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    // ESSE PASSO NAO FAZ NADA, APENAS VERIFICA SE O PORTAO ABRIU, NO PROPRIO SEQUENCIADOR
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorPortaoRuaFechado">    
 
-    SEL(autoVerificaSensorPortaoRuaFechado)
-    SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    // ESSE PASSO NAO FAZ NADA, APENAS VERIFICA SE O PORTAO ABRIU, NO PROPRIO SEQUENCIADOR
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira">    
 
     SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
     SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    E(numQuebrasBarreiraPortaoRua == listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)
+    MEMO(entradaVeiculosRuaLiberada)
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorBarreiraPortaoInterno_1">    
 
-    SEL(autoVerificaSensorBarreiraPortaoInterno_1)
+    SEL(autoVerificaSensorBarreiraPortaoInterno)
     SUBIDA
     ENTAO_EXECUTA_BLOCO {
 
@@ -313,21 +383,13 @@ void CLP_executaLogica(void){
 
     SEL(autoAcionaAberturaPortaoInterno)
     SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
+    MEMO(solicSaidaAbrirPortaoInterno)
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorPortaoInternoAberto">    
 
     SEL(autoVerificaSensorPortaoInternoAberto)
-    SUBIDA
-    ENTAO_EXECUTA_BLOCO {
-
-    }// </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorBarreiraPortaoInterno_2">    
-
-    SEL(autoVerificaSensorBarreiraPortaoInterno_2)
     SUBIDA
     ENTAO_EXECUTA_BLOCO {
 
@@ -354,25 +416,23 @@ void CLP_executaLogica(void){
 }
 
 void CLP_atualizaSaidas(void){
+    
     SEL(solicSaidaAbrirPortaoRua) 
-    ENTAO_EXECUTA_BLOCO{
-        BSP_setRelay(RELAY_1,leitorMarsOne_Rele1 & 1);
-    }
+    MEMO(leitorMarsOne_Rele1)
     
     SEL(solicSaidaAbrirPortaoInterno) 
-    ENTAO_EXECUTA_BLOCO{
-        BSP_setRelay(RELAY_2,leitorMarsOne_Rele2 & 1);
-    }
+    MEMO(leitorMarsOne_Rele2)
     
     SEL(solicSaidaAlarme) 
-    ENTAO_EXECUTA_BLOCO{
-        BSP_setRelay(RELAY_3,leitorMarsOne_Rele3 & 1);
-    }
+    MEMO(leitorMarsOne_Rele3)
     
     SEL(0) //SAIDA LIVRE
-    ENTAO_EXECUTA_BLOCO{
-        BSP_setRelay(RELAY_4,leitorMarsOne_Rele4 & 1);
-    }    
+    MEMO(leitorMarsOne_Rele4)   
+    
+    BSP_setRelay(RELAY_1,leitorMarsOne_Rele1 & 1);
+    BSP_setRelay(RELAY_2,leitorMarsOne_Rele2 & 1);
+    BSP_setRelay(RELAY_3,leitorMarsOne_Rele3 & 1);
+    BSP_setRelay(RELAY_4,leitorMarsOne_Rele4 & 1);
 }
 
 

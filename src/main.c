@@ -152,42 +152,8 @@ int8_t verificaTagValida(uint8_t *tag){
     return 1;
 }
 
-//FUNCOES DO MOVIMENTO DE ENTRADA
-int8_t ler_antena_entrada(void){
-    uint8_t num_of_tags = 0;       
-    
-    num_of_tags = realizaLeituraDeAntena(ANTENNA_1);   
-    
-    if(num_of_tags > 0){             
-        return 1;
-    }
-    else{
-        return 0;
-    }   
-}
+
 
 int8_t verificarTagValida_entrada(void){
-    int i;
-    uint8_t resultado = 0;
-    EPC_Estacionamento epcLido;
     
-    for( i = 0; i < MAXTAG; i++){
-
-        if( verificaTagValida( tags_[i].epc ) > 0 ){ // Tag veicular valida?
-            epcLido.byte1 = tags_[i].epc[2];
-            epcLido.byte2 = tags_[i].epc[1];
-            if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)){ // Veiculo esta na lista?  
-                adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);        
-                resultado = 1;    
-            }
-            else{      
-                removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);          
-                resultado = 0;
-            }
-        }
-        else{
-            resultado = 0;
-        }        
-    }    
-    return resultado;
 }

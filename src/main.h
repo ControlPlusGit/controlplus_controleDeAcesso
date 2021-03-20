@@ -45,6 +45,8 @@ int8_t verificaTagValida(uint8_t *tag);
 int8_t ler_antena_entrada(void);
 int8_t verificarTagValida_entrada(void);
 
+#define DEBUG
+
 #ifdef	__cplusplus
 }
 #endif
