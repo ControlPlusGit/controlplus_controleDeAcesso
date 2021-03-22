@@ -6,8 +6,9 @@
             <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/BSP/bsp.c</file>
             <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/BSP/pin_manager.h</file>
             <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/system.c</file>
-            <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/main.c</file>
+            <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/declara_clp.h</file>
             <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/clp.c</file>
+            <file>file:/C:/00_MPLABX_V5.40/controlplus_controleDeAcesso/src/tabelaEstacionamento.c</file>
         </group>
     </open-files>
 </project-private>

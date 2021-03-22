@@ -190,6 +190,7 @@ void CLP_executaLogica(void){
         E(entradaSensorBarreiraPortaoInternoAberto)        
         OU(autoAcionaAberturaPortaoInterno)
         EN(autoReiniciaEntrada)
+        EN(solicSaidaAlarme)
         EN(autoVerificaSensorPortaoInternoAberto)
         MEMO(autoAcionaAberturaPortaoInterno)
 
@@ -271,6 +272,7 @@ void CLP_executaLogica(void){
     SEL(autoAguardaInicioLogica)
     SUBIDA
     ENTAO_EXECUTA_BLOCO{
+        removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada);
         numQuebrasBarreiraPortaoRua = 0;
         numQuebrasBarreiraPortaoInterno = 0;
     }
@@ -419,7 +421,7 @@ void CLP_executaLogica(void){
     SEL(autoRegistraEventoEntradaVeiculo)
     SUBIDA
     ENTAO_EXECUTA_BLOCO {
-
+        
     }// </editor-fold>      
     
     // </editor-fold> 
