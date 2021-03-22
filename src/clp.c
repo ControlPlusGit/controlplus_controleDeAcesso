@@ -172,7 +172,8 @@ void CLP_executaLogica(void){
         MEMO(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
 
         SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
-        E(entradaVeiculosRuaLiberada)
+        E(entradaVeiculosRuaLiberada) 
+        OU(entradaSensorPortaoInternoAberto)
         OU(autoVerificaSensorBarreiraPortaoInterno)
         EN(autoAcionaAberturaPortaoInterno)
         MEMO(autoVerificaSensorBarreiraPortaoInterno)
@@ -205,8 +206,7 @@ void CLP_executaLogica(void){
 
         // <editor-fold defaultstate="collapsed" desc="timer_tmpLeituraAntenasPortaoRua">
         //TEMPORIZADOR DE LEITURA DAS ANTENAS DA RUA
-        SEL(autoLerAntenasPortaoRua)
-        SUBIDA
+        SEL(autoLerAntenasPortaoRua)        
         OU(dsp_tmpLeituraAntenasPortaoRua)
         EN(fim_tmpLeituraAntenasPortaoRua)
         MEMO(dsp_tmpLeituraAntenasPortaoRua)
@@ -214,8 +214,7 @@ void CLP_executaLogica(void){
 
         // <editor-fold defaultstate="collapsed" desc="timer_tmpAguardaPortaoRuaAbrir">
         //TEMPORIZADOR DE ESPERA PARA PORTAO ABRIR
-        SEL(autoAcionaAberturaPortaoRua)
-        SUBIDA
+        SEL(autoAcionaAberturaPortaoRua)        
         OU(dsp_tmpAguardaPortaoRuaAbrir)
         EN(fim_tmpAguardaPortaoRuaAbrir)
         MEMO(dsp_tmpAguardaPortaoRuaAbrir)
@@ -223,21 +222,14 @@ void CLP_executaLogica(void){
 
         // <editor-fold defaultstate="collapsed" desc="timer_tmpAguardaPortaoInternoAbrir">
         //TEMPORIZADOR DE ESPERA PARA PORTAO ABRIR
-        SEL(autoAcionaAberturaPortaoInterno)
-        SUBIDA
+        SEL(autoAcionaAberturaPortaoInterno)        
         OU(dsp_tmpAguardaPortaoInternoAbrir)
         EN(fim_tmpAguardaPortaoInternoAbrir)
         MEMO(dsp_tmpAguardaPortaoInternoAbrir)
         // </editor-fold>
     
-    // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="DISPARO DOS ALARMES">
-    
-    
-    
-    // </editor-fold>
-        
+    // </editor-fold>    
+           
     SEL(entradaSensorBarreiraPortaoRuaAberto)
     SUBIDA
     ENTAO_EXECUTA_BLOCO{
@@ -272,7 +264,8 @@ void CLP_executaLogica(void){
     SEL(autoLerAntenasPortaoRua)
     OU(autoAcionaAberturaPortaoRua)
     OU(autoVerificaSensorPortaoRuaAberto)
-    OU(autoVerificaSensorBarreiraPortaoRua)
+    OU(autoVerificaSensorBarreiraPortaoRua) 
+    EN(entradaSensorPortaoInternoAberto)
     ENTAO_EXECUTA_BLOCO {
         uint8_t i;
         uint8_t resultado = 0;
@@ -339,6 +332,7 @@ void CLP_executaLogica(void){
 
     SEL(autoAcionaAberturaPortaoRua)
     E(entradaSensorPortaoRuaFechado)
+    EN(entradaSensorPortaoInternoAberto)
     SUBIDA
     MEMO(solicSaidaAbrirPortaoRua)
     
@@ -364,14 +358,13 @@ void CLP_executaLogica(void){
 
     // <editor-fold defaultstate="collapsed" desc="autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira">    
 
-    SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
-    SUBIDA
-    E(numQuebrasBarreiraPortaoRua == listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)
+    SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)    
+    E(numQuebrasBarreiraPortaoRua == listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)    
     MEMO(entradaVeiculosRuaLiberada)
     
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorBarreiraPortaoInterno_1">    
+    // <editor-fold defaultstate="collapsed" desc="autoVerificaSensorBarreiraPortaoInterno">    
 
     SEL(autoVerificaSensorBarreiraPortaoInterno)
     SUBIDA
@@ -382,7 +375,7 @@ void CLP_executaLogica(void){
     // <editor-fold defaultstate="collapsed" desc="autoAcionaAberturaPortaoInterno">    
 
     SEL(autoAcionaAberturaPortaoInterno)
-    SUBIDA
+    EN(entradaSensorPortaoRuaAberto)    
     MEMO(solicSaidaAbrirPortaoInterno)
     
     // </editor-fold>
@@ -412,6 +405,17 @@ void CLP_executaLogica(void){
     }// </editor-fold>      
     
     // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="DISPARO DOS ALARMES">
+    
+    // ALARME VEICULO SEM TAG DENTRO DA CLAUSURA
+    SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
+    EN(entradaVeiculosRuaLiberada)
+    OU(solicSaidaAlarme)
+    EN(entradaSensorPortaoInternoAberto)
+    MEMO(solicSaidaAlarme)
+    
+    // </editor-fold>
     
 }
 
