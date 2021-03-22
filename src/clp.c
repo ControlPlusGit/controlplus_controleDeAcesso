@@ -130,76 +130,102 @@ void CLP_executaLogica(void){
         MEMO(autoAguardaInicioLogica)
 
         SEL(autoAguardaInicioLogica)
-        E(iniciarPrograma)
+        E(iniciarPrograma)        
         OU(autoLerAntenasPortaoRua)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSeTagValidaFoiEncontrada)
         MEMO(autoLerAntenasPortaoRua)
 
         SEL(autoLerAntenasPortaoRua)
         E(fim_tmpLeituraAntenasPortaoRua)
-        OU(autoVerificaSeTagValidaFoiEncontrada)
+        OU(autoVerificaSeTagValidaFoiEncontrada)  
+        EN(autoReiniciaEntrada)
         EN(autoAcionaAberturaPortaoRua)
         MEMO(autoVerificaSeTagValidaFoiEncontrada)
 
         SEL(autoVerificaSeTagValidaFoiEncontrada)
-        E(tagEncontradaNaRua)
+        E(tagEncontradaNaRua)        
         OU(autoAcionaAberturaPortaoRua)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorPortaoRuaAberto)
         MEMO(autoAcionaAberturaPortaoRua)
 
         SEL(autoAcionaAberturaPortaoRua)
-        E(fim_tmpAguardaPortaoRuaAbrir)
+        E(fim_tmpAguardaPortaoRuaAbrir)        
         OU(autoVerificaSensorPortaoRuaAberto)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorBarreiraPortaoRua)
         MEMO(autoVerificaSensorPortaoRuaAberto)
 
         SEL(autoVerificaSensorPortaoRuaAberto)
-        E(entradaSensorPortaoRuaAberto)
+        E(entradaSensorPortaoRuaAberto)             
+        OU(aberturaManualPortao1Detectada)
         OU(autoVerificaSensorBarreiraPortaoRua)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorPortaoRuaFechado)
         MEMO(autoVerificaSensorBarreiraPortaoRua)
 
         SEL(autoVerificaSensorBarreiraPortaoRua)
-        E(entradaSensorBarreiraPortaoRuaAberto)
+        E(entradaSensorBarreiraPortaoRuaAberto)        
         OU(autoVerificaSensorPortaoRuaFechado)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
         MEMO(autoVerificaSensorPortaoRuaFechado)
 
         SEL(autoVerificaSensorPortaoRuaFechado)
-        E(entradaSensorPortaoRuaFechado)
+        E(entradaSensorPortaoRuaFechado)        
         OU(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorBarreiraPortaoInterno)
         MEMO(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
 
         SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
-        E(entradaVeiculosRuaLiberada) 
-        OU(entradaSensorPortaoInternoAberto)
+        E(entradaVeiculosRuaLiberada)         
         OU(autoVerificaSensorBarreiraPortaoInterno)
+        EN(autoReiniciaEntrada)
         EN(autoAcionaAberturaPortaoInterno)
         MEMO(autoVerificaSensorBarreiraPortaoInterno)
 
         SEL(autoVerificaSensorBarreiraPortaoInterno)
-        E(entradaSensorBarreiraPortaoInternoAberto)
+        E(entradaSensorBarreiraPortaoInternoAberto)        
         OU(autoAcionaAberturaPortaoInterno)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorPortaoInternoAberto)
         MEMO(autoAcionaAberturaPortaoInterno)
 
         SEL(autoAcionaAberturaPortaoInterno)
-        E(fim_tmpAguardaPortaoInternoAbrir)
+        E(fim_tmpAguardaPortaoInternoAbrir)        
         OU(autoVerificaSensorPortaoInternoAberto)
+        EN(autoReiniciaEntrada)
         EN(autoVerificaSensorFechamentoPortaoInternoFechado)
         MEMO(autoVerificaSensorPortaoInternoAberto)
 
         SEL(autoVerificaSensorPortaoInternoAberto)
-        E(entradaSensorPortaoInternoAberto)
+        E(entradaSensorPortaoInternoAberto)        
         OU(autoVerificaSensorFechamentoPortaoInternoFechado)
+        EN(autoReiniciaEntrada)
         EN(autoRegistraEventoEntradaVeiculo)
         MEMO(autoVerificaSensorFechamentoPortaoInternoFechado)
 
         SEL(autoVerificaSensorFechamentoPortaoInternoFechado)
         E(sensorFechamentoPortaoInternoFechado)
+        EN(autoReiniciaEntrada)
         MEMO(autoRegistraEventoEntradaVeiculo)
         
+        
+        //LOGICA PARA SINAIS AUXILIARES DO SEQUENCIADOR
+        
+        //CASO NAO ENCONTRE NINGUEM NA ANTENA DA RUA
+        SEL(autoVerificaSeTagValidaFoiEncontrada)
+        EN(tagEncontradaNaRua)
+        MEMO(autoReiniciaEntrada)        
+        
+        //DETECCAO DE ABERTURA MANUAL DE PORTAO
+        SED(solicSaidaAbrirPortaoRua)
+        EN(autoAcionaAberturaPortaoRua)
+        EN(autoVerificaSensorPortaoRuaAberto)
+        E(entradaSensorPortaoRuaAberto)
+        MEMO(aberturaManualPortao1Detectada)
     // </editor-fold>    
     
     // <editor-fold defaultstate="collapsed" desc="DISPARO DOS TEMPORIZADORES">
@@ -279,20 +305,12 @@ void CLP_executaLogica(void){
             tags_[0].epc[0] = 0x30;
             tags_[0].epc[1] = 0x00;
             tags_[0].epc[2] = 0x04;
-            
-            tags_[MAXTAG-1].epc[0] = 0x30;
-            tags_[MAXTAG-1].epc[1] = 0x00;
-            tags_[MAXTAG-1].epc[2] = 0x18;
-            
+           
             epc.byte1 = tags_[0].epc[2];
             epc.byte2 = tags_[0].epc[1];           
             
-            adicionarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados,epc);
-            
-            epc.byte1 = tags_[MAXTAG-1].epc[2];
-            epc.byte2 = tags_[MAXTAG-1].epc[1];
-            
-            adicionarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados,epc);
+            adicionaNovaTagNaLista(&listaDeVeiculosLiberados,epc);
+                        
         #endif
                     
         for( i = 0; i < MAXTAG; i++){

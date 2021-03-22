@@ -6,18 +6,15 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <uart.h>
-//#include "../../../../../../../../Program Files (x86)/Microchip/xc16/v1.24/support/peripheral_24F/uart.h"
 #include "FSM_Ethernet.h"
 #include "timer.h"
 #include "FSM_ESP8266.h"
 #include "FSM_DataHora.h"
 #include "uart_driver.h"
 #include <stdint.h>
-#include "i2c.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> 
-//#include "rtc.h"
 #include <time.h>
 #include "setup_usb.h"
 #include "RTC/rtc.h"

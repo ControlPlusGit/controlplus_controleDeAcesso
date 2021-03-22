@@ -87,6 +87,11 @@ SINAL_DIGITAL(solicSaidaAbrirPortaoRua)
 SINAL_DIGITAL(solicSaidaAbrirPortaoInterno)
 SINAL_DIGITAL(solicSaidaAlarme)
         
+SINAL_DIGITAL(aberturaManualPortao1Detectada)
+SINAL_DIGITAL(aberturaManua2Portao1Detectada)
+        
+SINAL_DIGITAL(autoReiniciaEntrada)
+        
 
 
 #ifdef	__cplusplus
