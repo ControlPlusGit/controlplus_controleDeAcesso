@@ -6,6 +6,7 @@
 #include "uart_driver.h" //REMOVER FUTURAMENTE
 #include "spi1.h"
 #include "tmr2.h"
+#include "clock.h"
 #include "EXT_INT/ext_int.h"
 #include "EXT_INT/interrupt_manager.h"
 
@@ -60,12 +61,12 @@ volatile void tick ( void ){
     
     // FLUXO DO CLP
     CLP_executa();
-    
-    executaMaquinaDeEstados_ESP8266();    
-    executaMaquinaDeEstados_TabelaDeEstacionamento();
-    commandHandlerPortaUSB();
-    executaMaquinaDeEstados_DataHora();
-    executaMaquinaDeEstados_KeepAlive();        
+//    
+//    executaMaquinaDeEstados_ESP8266();    
+//    executaMaquinaDeEstados_TabelaDeEstacionamento();
+//    commandHandlerPortaUSB();
+//    executaMaquinaDeEstados_DataHora();
+//    executaMaquinaDeEstados_KeepAlive();        
 }
 
 uint16_t tick_getTimerCounter_ms(void){
@@ -120,13 +121,13 @@ void SYSTEM_Initialize(void){
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
     
     PIN_MANAGER_Initialize();
-            
-    SPI1_Initialize();    
     
+    //CLOCK_Initialize();
+     
     INTERRUPT_Initialize();
-            
-    EXT_INT_Initialize();
     
+    SPI1_Initialize();   
+        
     TMR2_LoadInterruptCallback(tick);
     
     TMR2_Initialize();
@@ -134,8 +135,6 @@ void SYSTEM_Initialize(void){
     i2c1_driver_init(100000); // Inicializa o RTC com 100KHz
     
     i2c3_driver_init(100000); // Inicializa a EEPROM com 100 KHz
-    
-    delay_ms(10); // Tempo para os periféricos estabilizarem.
     
     baudrate = 115200ULL;   
     
@@ -146,6 +145,10 @@ void SYSTEM_Initialize(void){
     uart3TxInitialize(SYSCLK, baudrate, &realrate); // usb
     
     uart4TxInitialize(SYSCLK, baudrate, &realrate); // wifi        
+    
+    EXT_INT_Initialize();
+    
+    delay_ms(10); // Tempo para os periféricos estabilizarem.
     
     // Carrega as funcoes da microchip para a biblioteca de abstracao
     RTC_DS1307_load_callbacks(  i2c1_driver_start,

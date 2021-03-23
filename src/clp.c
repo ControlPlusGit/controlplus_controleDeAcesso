@@ -88,15 +88,15 @@ void CLP_atualizaEntradas(void){
     leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3);
     leitorMarsOne_INPUT4 = BSP_readDigitalInput(INPUT_4);
     
-    SEL(leitorMarsOne_INPUT1)
-    MEMO(entradaSensorPortaoRuaAberto)    
     SED(leitorMarsOne_INPUT1)
+    MEMO(entradaSensorPortaoRuaAberto)    
+    SEL(leitorMarsOne_INPUT1)
     MEMO(entradaSensorPortaoRuaFechado)
     
-    SEL(leitorMarsOne_INPUT2)
-    MEMO(entradaSensorPortaoInternoAberto)    
     SED(leitorMarsOne_INPUT2)
-    MEMO(sensorFechamentoPortaoInternoFechado)
+    MEMO(entradaSensorPortaoInternoAberto)    
+    SEL(leitorMarsOne_INPUT2)
+    MEMO(entradaSensorPortaoInternoFechado)
             
     SEL(leitorMarsOne_INPUT3)
     MEMO(entradaSensorBarreiraPortaoRuaAberto)    
@@ -181,6 +181,8 @@ void CLP_executaLogica(void){
 
         SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
         E(entradaVeiculosRuaLiberada)         
+        OU(aberturaManualPortao2Detectada)
+        EN(veiculoPresoNaClausura)
         OU(autoVerificaSensorBarreiraPortaoInterno)
         EN(autoReiniciaEntrada)
         EN(autoAcionaAberturaPortaoInterno)
@@ -189,6 +191,7 @@ void CLP_executaLogica(void){
         SEL(autoVerificaSensorBarreiraPortaoInterno)
         E(entradaSensorBarreiraPortaoInternoAberto)        
         OU(autoAcionaAberturaPortaoInterno)
+        OU(veiculoPresoNaClausura)
         EN(autoReiniciaEntrada)
         EN(solicSaidaAlarme)
         EN(autoVerificaSensorPortaoInternoAberto)
@@ -209,7 +212,7 @@ void CLP_executaLogica(void){
         MEMO(autoVerificaSensorFechamentoPortaoInternoFechado)
 
         SEL(autoVerificaSensorFechamentoPortaoInternoFechado)
-        E(sensorFechamentoPortaoInternoFechado)
+        E(entradaSensorPortaoInternoFechado)
         EN(autoReiniciaEntrada)
         MEMO(autoRegistraEventoEntradaVeiculo)
         
@@ -221,12 +224,29 @@ void CLP_executaLogica(void){
         EN(tagEncontradaNaRua)
         MEMO(autoReiniciaEntrada)        
         
-        //DETECCAO DE ABERTURA MANUAL DE PORTAO
+        //DETECCAO DE ABERTURA MANUAL DE PORTAO DA RUA
         SED(solicSaidaAbrirPortaoRua)
         EN(autoAcionaAberturaPortaoRua)
         EN(autoVerificaSensorPortaoRuaAberto)
         E(entradaSensorPortaoRuaAberto)
         MEMO(aberturaManualPortao1Detectada)
+        
+        //DETECCAO DE ABERTURA MANUAL DE PORTAO INTERNO
+        SED(solicSaidaAbrirPortaoInterno)
+        EN(autoAcionaAberturaPortaoInterno)
+        EN(autoVerificaSensorPortaoInternoAberto)
+        EN(autoVerificaSensorFechamentoPortaoInternoFechado)
+        E(entradaSensorPortaoInternoAberto)
+        MEMO(aberturaManualPortao2Detectada)
+        
+        //DETECCAO DE VEICULO PRESO NA CLAUSURA
+        SEL(entradaSensorPortaoRuaFechado)
+        E(entradaSensorPortaoInternoFechado)
+        E(entradaSensorBarreiraPortaoInternoAberto)
+        EN(autoAcionaAberturaPortaoInterno)
+        MEMO(veiculoPresoNaClausura)
+        
+        
     // </editor-fold>    
     
     // <editor-fold defaultstate="collapsed" desc="DISPARO DOS TEMPORIZADORES">
@@ -300,7 +320,7 @@ void CLP_executaLogica(void){
         EPC_Estacionamento epcLido;
         
         #ifndef DEBUG
-            realizaLeituraDeAntena(ANTENNA_1);  
+            //realizaLeituraDeAntena(ANTENNA_1);  
         #else
             EPC_Estacionamento epc;
             

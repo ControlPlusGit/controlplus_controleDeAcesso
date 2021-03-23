@@ -65,7 +65,7 @@ int main(void){
             
     SYSTEM_Initialize();
     
-    //marsOne_init();         
+    marsOne_init();         
      
     //obtemDadosDaMemoriaFLASH();
     
@@ -79,10 +79,20 @@ int main(void){
     
     //inicializaMaquinaDeEstados_KeepAlive(); 
     
-    CLP_liberaExecucao();
+    //CLP_liberaExecucao();
+    int num_of_tags;
     
     while(1){
-        delay_ms(1000);
+        LIGA_PA_SetHigh();
+        num_of_tags = inventoryGen2();
+        if(num_of_tags>=1){
+            int i=0;
+            LED_TAG_SetHigh();
+            i=1;
+        }
+        LIGA_PA_SetLow();
+        delay_ms(10);
+        LED_TAG_SetLow();
     }
     
     return 0;

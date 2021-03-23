@@ -70,7 +70,7 @@ SINAL_DIGITAL(sensorBarreiraPortaoRuaAcionado);
 SINAL_DIGITAL(entradaSensorPortaoRuaFechado);
 SINAL_DIGITAL(entradaVeiculosRuaLiberada);
 SINAL_DIGITAL(entradaSensorPortaoInternoAberto);
-SINAL_DIGITAL(sensorFechamentoPortaoInternoFechado);
+SINAL_DIGITAL(entradaSensorPortaoInternoFechado);
 SINAL_DIGITAL(eventoEntradaVeiculoRegistrado);
 
 SINAL_DIGITAL(entradaSensorBarreiraPortaoRuaAberto)
@@ -88,9 +88,11 @@ SINAL_DIGITAL(solicSaidaAbrirPortaoInterno)
 SINAL_DIGITAL(solicSaidaAlarme)
         
 SINAL_DIGITAL(aberturaManualPortao1Detectada)
-SINAL_DIGITAL(aberturaManua2Portao1Detectada)
+SINAL_DIGITAL(aberturaManualPortao2Detectada)
         
 SINAL_DIGITAL(autoReiniciaEntrada)
+        
+SINAL_DIGITAL(veiculoPresoNaClausura)
         
 
 
