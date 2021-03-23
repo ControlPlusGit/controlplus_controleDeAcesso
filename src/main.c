@@ -4,28 +4,19 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "FSM_DataHora.h"
-#include "FSM_Ethernet.h"
-#include "FSM_ESP8266.h"
-#include "FSM_TabelaDeEstacionamento.h"
-#include "FSM_KeepAlive.h"
-#include "setup_usb.h"
-
 #include "system.h"
-#include "clp.h"
 #include "BSP/pin_manager.h"
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
 
+
 #include "tabelaEstacionamento.h"
-#include "tmr2.h"
 #include "log.h"
 #include "delay.h"
 
 #include "RTC/DS1307.h"  
 #include "EEPROM/24LC256.h"
 #include "FLASH/flash.h"
-#include "RFID/as3993.h"
 #include "RFID/gen2.h"
 #include "clp.h"
 
@@ -62,7 +53,9 @@ TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLidosDuranteMovi
     //EEPROM_24LC256_I2C_read_uchar(0,200,&var);
 
 int main(void){
-            
+    
+    int num_of_tags;
+    
     SYSTEM_Initialize();
     
     marsOne_init();         
@@ -79,8 +72,13 @@ int main(void){
     
     //inicializaMaquinaDeEstados_KeepAlive(); 
     
-    //CLP_liberaExecucao();
-    int num_of_tags;
+    //CLP_liberaExecucao();    
+    
+    // Seleciona a antena 1
+    SEL_BBA_SetHigh();
+    SEL_A1_4_SetHigh();
+    SEL_A1_2_SetHigh();
+    SEL_A3_4_SetLow();
     
     while(1){
         LIGA_PA_SetHigh();
@@ -160,10 +158,4 @@ int8_t verificaTagValida(uint8_t *tag){
     tag = p;
     
     return 1;
-}
-
-
-
-int8_t verificarTagValida_entrada(void){
-    
 }

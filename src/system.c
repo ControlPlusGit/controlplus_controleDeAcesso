@@ -6,7 +6,6 @@
 #include "uart_driver.h" //REMOVER FUTURAMENTE
 #include "spi1.h"
 #include "tmr2.h"
-#include "clock.h"
 #include "EXT_INT/ext_int.h"
 #include "EXT_INT/interrupt_manager.h"
 
