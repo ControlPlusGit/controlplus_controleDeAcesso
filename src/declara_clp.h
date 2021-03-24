@@ -18,13 +18,13 @@ extern "C" {
 //TEMPORIZADORES
 ////////////////////////////////////////////
 
-uint32_t durTmpLeituraAntenasPortaoRua = 2;
+uint32_t durTmpLeituraAntenasPortaoRua = 200;
 TEMPORIZADOR(tmpLeituraAntenasPortaoRua,durTmpLeituraAntenasPortaoRua)
 
-uint32_t durTmpAguardaPortaoRuaAbrir = 2;
+uint32_t durTmpAguardaPortaoRuaAbrir = 200;
 TEMPORIZADOR(tmpAguardaPortaoRuaAbrir,durTmpAguardaPortaoRuaAbrir)
 
-uint32_t durTmpAguardaPortaoInternoAbrir = 2;
+uint32_t durTmpAguardaPortaoInternoAbrir = 200;
 TEMPORIZADOR(tmpAguardaPortaoInternoAbrir,durTmpAguardaPortaoInternoAbrir)
 
 ////////////////////////////////////////////
@@ -94,7 +94,7 @@ SINAL_DIGITAL(autoReiniciaEntrada)
         
 SINAL_DIGITAL(veiculoPresoNaClausura)
         
-
+SINAL_DIGITAL(veiculoExecutandoMovimentoEntrada)
 
 #ifdef	__cplusplus
 }

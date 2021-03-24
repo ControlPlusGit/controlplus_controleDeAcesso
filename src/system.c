@@ -59,7 +59,7 @@ volatile void tick ( void ){
     }   
     
     // FLUXO DO CLP
-    CLP_executa();
+    
 //    
 //    executaMaquinaDeEstados_ESP8266();    
 //    executaMaquinaDeEstados_TabelaDeEstacionamento();

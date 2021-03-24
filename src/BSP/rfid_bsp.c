@@ -60,9 +60,14 @@ BSP_RFID_Status BSP_RFID_selectAntenna(BSP_RFID_Antennas num_antenna){
     switch (num_antenna)
     {
             case ANTENNA_1:                         //Seleciona a antena 1
-                SEL_BBA(1);                 //sel. grupo 1-4
-                SEL_A1_4(1);                //sel. 1-2
-                SEL_A1_2(1);                //sel. A1
+//                SEL_BBA(1);                 //sel. grupo 1-4
+//                SEL_A1_4(1);                //sel. 1-2
+//                SEL_A1_2(1);                //sel. A1
+                // Seleciona a antena 1
+                SEL_BBA_SetHigh();
+                SEL_A1_4_SetHigh();
+                SEL_A1_2_SetHigh();
+                SEL_A3_4_SetLow();
             break;
             case ANTENNA_2:                         //Seleciona a antena 2
                 SEL_BBA(1);                 //sel. grupo 1-4

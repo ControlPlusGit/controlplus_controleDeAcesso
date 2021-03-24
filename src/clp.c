@@ -41,14 +41,18 @@ int8_t verificarTemporizadores(void){
             SEL( (*temporizadores.temp[i_temporizadores]->var_disparo) )
             SUBIDA
             ENTAO_EXECUTA_BLOCO
-            {
+            {               
                 temporizadores.temp[i_temporizadores]->contagem = (*temporizadores.temp[i_temporizadores]->tempoProgramado) + tick_getTimerCounter_ms();
             }
 
             SEL  ( (*temporizadores.temp[i_temporizadores]->var_disparo) )
-            E    ( tick_getTimerCounter_ms() == temporizadores.temp[i_temporizadores]->contagem )
-            EN   ( (*temporizadores.temp[i_temporizadores]->var_fim) )
+            E    ( tick_getTimerCounter_ms() >= temporizadores.temp[i_temporizadores]->contagem )   
             MEMO ( (*temporizadores.temp[i_temporizadores]->var_fim) )
+                    
+            SEL( tick_getTimerCounter_ms() < temporizadores.temp[i_temporizadores]->contagem - (*temporizadores.temp[i_temporizadores]->tempoProgramado) )
+            ENTAO_EXECUTA_BLOCO{
+                temporizadores.temp[i_temporizadores]->contagem = (*temporizadores.temp[i_temporizadores]->tempoProgramado) + tick_getTimerCounter_ms();
+            }           
         }
     }
     return 0;
@@ -66,13 +70,16 @@ void CLP_executa(void){
             CLP_inicializaTemporizadores();
             inicializacaoConcluida = 1;
         }
+        
+        verificarTemporizadores();
+        
         CLP_atualizaEntradas();
     
         CLP_executaLogica();
 
         CLP_atualizaSaidas();
 
-        verificarTemporizadores();
+        
     }    
 }
 
@@ -246,6 +253,12 @@ void CLP_executaLogica(void){
         EN(autoAcionaAberturaPortaoInterno)
         MEMO(veiculoPresoNaClausura)
         
+       //DETECTAR VEICULOS EXECUTANDO MOVIMENTO DE ENTRADA
+        SEL(entradaSensorPortaoRuaFechado)
+        E(entradaSensorPortaoInternoFechado)
+        E(numQuebrasBarreiraPortaoRua > 0)
+        MEMO(veiculoExecutandoMovimentoEntrada)
+        
         
     // </editor-fold>    
     
@@ -292,9 +305,7 @@ void CLP_executaLogica(void){
     SEL(autoAguardaInicioLogica)
     SUBIDA
     ENTAO_EXECUTA_BLOCO{
-        removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada);
-        numQuebrasBarreiraPortaoRua = 0;
-        numQuebrasBarreiraPortaoInterno = 0;
+        
     }
        
     // <editor-fold defaultstate="collapsed" desc="FUNCOES CONFORME PASSO">
@@ -313,14 +324,15 @@ void CLP_executaLogica(void){
     OU(autoAcionaAberturaPortaoRua)
     OU(autoVerificaSensorPortaoRuaAberto)
     OU(autoVerificaSensorBarreiraPortaoRua) 
-    EN(entradaSensorPortaoInternoAberto)
+    OU(entradaSensorPortaoInternoAberto)    
+    EN(veiculoExecutandoMovimentoEntrada)
     ENTAO_EXECUTA_BLOCO {
         uint8_t i;
         uint8_t resultado = 0;
         EPC_Estacionamento epcLido;
         
         #ifndef DEBUG
-            //realizaLeituraDeAntena(ANTENNA_1);  
+            realizaLeituraDeAntena(ANTENNA_1);  
         #else
             EPC_Estacionamento epc;
             
@@ -441,7 +453,9 @@ void CLP_executaLogica(void){
     SEL(autoRegistraEventoEntradaVeiculo)
     SUBIDA
     ENTAO_EXECUTA_BLOCO {
-        
+        removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada);
+        numQuebrasBarreiraPortaoRua = 0;
+        numQuebrasBarreiraPortaoInterno = 0;
     }// </editor-fold>      
     
     // </editor-fold> 

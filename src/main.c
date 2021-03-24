@@ -72,25 +72,10 @@ int main(void){
     
     //inicializaMaquinaDeEstados_KeepAlive(); 
     
-    //CLP_liberaExecucao();    
-    
-    // Seleciona a antena 1
-    SEL_BBA_SetHigh();
-    SEL_A1_4_SetHigh();
-    SEL_A1_2_SetHigh();
-    SEL_A3_4_SetLow();
+    CLP_liberaExecucao();         
     
     while(1){
-        LIGA_PA_SetHigh();
-        num_of_tags = inventoryGen2();
-        if(num_of_tags>=1){
-            int i=0;
-            LED_TAG_SetHigh();
-            i=1;
-        }
-        LIGA_PA_SetLow();
-        delay_ms(10);
-        LED_TAG_SetLow();
+       CLP_executa();
     }
     
     return 0;
