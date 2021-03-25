@@ -26,6 +26,18 @@ TEMPORIZADOR(tmpAguardaPortaoRuaAbrir,durTmpAguardaPortaoRuaAbrir)
 
 uint32_t durTmpAguardaPortaoInternoAbrir = 200;
 TEMPORIZADOR(tmpAguardaPortaoInternoAbrir,durTmpAguardaPortaoInternoAbrir)
+        
+uint32_t durTmpAcionaSinalAberturaPortaoRua = 200;
+TEMPORIZADOR(tmpAcionaSinalAberturaPortaoRua,durTmpAcionaSinalAberturaPortaoRua)
+        
+uint32_t durTmpDesligaSinalAberturaPortaoRua = 200;
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoRua,durTmpDesligaSinalAberturaPortaoRua)
+       
+uint32_t durTmpAcionaSinalAberturaPortaoInterno = 200;
+TEMPORIZADOR(tmpAcionaSinalAberturaPortaoInterno,durTmpAcionaSinalAberturaPortaoInterno)
+        
+uint32_t durTmpDesligaSinalAberturaPortaoInterno = 200;
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno)
 
 ////////////////////////////////////////////
 //ENTRADAS DIGITAIS

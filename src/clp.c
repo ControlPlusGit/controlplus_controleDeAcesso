@@ -87,6 +87,10 @@ void CLP_inicializaTemporizadores(void){
     CADASTRAR_TEMPORIZADOR(tmpLeituraAntenasPortaoRua)
     CADASTRAR_TEMPORIZADOR(tmpAguardaPortaoRuaAbrir)
     CADASTRAR_TEMPORIZADOR(tmpAguardaPortaoInternoAbrir)
+    CADASTRAR_TEMPORIZADOR(tmpAcionaSinalAberturaPortaoRua)
+    CADASTRAR_TEMPORIZADOR(tmpDesligaSinalAberturaPortaoRua)
+    CADASTRAR_TEMPORIZADOR(tmpAcionaSinalAberturaPortaoInterno)
+    CADASTRAR_TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno)
 }
 
 void CLP_atualizaEntradas(void){
@@ -287,25 +291,51 @@ void CLP_executaLogica(void){
         EN(fim_tmpAguardaPortaoInternoAbrir)
         MEMO(dsp_tmpAguardaPortaoInternoAbrir)
         // </editor-fold>
-    
+
+        // <editor-fold defaultstate="collapsed" desc="timer_tmpAcionaSinalAberturaPortaoRua">
+        //TEMPORIZADOR DE TEMPO ON PARA ACIONAR PORTAO RUA
+        SEL(solicSaidaAbrirPortaoRua)
+        OU(dsp_tmpAcionaSinalAberturaPortaoRua)
+        EN(fim_tmpAcionaSinalAberturaPortaoRua)
+        EN(dsp_tmpDesligaSinalAberturaPortaoRua)
+        MEMO(dsp_tmpAcionaSinalAberturaPortaoRua)
+        //TEMPORIZADOR DE TEMPO OFF PARA ACIONAR PORTAO RUA
+        SEL(solicSaidaAbrirPortaoRua)
+        E(fim_tmpAcionaSinalAberturaPortaoRua)
+        OU(dsp_tmpDesligaSinalAberturaPortaoRua)
+        EN(fim_tmpDesligaSinalAberturaPortaoRua)
+        MEMO(dsp_tmpDesligaSinalAberturaPortaoRua)
+        // </editor-fold>
+        
+        // <editor-fold defaultstate="collapsed" desc="timer_tmpAcionaSinalAberturaPortaoInterno">
+        //TEMPORIZADOR DE TEMPO ON PARA ACIONAR PORTAO INTERNO
+        SEL(solicSaidaAbrirPortaoInterno)
+        OU(dsp_tmpAcionaSinalAberturaPortaoInterno)
+        EN(fim_tmpAcionaSinalAberturaPortaoInterno)
+        MEMO(dsp_tmpAcionaSinalAberturaPortaoInterno)
+        //TEMPORIZADOR DE TEMPO OFF PARA ACIONAR PORTAO INTERNO
+        SEL(solicSaidaAbrirPortaoRua)
+        OU(dsp_tmpAcionaSinalAberturaPortaoInterno)
+        EN(fim_tmpAcionaSinalAberturaPortaoInterno)
+        MEMO(dsp_tmpAcionaSinalAberturaPortaoInterno) 
+        // </editor-fold>
+       
     // </editor-fold>    
            
-    SEL(entradaSensorBarreiraPortaoRuaAberto)
+    SEL(autoVerificaSensorBarreiraPortaoRua)
+    E(entradaSensorBarreiraPortaoRuaAberto)
     SUBIDA
+    EN(solicSaidaAlarme)
     ENTAO_EXECUTA_BLOCO{
         numQuebrasBarreiraPortaoRua++;
     }
         
-    SEL(entradaSensorBarreiraPortaoInternoAberto)
+    SEL(autoVerificaSensorBarreiraPortaoInterno)
+    E(entradaSensorBarreiraPortaoInternoAberto)
     SUBIDA
+    EN(solicSaidaAlarme)
     ENTAO_EXECUTA_BLOCO{
         numQuebrasBarreiraPortaoInterno++;
-    }
-    
-    SEL(autoAguardaInicioLogica)
-    SUBIDA
-    ENTAO_EXECUTA_BLOCO{
-        
     }
        
     // <editor-fold defaultstate="collapsed" desc="FUNCOES CONFORME PASSO">
@@ -384,8 +414,8 @@ void CLP_executaLogica(void){
 
     SEL(autoAcionaAberturaPortaoRua)
     E(entradaSensorPortaoRuaFechado)
-    EN(entradaSensorPortaoInternoAberto)
-    SUBIDA
+    E(entradaSensorPortaoInternoFechado)
+    E(dsp_tmpAcionaSinalAberturaPortaoRua)
     MEMO(solicSaidaAbrirPortaoRua)
     
     // </editor-fold>
@@ -427,7 +457,9 @@ void CLP_executaLogica(void){
     // <editor-fold defaultstate="collapsed" desc="autoAcionaAberturaPortaoInterno">    
 
     SEL(autoAcionaAberturaPortaoInterno)
-    EN(entradaSensorPortaoRuaAberto)    
+    E(entradaSensorPortaoRuaFechado)    
+    E(entradaSensorPortaoInternoFechado)
+    E(dsp_tmpAcionaSinalAberturaPortaoInterno)
     MEMO(solicSaidaAbrirPortaoInterno)
     
     // </editor-fold>
