@@ -60,13 +60,13 @@ int main(void){
     
     marsOne_init();         
      
-    //obtemDadosDaMemoriaFLASH();
+    obtemDadosDaMemoriaFLASH();
     
-    //obtemParametrosDaMemoriaEEPROM();
+    obtemParametrosDaMemoriaEEPROM();
     
-    //inicializaMaquinaDeEstados_ESP8266();   
+    inicializaMaquinaDeEstados_ESP8266();   
     
-    //inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+    inicializaMaquinaDeEstados_TabelaDeEstacionamento();
     
     //inicializaMaquinaDeEstados_DataHora();
     

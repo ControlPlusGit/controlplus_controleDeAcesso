@@ -61,9 +61,9 @@ volatile void tick ( void ){
     // FLUXO DO CLP
     
 //    
-//    executaMaquinaDeEstados_ESP8266();    
-//    executaMaquinaDeEstados_TabelaDeEstacionamento();
-//    commandHandlerPortaUSB();
+    executaMaquinaDeEstados_ESP8266();    
+    executaMaquinaDeEstados_TabelaDeEstacionamento();
+    commandHandlerPortaUSB();
 //    executaMaquinaDeEstados_DataHora();
 //    executaMaquinaDeEstados_KeepAlive();        
 }

@@ -324,12 +324,14 @@ void CLP_executaLogica(void){
     OU(autoAcionaAberturaPortaoRua)
     OU(autoVerificaSensorPortaoRuaAberto)
     OU(autoVerificaSensorBarreiraPortaoRua) 
-    OU(entradaSensorPortaoInternoAberto)    
+    OU(entradaSensorPortaoRuaAberto)  
+    EN(entradaSensorPortaoInternoAberto)
     EN(veiculoExecutandoMovimentoEntrada)
     ENTAO_EXECUTA_BLOCO {
-        uint8_t i;
-        uint8_t resultado = 0;
+        uint8_t i;        
         EPC_Estacionamento epcLido;
+        
+        tagEncontradaNaRua = 0;
         
         #ifndef DEBUG
             realizaLeituraDeAntena(ANTENNA_1);  
@@ -348,24 +350,22 @@ void CLP_executaLogica(void){
         #endif
                     
         for( i = 0; i < MAXTAG; i++){
+            
+            if(tags_[i].epclen > 0){
+                if( verificaTagValida( tags_[i].epc ) > 0 ){ // Tag veicular valida?
+                    epcLido.byte1 = tags_[i].epc[2];
+                    epcLido.byte2 = tags_[i].epc[1];
+                    if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)){ // Veiculo esta na lista?  
+                        adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);        
+                        tagEncontradaNaRua = 1;    
+                    }
+                    else{      
+                        removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);          
 
-            if( verificaTagValida( tags_[i].epc ) > 0 ){ // Tag veicular valida?
-                epcLido.byte1 = tags_[i].epc[2];
-                epcLido.byte2 = tags_[i].epc[1];
-                if( buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)){ // Veiculo esta na lista?  
-                    adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);        
-                    resultado = 1;    
-                }
-                else{      
-                    removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada,epcLido);          
-                    resultado = 0;
+                    }
                 }
             }
-            else{
-                resultado = 0;
-            }        
         }    
-        tagEncontradaNaRua = resultado;
     }
     
     // </editor-fold>
@@ -411,7 +411,7 @@ void CLP_executaLogica(void){
     // <editor-fold defaultstate="collapsed" desc="autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira">    
 
     SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)    
-    E(numQuebrasBarreiraPortaoRua == listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)    
+    E(numQuebrasBarreiraPortaoRua <= listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)    
     MEMO(entradaVeiculosRuaLiberada)
     
     // </editor-fold>
@@ -456,6 +456,7 @@ void CLP_executaLogica(void){
         removerTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada);
         numQuebrasBarreiraPortaoRua = 0;
         numQuebrasBarreiraPortaoInterno = 0;
+        tagEncontradaNaRua = 0;
     }// </editor-fold>      
     
     // </editor-fold> 
@@ -466,7 +467,7 @@ void CLP_executaLogica(void){
     SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
     EN(entradaVeiculosRuaLiberada)
     OU(solicSaidaAlarme)
-    EN(entradaSensorPortaoInternoAberto)
+    E(entradaSensorPortaoInternoFechado)
     MEMO(solicSaidaAlarme)
     
     // </editor-fold>
