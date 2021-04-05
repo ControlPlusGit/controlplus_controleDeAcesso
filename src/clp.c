@@ -309,13 +309,19 @@ void CLP_executaLogica(void){
 
         // <editor-fold defaultstate="collapsed" desc="timer_tmpAcionaSinalAberturaPortaoRua">
         //TEMPORIZADOR DE TEMPO ON PARA ACIONAR PORTAO RUA
-        SEL(solicSaidaAbrirPortaoRua)
+        SEL(autoAcionaAberturaPortaoRua)
+        OU(autoVerificaSensorPortaoRuaAberto)
+        E(entradaSensorPortaoRuaFechado)
+        E(entradaSensorPortaoInternoFechado)
         OU(dsp_tmpAcionaSinalAberturaPortaoRua)
         EN(fim_tmpAcionaSinalAberturaPortaoRua)
         EN(dsp_tmpDesligaSinalAberturaPortaoRua)
         MEMO(dsp_tmpAcionaSinalAberturaPortaoRua)
         //TEMPORIZADOR DE TEMPO OFF PARA ACIONAR PORTAO RUA
-        SEL(solicSaidaAbrirPortaoRua)
+        SEL(autoAcionaAberturaPortaoRua)
+        OU(autoVerificaSensorPortaoRuaAberto)
+        E(entradaSensorPortaoRuaFechado)
+        E(entradaSensorPortaoInternoFechado)
         E(fim_tmpAcionaSinalAberturaPortaoRua)
         OU(dsp_tmpDesligaSinalAberturaPortaoRua)
         EN(fim_tmpDesligaSinalAberturaPortaoRua)
@@ -324,15 +330,23 @@ void CLP_executaLogica(void){
         
         // <editor-fold defaultstate="collapsed" desc="timer_tmpAcionaSinalAberturaPortaoInterno">
         //TEMPORIZADOR DE TEMPO ON PARA ACIONAR PORTAO INTERNO
-        SEL(solicSaidaAbrirPortaoInterno)
+        SEL(autoAcionaAberturaPortaoInterno)
+        OU(autoVerificaSensorPortaoInternoAberto)
+        E(entradaSensorPortaoRuaFechado)    
+        E(entradaSensorPortaoInternoFechado)
         OU(dsp_tmpAcionaSinalAberturaPortaoInterno)
         EN(fim_tmpAcionaSinalAberturaPortaoInterno)
+        EN(dsp_tmpDesligaSinalAberturaPortaoInterno)
         MEMO(dsp_tmpAcionaSinalAberturaPortaoInterno)
         //TEMPORIZADOR DE TEMPO OFF PARA ACIONAR PORTAO INTERNO
-        SEL(solicSaidaAbrirPortaoRua)
-        OU(dsp_tmpAcionaSinalAberturaPortaoInterno)
-        EN(fim_tmpAcionaSinalAberturaPortaoInterno)
-        MEMO(dsp_tmpAcionaSinalAberturaPortaoInterno) 
+        SEL(autoAcionaAberturaPortaoInterno)
+        OU(autoVerificaSensorPortaoInternoAberto)
+        E(entradaSensorPortaoRuaFechado)    
+        E(entradaSensorPortaoInternoFechado)
+        E(fim_tmpAcionaSinalAberturaPortaoInterno)
+        OU(dsp_tmpDesligaSinalAberturaPortaoInterno)
+        EN(fim_tmpDesligaSinalAberturaPortaoInterno)
+        MEMO(dsp_tmpDesligaSinalAberturaPortaoInterno) 
         // </editor-fold>
        
     // </editor-fold>    
@@ -386,9 +400,12 @@ void CLP_executaLogica(void){
             tags_[0].epc[0] = 0x30;
             tags_[0].epc[1] = 0x00;
             tags_[0].epc[2] = 0x04;
-           
+            tags_[0].epclen = 1;
+            
             epc.byte1 = tags_[0].epc[2];
             epc.byte2 = tags_[0].epc[1];           
+            
+            listaDeVeiculosLiberados.ponteiroTabela = 0;
             
             adicionaNovaTagNaLista(&listaDeVeiculosLiberados,epc);
                         
@@ -427,10 +444,7 @@ void CLP_executaLogica(void){
 
     // <editor-fold defaultstate="collapsed" desc="autoAcionaAberturaPortaoRua">    
 
-    SEL(autoAcionaAberturaPortaoRua)
-    E(entradaSensorPortaoRuaFechado)
-    E(entradaSensorPortaoInternoFechado)
-    E(dsp_tmpAcionaSinalAberturaPortaoRua)
+    SEL(dsp_tmpAcionaSinalAberturaPortaoRua)
     MEMO(solicSaidaAbrirPortaoRua)
     
     // </editor-fold>
@@ -471,10 +485,7 @@ void CLP_executaLogica(void){
 
     // <editor-fold defaultstate="collapsed" desc="autoAcionaAberturaPortaoInterno">    
 
-    SEL(autoAcionaAberturaPortaoInterno)
-    E(entradaSensorPortaoRuaFechado)    
-    E(entradaSensorPortaoInternoFechado)
-    E(dsp_tmpAcionaSinalAberturaPortaoInterno)
+    SEL(dsp_tmpAcionaSinalAberturaPortaoInterno)
     MEMO(solicSaidaAbrirPortaoInterno)
     
     // </editor-fold>
