@@ -9,6 +9,9 @@
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
 
+#include "setup_usb.h"
+#include "FSM_TabelaDeEstacionamento.h"
+#include "FSM_ESP8266.h"
 
 #include "tabelaEstacionamento.h"
 #include "log.h"
@@ -53,9 +56,7 @@ TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLidosDuranteMovi
     //EEPROM_24LC256_I2C_read_uchar(0,200,&var);
 
 int main(void){
-    
-    int num_of_tags;
-    
+        
     SYSTEM_Initialize();
     
     marsOne_init();         

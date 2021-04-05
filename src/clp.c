@@ -93,11 +93,26 @@ void CLP_inicializaTemporizadores(void){
     CADASTRAR_TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno)
 }
 
+#ifdef DEBUG
+    uint8_t entradaDigitalVirtual1 = 1;
+    uint8_t entradaDigitalVirtual2 = 1;
+    uint8_t entradaDigitalVirtual3 = 0;
+    uint8_t entradaDigitalVirtual4 = 0;
+#endif
+
 void CLP_atualizaEntradas(void){
+    
+#ifndef DEBUG
     leitorMarsOne_INPUT1 = BSP_readDigitalInput(INPUT_1);
     leitorMarsOne_INPUT2 = BSP_readDigitalInput(INPUT_2);
     leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3);
     leitorMarsOne_INPUT4 = BSP_readDigitalInput(INPUT_4);
+#else    
+    leitorMarsOne_INPUT1 = entradaDigitalVirtual1;
+    leitorMarsOne_INPUT2 = entradaDigitalVirtual2;
+    leitorMarsOne_INPUT3 = entradaDigitalVirtual3;
+    leitorMarsOne_INPUT4 = entradaDigitalVirtual4;
+#endif    
     
     SED(leitorMarsOne_INPUT1)
     MEMO(entradaSensorPortaoRuaAberto)    

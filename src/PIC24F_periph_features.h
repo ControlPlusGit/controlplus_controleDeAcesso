@@ -33,7 +33,6 @@
  *****************************************************************************/
 
 #include <p24Fxxxx.h>
-#include <GenericTypeDefs.h>
 
 /* By default, configuration constants are assembled from macros */
 /* using the bit-wise AND operator (&). An alternate mode is */

@@ -74,6 +74,9 @@ extern uint8_t ELC; //Estado logico corrente
 #define SET(x)  if (ELC&1) x=x<<1|(ELC&1);
 #define RESET(x)if (ELC&1) x=x<<1;
 
+
+#define DEBUG 
+
 #ifdef	__cplusplus
 }
 #endif

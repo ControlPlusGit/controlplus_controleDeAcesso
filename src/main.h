@@ -47,8 +47,6 @@ int8_t verificarTagValida_entrada(void);
 
 extern uint8_t flagRealizaLeituraAntenaEntrada;
 
-#define DEBUG
-
 #ifdef	__cplusplus
 }
 #endif

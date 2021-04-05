@@ -17,8 +17,32 @@ extern "C" {
 ////////////////////////////////////////////
 //TEMPORIZADORES
 ////////////////////////////////////////////
+#ifdef DEBUG
+    
+uint32_t durTmpLeituraAntenasPortaoRua = 2;
+TEMPORIZADOR(tmpLeituraAntenasPortaoRua,durTmpLeituraAntenasPortaoRua)
 
-uint32_t durTmpLeituraAntenasPortaoRua = 200;
+uint32_t durTmpAguardaPortaoRuaAbrir = 2;
+TEMPORIZADOR(tmpAguardaPortaoRuaAbrir,durTmpAguardaPortaoRuaAbrir)
+
+uint32_t durTmpAguardaPortaoInternoAbrir = 2;
+TEMPORIZADOR(tmpAguardaPortaoInternoAbrir,durTmpAguardaPortaoInternoAbrir)
+        
+uint32_t durTmpAcionaSinalAberturaPortaoRua = 2;
+TEMPORIZADOR(tmpAcionaSinalAberturaPortaoRua,durTmpAcionaSinalAberturaPortaoRua)
+        
+uint32_t durTmpDesligaSinalAberturaPortaoRua = 2;
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoRua,durTmpDesligaSinalAberturaPortaoRua)
+       
+uint32_t durTmpAcionaSinalAberturaPortaoInterno = 2;
+TEMPORIZADOR(tmpAcionaSinalAberturaPortaoInterno,durTmpAcionaSinalAberturaPortaoInterno)
+        
+uint32_t durTmpDesligaSinalAberturaPortaoInterno = 2;
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno)
+
+#else
+        
+ uint32_t durTmpLeituraAntenasPortaoRua = 200;
 TEMPORIZADOR(tmpLeituraAntenasPortaoRua,durTmpLeituraAntenasPortaoRua)
 
 uint32_t durTmpAguardaPortaoRuaAbrir = 200;
@@ -37,7 +61,9 @@ uint32_t durTmpAcionaSinalAberturaPortaoInterno = 200;
 TEMPORIZADOR(tmpAcionaSinalAberturaPortaoInterno,durTmpAcionaSinalAberturaPortaoInterno)
         
 uint32_t durTmpDesligaSinalAberturaPortaoInterno = 200;
-TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno)
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno
+
+#endif
 
 ////////////////////////////////////////////
 //ENTRADAS DIGITAIS
