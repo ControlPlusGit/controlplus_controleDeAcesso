@@ -61,7 +61,7 @@ uint32_t durTmpAcionaSinalAberturaPortaoInterno = 200;
 TEMPORIZADOR(tmpAcionaSinalAberturaPortaoInterno,durTmpAcionaSinalAberturaPortaoInterno)
         
 uint32_t durTmpDesligaSinalAberturaPortaoInterno = 200;
-TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno
+TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno,durTmpDesligaSinalAberturaPortaoInterno)
 
 #endif
 
@@ -133,6 +133,8 @@ SINAL_DIGITAL(autoReiniciaEntrada)
 SINAL_DIGITAL(veiculoPresoNaClausura)
         
 SINAL_DIGITAL(veiculoExecutandoMovimentoEntrada)
+        
+SINAL_DIGITAL(flagTodosVeiculosSairamPelaEntradaPorAlarme)
 
 #ifdef	__cplusplus
 }

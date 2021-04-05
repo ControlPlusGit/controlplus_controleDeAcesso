@@ -65,6 +65,13 @@ void CLP_liberaExecucao(void){
 }
 
 void CLP_executa(void){    
+    
+#ifndef DEBUG
+    iniciarPrograma = 1;
+#else
+    iniciarPrograma = 0;
+#endif
+    
     if(clpLiberado){
         if(!inicializacaoConcluida){
             CLP_inicializaTemporizadores();
@@ -101,7 +108,7 @@ void CLP_inicializaTemporizadores(void){
 #endif
 
 void CLP_atualizaEntradas(void){
-    
+
 #ifndef DEBUG
     leitorMarsOne_INPUT1 = BSP_readDigitalInput(INPUT_1);
     leitorMarsOne_INPUT2 = BSP_readDigitalInput(INPUT_2);
@@ -247,8 +254,15 @@ void CLP_executaLogica(void){
         
         //CASO NAO ENCONTRE NINGUEM NA ANTENA DA RUA
         SEL(autoVerificaSeTagValidaFoiEncontrada)
-        EN(tagEncontradaNaRua)
-        MEMO(autoReiniciaEntrada)        
+        EN(tagEncontradaNaRua)        
+        OU(flagTodosVeiculosSairamPelaEntradaPorAlarme)
+        MEMO(autoReiniciaEntrada)  
+        
+        SEL(solicSaidaAlarme)
+        E(aberturaManualPortao1Detectada)
+        E(numQuebrasBarreiraPortaoRua == 0)
+        EN(autoReiniciaEntrada)
+        MEMO(flagTodosVeiculosSairamPelaEntradaPorAlarme)
         
         //DETECCAO DE ABERTURA MANUAL DE PORTAO DA RUA
         SED(solicSaidaAbrirPortaoRua)
@@ -352,12 +366,23 @@ void CLP_executaLogica(void){
     // </editor-fold>    
            
     SEL(autoVerificaSensorBarreiraPortaoRua)
+    OU(autoVerificaSensorPortaoRuaFechado)
     E(entradaSensorBarreiraPortaoRuaAberto)
     SUBIDA
     EN(solicSaidaAlarme)
     ENTAO_EXECUTA_BLOCO{
         numQuebrasBarreiraPortaoRua++;
     }
+        
+    SEL(entradaSensorBarreiraPortaoRuaFechado)
+    SUBIDA
+    E(solicSaidaAlarme)
+    E(aberturaManualPortao1Detectada)    
+    ENTAO_EXECUTA_BLOCO{
+        if(numQuebrasBarreiraPortaoRua > 0){
+            numQuebrasBarreiraPortaoRua--;
+        }
+    }        
         
     SEL(autoVerificaSensorBarreiraPortaoInterno)
     E(entradaSensorBarreiraPortaoInternoAberto)
@@ -526,6 +551,7 @@ void CLP_executaLogica(void){
     EN(entradaVeiculosRuaLiberada)
     OU(solicSaidaAlarme)
     E(entradaSensorPortaoInternoFechado)
+    EN(autoReiniciaEntrada)
     MEMO(solicSaidaAlarme)
     
     // </editor-fold>
