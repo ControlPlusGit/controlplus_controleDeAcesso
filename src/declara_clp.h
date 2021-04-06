@@ -101,15 +101,16 @@ SINAL_DIGITAL(autoVerificaSensorPortaoInternoAberto)
 SINAL_DIGITAL(autoVerificaSensorFechamentoPortaoInternoFechado)
 SINAL_DIGITAL(autoRegistraEventoEntradaVeiculo)
 
-SINAL_DIGITAL(iniciarPrograma);
-SINAL_DIGITAL(tagEncontradaNaRua);
-SINAL_DIGITAL(entradaSensorPortaoRuaAberto);
-SINAL_DIGITAL(sensorBarreiraPortaoRuaAcionado);
-SINAL_DIGITAL(entradaSensorPortaoRuaFechado);
-SINAL_DIGITAL(entradaVeiculosRuaLiberada);
-SINAL_DIGITAL(entradaSensorPortaoInternoAberto);
-SINAL_DIGITAL(entradaSensorPortaoInternoFechado);
-SINAL_DIGITAL(eventoEntradaVeiculoRegistrado);
+SINAL_DIGITAL(iniciarPrograma)
+SINAL_DIGITAL(tagEncontradaNaRua)
+SINAL_DIGITAL(tagEncontradaNaClausura)
+SINAL_DIGITAL(entradaSensorPortaoRuaAberto)
+SINAL_DIGITAL(sensorBarreiraPortaoRuaAcionado)
+SINAL_DIGITAL(entradaSensorPortaoRuaFechado)
+SINAL_DIGITAL(entradaVeiculosRuaLiberada)
+SINAL_DIGITAL(entradaSensorPortaoInternoAberto)
+SINAL_DIGITAL(entradaSensorPortaoInternoFechado)
+SINAL_DIGITAL(eventoEntradaVeiculoRegistrado)
 
 SINAL_DIGITAL(entradaSensorBarreiraPortaoRuaAberto)
 SINAL_DIGITAL(entradaSensorBarreiraPortaoRuaFechado)
@@ -135,6 +136,8 @@ SINAL_DIGITAL(veiculoPresoNaClausura)
 SINAL_DIGITAL(veiculoExecutandoMovimentoEntrada)
         
 SINAL_DIGITAL(flagTodosVeiculosSairamPelaEntradaPorAlarme)
+        
+SINAL_DIGITAL(flagNenhumVeiculoEntrou)
 
 #ifdef	__cplusplus
 }
