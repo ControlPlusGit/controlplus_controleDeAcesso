@@ -11,11 +11,15 @@
 #include "RFID/as3993.h"
 #include "RFID/gen2.h"
 #include "tabelaEstacionamento.h"
+#include "eventos.h"
 
 #include "main.h"
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="DECLARACAO DE VARIAVEIS">
+
+PilhaEventos eventosDePassagem;
+
 uint8_t ELC = 0;
 
 VetorTemporizador temporizadores;
@@ -66,7 +70,7 @@ void CLP_liberaExecucao(void){
 
 void CLP_executa(void){    
     
-#ifndef DEBUG
+#ifndef DEBUG //definido em clp.h
     iniciarPrograma = 1;
 #else
     iniciarPrograma = 0;
@@ -100,7 +104,7 @@ void CLP_inicializaTemporizadores(void){
     CADASTRAR_TEMPORIZADOR(tmpDesligaSinalAberturaPortaoInterno)
 }
 
-#ifdef DEBUG
+#ifdef DEBUG //definido em clp.h
     uint8_t entradaDigitalVirtual1 = 1;
     uint8_t entradaDigitalVirtual2 = 1;
     uint8_t entradaDigitalVirtual3 = 0;
@@ -109,7 +113,7 @@ void CLP_inicializaTemporizadores(void){
 
 void CLP_atualizaEntradas(void){
 
-#ifndef DEBUG
+#ifndef DEBUG //definido em clp.h
     leitorMarsOne_INPUT1 = BSP_readDigitalInput(INPUT_1);
     leitorMarsOne_INPUT2 = BSP_readDigitalInput(INPUT_2);
     leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3);
@@ -146,7 +150,7 @@ uint8_t numQuebrasBarreiraPortaoRua = 0, numQuebrasBarreiraPortaoInterno = 0;
 
 void CLP_executaLogica(void){    
     
-    // <editor-fold defaultstate="collapsed" desc="LOGICA DE ENTRADA DE VEICULOS">
+    // <editor-fold defaultstate="collapsed" desc="LOGICA DE ENTRADA/SAIDA DE VEICULOS">
     
         // <editor-fold defaultstate="collapsed" desc="LOGICA DO PROGRAMA">
 
@@ -162,6 +166,7 @@ void CLP_executaLogica(void){
         EN(autoVerificaSensorPortaoInternoAberto)
         EN(autoVerificaSensorFechamentoPortaoInternoFechado)
         EN(autoRegistraEventoEntradaVeiculo)
+        EN(aberturaManualPortao1Detectada)
         MEMO(autoAguardaInicioLogica)
 
         SEL(autoAguardaInicioLogica)
@@ -169,6 +174,7 @@ void CLP_executaLogica(void){
         OU(autoLerAntenasPortaoRua)
         EN(autoReiniciaEntrada)
         EN(autoVerificaSeTagValidaFoiEncontrada)
+        EN(aberturaManualPortao1Detectada)
         MEMO(autoLerAntenasPortaoRua)
 
         SEL(autoLerAntenasPortaoRua)
@@ -176,6 +182,7 @@ void CLP_executaLogica(void){
         OU(autoVerificaSeTagValidaFoiEncontrada)
         EN(autoReiniciaEntrada)
         EN(autoAcionaAberturaPortaoRua)
+        EN(aberturaManualPortao1Detectada)
         MEMO(autoVerificaSeTagValidaFoiEncontrada)
 
         SEL(autoVerificaSeTagValidaFoiEncontrada)
@@ -183,6 +190,7 @@ void CLP_executaLogica(void){
         OU(autoAcionaAberturaPortaoRua)
         EN(autoReiniciaEntrada)
         EN(autoVerificaSensorPortaoRuaAberto)
+        EN(aberturaManualPortao1Detectada)
         MEMO(autoAcionaAberturaPortaoRua)
 
         SEL(autoAcionaAberturaPortaoRua)
@@ -190,11 +198,13 @@ void CLP_executaLogica(void){
         OU(autoVerificaSensorPortaoRuaAberto)
         EN(autoReiniciaEntrada)
         EN(autoVerificaSensorBarreiraPortaoRua)
+        EN(aberturaManualPortao1Detectada)
         MEMO(autoVerificaSensorPortaoRuaAberto)
 
-        SEL(autoVerificaSensorPortaoRuaAberto)
-        E(entradaSensorPortaoRuaAberto)
-        OU(aberturaManualPortao1Detectada)
+        SEL(aberturaManualPortao1Detectada)
+        SUBIDA
+        OU(autoVerificaSensorPortaoRuaAberto)
+        E(entradaSensorPortaoRuaAberto)        
         OU(autoVerificaSensorBarreiraPortaoRua)
         EN(autoReiniciaEntrada)
         EN(autoVerificaSensorPortaoRuaFechado)
@@ -277,9 +287,13 @@ void CLP_executaLogica(void){
         MEMO(flagTodosVeiculosSairamPelaEntradaPorAlarme)
 
         //DETECCAO DE ABERTURA MANUAL DE PORTAO DA RUA
-        SED(solicSaidaAbrirPortaoRua)
-        EN(autoAcionaAberturaPortaoRua)
-        EN(autoVerificaSensorPortaoRuaAberto)
+//        SED(solicSaidaAbrirPortaoRua)
+//        EN(autoAcionaAberturaPortaoRua)
+//        EN(autoVerificaSensorPortaoRuaAberto)
+//        E(entradaSensorPortaoRuaAberto)
+//        MEMO(aberturaManualPortao1Detectada)
+        SED(dsp_tmpAcionaSinalAberturaPortaoRua)
+        EN(dsp_tmpDesligaSinalAberturaPortaoRua)
         E(entradaSensorPortaoRuaAberto)
         MEMO(aberturaManualPortao1Detectada)
 
@@ -378,6 +392,7 @@ void CLP_executaLogica(void){
         EN(fim_tmpAcionaSinalAberturaPortaoRua)
         EN(dsp_tmpDesligaSinalAberturaPortaoRua)
         MEMO(dsp_tmpAcionaSinalAberturaPortaoRua)
+                
         //TEMPORIZADOR DE TEMPO OFF PARA ACIONAR PORTAO RUA
         SEL(autoAcionaAberturaPortaoRua)
         OU(autoVerificaSensorPortaoRuaAberto)
@@ -435,9 +450,10 @@ void CLP_executaLogica(void){
         ENTAO_EXECUTA_BLOCO {
             uint8_t i;
             EPC_Estacionamento epcLido;
+            uint8_t num_of_tags = 0;        
 
-            #ifndef DEBUG
-            realizaLeituraDeAntena(ANTENNA_1);
+            #ifndef DEBUG //definido em clp.h
+            num_of_tags = realizaLeituraDeAntena(ANTENNA_1);
             #else
             EPC_Estacionamento epc;
 
@@ -454,46 +470,59 @@ void CLP_executaLogica(void){
             adicionaNovaTagNaLista(&listaDeVeiculosLiberados, epc);
 
             #endif
-
-            for (i = 0; i < MAXTAG; i++) {
-
-                if (tags_[i].epclen > 0) {
-                    if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
-                        epcLido.byte1 = tags_[i].epc[2];
-                        epcLido.byte2 = tags_[i].epc[1];
-                        if(!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido)){
-                            if (buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)) { // Veiculo esta na lista?  
-                                adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido);
-                                tagEncontradaNaRua = 1;
-                            } else {
-                                removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido);
+            if(num_of_tags > 0){
+                for (i = 0; i < MAXTAG; i++) {
+                    if (tags_[i].epclen > 0) {
+                        if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
+                            epcLido.byte1 = tags_[i].epc[2];
+                            epcLido.byte2 = tags_[i].epc[1];
+                            if(!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido)){
+                                if (buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)) { // Veiculo esta na lista?  
+                                    adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido);
+                                    tagEncontradaNaRua = 1;
+                                } else {
+                                    removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido);
+                                }
                             }
                         }
                     }
                 }
             }
-            
-            #ifndef DEBUG
-            realizaLeituraDeAntena(ANTENNA_2);
+            else{
+                tagEncontradaNaRua = 0;
+            }
+            #ifndef DEBUG //definido em clp.h
+            num_of_tags = realizaLeituraDeAntena(ANTENNA_2);
             #endif
 
-            for (i = 0; i < MAXTAG; i++) {
+            if(num_of_tags > 0){
+                for (i = 0; i < MAXTAG; i++) {
+                    if (tags_[i].epclen > 0) {
+                        if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
+                            epcLido.byte1 = tags_[i].epc[2];
+                            epcLido.byte2 = tags_[i].epc[1];
+                            if (!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido)) { // Veiculo esta na lista?  
+                                EventoPassagem novoEvento;
+                                uint8_t i = 0;
 
-                if (tags_[i].epclen > 0) {
-                    if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
-                        epcLido.byte1 = tags_[i].epc[2];
-                        epcLido.byte2 = tags_[i].epc[1];
-                        if (!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido)) { // Veiculo esta na lista?  
-                            adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);
-                            tagEncontradaNaClausura = 1;
-                        } else {
-                            removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);
-                            tagEncontradaNaClausura = 0;
+                                adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);
+                                tagEncontradaNaClausura = 1;
+
+                                novoEvento.id_veiculo[0] = epcLido.byte2;
+                                novoEvento.id_veiculo[1] = epcLido.byte1;
+                                novoEvento.tipoMovimento = MOVIMENTO_SAIDA; 
+                                cadastrarNovoEvento(&eventosDePassagem, novoEvento);
+
+                            } else {
+                                removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);                              
+                            }
                         }
                     }
                 }
             }
-
+            else{
+                tagEncontradaNaClausura = 0;
+            }
         }
 
         // </editor-fold>
@@ -535,6 +564,19 @@ void CLP_executaLogica(void){
         SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
         E(numQuebrasBarreiraPortaoRua <= listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela)
         MEMO(entradaVeiculosRuaLiberada)
+        
+        SEL(autoVerificaQuantidadeTagsLidasEQuebrasDeBarreira)
+        ENTAO_EXECUTA_BLOCO{
+            EventoPassagem novoEvento;
+            uint8_t i = 0;
+            
+            for( i = 0; i < listaDeVeiculosLidosDuranteMovimento_Entrada.ponteiroTabela; i++ ){
+                novoEvento.id_veiculo[0] = listaDeVeiculosLidosDuranteMovimento_Entrada.epc[i].byte2;
+                novoEvento.id_veiculo[1] = listaDeVeiculosLidosDuranteMovimento_Entrada.epc[i].byte1;
+                novoEvento.tipoMovimento = MOVIMENTO_ENTRADA;     
+                cadastrarNovoEvento(&eventosDePassagem, novoEvento);
+            }            
+        }
 
         // </editor-fold>
 
@@ -585,7 +627,7 @@ void CLP_executaLogica(void){
     // </editor-fold>
 
     //SOLICITACAO DE SAIDA PARA ABERTURA DO PORTAO DA RUA
-    SEL(dsp_tmpAcionaSinalAberturaPortaoRua) //DISPARO PERIODICO TEMPORIZADO
+    SEL(dsp_tmpAcionaSinalAberturaPortaoRua) //DISPARO PERIODICO TEMPORIZADO    
     E(entradaSensorPortaoRuaFechado)
     E(entradaSensorPortaoInternoFechado)
     MEMO(solicSaidaAbrirPortaoRua)

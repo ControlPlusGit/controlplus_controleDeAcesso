@@ -8,6 +8,7 @@
         <itemPath>src/system.h</itemPath>
         <itemPath>src/tabelaEstacionamento.h</itemPath>
         <itemPath>src/main.h</itemPath>
+        <itemPath>src/eventos.h</itemPath>
       </logicalFolder>
       <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
         <itemPath>src/BSP/bsp.h</itemPath>
@@ -81,6 +82,7 @@
         <itemPath>src/main.c</itemPath>
         <itemPath>src/system.c</itemPath>
         <itemPath>src/tabelaEstacionamento.c</itemPath>
+        <itemPath>src/eventos.c</itemPath>
       </logicalFolder>
       <logicalFolder name="BSP" displayName="BSP" projectFiles="true">
         <itemPath>src/BSP/bsp.c</itemPath>
@@ -369,6 +371,7 @@
         <property key="UART 4" value="true"/>
         <property key="UCNFG1" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>

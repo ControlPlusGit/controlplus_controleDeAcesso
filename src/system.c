@@ -170,4 +170,6 @@ void SYSTEM_Initialize(void){
                                   delay_ms);
     
     AS3993_Init();    
+    
+    loadLogCallbackFunction(uart3Tx);
 }
