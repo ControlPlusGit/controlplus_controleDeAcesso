@@ -12,6 +12,7 @@
 #include "setup_usb.h"
 #include "FSM_TabelaDeEstacionamento.h"
 #include "FSM_ESP8266.h"
+#include "FSM_KeepAlive.h"
 
 #include "tabelaEstacionamento.h"
 #include "log.h"
@@ -67,15 +68,20 @@ int main(void){
     
     inicializaMaquinaDeEstados_ESP8266();   
     
-    inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+    #ifdef FORCA_SOLICITACAO_GREENLIST
+    inicializaMaquinaDeEstados_TabelaDeEstacionamento(); 
+    #endif
+    //inicializaMaquinaDeEstados_TabelaDeEstacionamento(); // Agora a chamada fica em FSM_KeepAlive.c
     
-    //inicializaMaquinaDeEstados_DataHora();
+    inicializaMaquinaDeEstados_DataHora();
     
-    //inicializaMaquinaDeEstados_KeepAlive(); 
+    inicializaMaquinaDeEstados_KeepAlive(); 
     
     CLP_liberaExecucao();         
     
     while(1){
+        //Para teste em bancada, habilitar as flags no arquivo clp.h. 
+        //Usar a flag DEBUG apenas se quiser simular com o Simulator do MPLABX
        CLP_executa();
     }
     

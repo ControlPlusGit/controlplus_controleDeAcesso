@@ -4975,7 +4975,7 @@
     </code>
 
 */
-#define OPTO3_GetValue()         _RC13
+#define OPTO3_GetValue()         _RC13 //GPIO1
 /**
   @Summary
     Configures the GPIO pin, RC13, as an input.

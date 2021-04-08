@@ -17,6 +17,8 @@
 //#include "rtc.h"
 #include <time.h>
 #include "FSM_ESP8266.h"
+#include "system.h"
+#include "FSM_TabelaDeEstacionamento.h"
 
 #define NAO 0
 #define SIM 1
@@ -29,12 +31,20 @@
     #define TEMPO_ENTRE_ESTADOS_FSM_KEEP_ALIVE 100 // MILISEGUNDOS
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// DEFINE: TEMPO_AGUARDANDO_ACK
+// DEFINE: TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE
 // UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
 // FUNÇÃO: controlar o tempo em que a maquina fica aguardando um ACK
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
     #define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 2000  // MILISEGUNDOS
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DEFINE: TEMPO_ENTRE_KEEP_ALIVE
+// UTILIZADA EM: executaMaquinaDeEstados_KeepAlives
+// FUNÇÃO: controlar o tempo em que o keep alive eh enviado ao sistema
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
+    #define TEMPO_ENTRE_KEEP_ALIVE 5  // MINUTOS
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
@@ -127,12 +137,25 @@ enum estadosDaMaquina{
     void zeraContadorExecucao_FSM_KeepAlive(void){
         delayExecucao_KeepAlive = 0;
     }
+    
+    uint8_t minuto_atual = 0;
+    
     void executaMaquinaDeEstados_KeepAlive(void){     
        
         char* msgStartPosition;
         int msgPosition;
         int numMaiorQueZeroEncontrado;
-            
+        
+        if(minuto_atual == 0 && maquinaDeEstadosLiberada_KeepAlive == NAO){
+            minuto_atual = tick_getTimerCounter_min();
+        }
+        else{
+            if(minuto_atual + TEMPO_ENTRE_KEEP_ALIVE <= tick_getTimerCounter_min() && maquinaDeEstadosLiberada_KeepAlive == NAO){
+                minuto_atual = 0;
+                habilitaMaquinaDeEstados_KeepAlive();
+            }
+        }
+        
         incrementaContadorExecucao_FSM_KeepAlive();
         
         switch(estadoAtual_KeepAlive)
@@ -172,13 +195,17 @@ enum estadosDaMaquina{
                     
                     if(maquinaDeEstadosLiberada_KeepAlive){
                         
-                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FD;OK");                                              
+                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FD;OK;");                                              
                         
                         if(msgStartPosition != 0){
                             
                             msgPosition = (int) (msgStartPosition - bufferInterrupcaoUART4);                                
                            
-                            numMaiorQueZeroEncontrado = NAO;    
+                            numMaiorQueZeroEncontrado = NAO;  
+                            
+                            if(*(msgStartPosition+7) == 'S'){
+                                inicializaMaquinaDeEstados_TabelaDeEstacionamento();
+                            }
                                                         
                             resetarErrosDeTimeoutNoWifi();
                                       
@@ -208,7 +235,7 @@ enum estadosDaMaquina{
 
                         //sprintf(mensagemParaDebug,"FSM_KeepAlive finalizando...\n\r");
                         //escreverMensagemUSB(mensagemParaDebug);
-
+                        bloqueiaMaquinaDeEstados_KeepAlive();
                         estadoAtual_KeepAlive=AGUARDANDO_TAREFA;
                         estadoAnterior_KeepAlive=FIM_CICLO;
                         

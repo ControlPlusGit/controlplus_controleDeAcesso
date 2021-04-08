@@ -116,8 +116,8 @@ void CLP_atualizaEntradas(void){
 #ifndef DEBUG //definido em clp.h
     leitorMarsOne_INPUT1 = BSP_readDigitalInput(INPUT_1);
     leitorMarsOne_INPUT2 = BSP_readDigitalInput(INPUT_2);
-    leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3);
-    leitorMarsOne_INPUT4 = BSP_readDigitalInput(INPUT_4);
+    leitorMarsOne_INPUT3 = BSP_readDigitalInput(INPUT_3); // GPIO1
+    leitorMarsOne_INPUT4 = BSP_readDigitalInput(INPUT_4); // GPIO15
 #else    
     leitorMarsOne_INPUT1 = entradaDigitalVirtual1;
     leitorMarsOne_INPUT2 = entradaDigitalVirtual2;

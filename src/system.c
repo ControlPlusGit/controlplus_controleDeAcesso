@@ -32,6 +32,8 @@ uint16_t globalCounter_ms = 0;
 uint16_t globalCounter_seg = 0;
 uint16_t globalCounter_min = 0;
 
+uint16_t counter_ms = 0;
+
 void EX_INT1_CallBack(void){
      as3993Isr();
  }
@@ -39,8 +41,12 @@ void EX_INT1_CallBack(void){
 volatile void tick ( void ){   
     
     globalCounter_ms++;
+    counter_ms++;
     
-    if(globalCounter_ms > 1000){        
+    if(counter_ms > 1000){    
+        
+        counter_ms = 0;
+        
         if(globalCounter_seg >= 60){
             globalCounter_seg = 0;
         }      
@@ -50,6 +56,7 @@ volatile void tick ( void ){
     }
     
     if(globalCounter_seg >= 60){
+        globalCounter_seg = 0;
         if(globalCounter_min >= 60){
             globalCounter_min = 0;
         }      
@@ -65,7 +72,7 @@ volatile void tick ( void ){
     executaMaquinaDeEstados_TabelaDeEstacionamento();
     commandHandlerPortaUSB();
 //    executaMaquinaDeEstados_DataHora();
-//    executaMaquinaDeEstados_KeepAlive();        
+    executaMaquinaDeEstados_KeepAlive();        
 }
 
 uint16_t tick_getTimerCounter_ms(void){
