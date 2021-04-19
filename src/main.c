@@ -13,6 +13,7 @@
 #include "FSM_TabelaDeEstacionamento.h"
 #include "FSM_ESP8266.h"
 #include "FSM_KeepAlive.h"
+#include "FSM_DataHora.h"
 
 #include "tabelaEstacionamento.h"
 #include "log.h"

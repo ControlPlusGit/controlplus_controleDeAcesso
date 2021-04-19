@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
     #include <stdint.h>
-    #include "rtc/rtc.h"
+    #include "RTC/rtc.h"
     
     #define NUM_MAX_EVENTOS 20
     

@@ -503,7 +503,7 @@ void CLP_executaLogica(void){
                             epcLido.byte2 = tags_[i].epc[1];
                             if (!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido)) { // Veiculo esta na lista?  
                                 EventoPassagem novoEvento;
-                                uint8_t i = 0;
+                                //uint8_t i = 0;
 
                                 adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);
                                 tagEncontradaNaClausura = 1;
