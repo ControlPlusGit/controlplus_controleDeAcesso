@@ -2,6 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/clp.h</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/eventos.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/RTC/rtc.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/eventos.h</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/declara_clp.h</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/FSM_DataHora.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/clp.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/system.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/FSM_EventosDePassagem.c</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/FSM_EventosDePassagem.h</file>
+            <file>file:/home/vitor/ControlPlus/controlplus_controleDeAcesso/src/FSM_ESP8266.c</file>
+        </group>
     </open-files>
 </project-private>

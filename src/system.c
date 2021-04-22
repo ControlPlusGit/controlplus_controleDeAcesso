@@ -71,8 +71,9 @@ volatile void tick ( void ){
     executaMaquinaDeEstados_ESP8266();    
     executaMaquinaDeEstados_TabelaDeEstacionamento();
     commandHandlerPortaUSB();
-//    executaMaquinaDeEstados_DataHora();
-    executaMaquinaDeEstados_KeepAlive();        
+    executaMaquinaDeEstados_DataHora();
+    executaMaquinaDeEstados_KeepAlive();      
+    executaMaquinaDeEstados_EventosDePassagem();
 }
 
 uint16_t tick_getTimerCounter_ms(void){

@@ -14,6 +14,7 @@
 #include "FSM_ESP8266.h"
 #include "FSM_KeepAlive.h"
 #include "FSM_DataHora.h"
+#include "FSM_EventosDePassagem.h"
 
 #include "tabelaEstacionamento.h"
 #include "log.h"
@@ -77,6 +78,8 @@ int main(void){
     inicializaMaquinaDeEstados_DataHora();
     
     inicializaMaquinaDeEstados_KeepAlive(); 
+    
+    inicializaMaquinaDeEstados_EventosDePassagem();
     
     CLP_liberaExecucao();         
     

@@ -468,6 +468,8 @@ void CLP_executaLogica(void){
             listaDeVeiculosLiberados.ponteiroTabela = 0;
 
             adicionaNovaTagNaLista(&listaDeVeiculosLiberados, epc);
+            
+            num_of_tags = 1;
 
             #endif
             if(num_of_tags > 0){
@@ -493,8 +495,10 @@ void CLP_executaLogica(void){
             }
             #ifndef DEBUG //definido em clp.h
             num_of_tags = realizaLeituraDeAntena(ANTENNA_2);
+            #else
+            num_of_tags = 0;
             #endif
-
+            
             if(num_of_tags > 0){
                 for (i = 0; i < MAXTAG; i++) {
                     if (tags_[i].epclen > 0) {

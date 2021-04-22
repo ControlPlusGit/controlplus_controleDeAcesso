@@ -1,110 +1,109 @@
 /* 
- * File:   FSM_EventosDeParada.h
+ * File:   FSM_EventosDePassagem.h
  * Author: Vitor
  *
  * Created on 30 de Janeiro de 2020, 17:18
  */
 
-#ifndef EVENTOS_DE_PARADA_H
-#define	EVENTOS_DE_PARADA_H
+#ifndef EVENTOS_DE_PASSAGEM_H
+#define	EVENTOS_DE_PASSAGEM_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
     
-#define NAO 0
 #define SIM 1
     
 //#define INTERVALO_ENTRE_TENTATIVAS 500
     
-#define TEMPO_ENTRE_ESTADOS_FSM_EVENTOS_DE_PARADA 1
+#define TEMPO_ENTRE_ESTADOS_FSM_EVENTOS_DE_PASSAGEM 1
     
-#define TEMPO_AGUARDANDO_ACK_EVENTOS_DE_PARADA 2000
+#define TEMPO_AGUARDANDO_ACK_EVENTOS_DE_PASSAGEM 2000
     
 #define ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS 2000
     
-#define TAMANHO_EVENTO_DE_PARADA_EM_BYTES 30
+#define TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES 30
     
 #define NUMERO_MAXIMO_DE_EVENTOS_ARMAZENADOS 900
     
-#define VALOR_FLAG_INICIALIZACAO_EEPROM 0xA3 // Para resetar a eeprom basta mudar esse valor e gravar o firmware novamente.
+#define VALOR_FLAG_INICIALIZACAO_EEPROM 0xA4 // Para resetar a eeprom basta mudar esse valor e gravar o firmware novamente.
     
 #define ENDERECO_FLAG_INICIALIZACAO_EEPROM 1995
     
-#define MSB_ENDERECO_EVENTOS_DE_PARADA_ARMAZENADOS 1996
-#define LSB_ENDERECO_EVENTOS_DE_PARADA_ARMAZENADOS 1997
+#define MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS 1996
+#define LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS 1997
 
-#define MSB_ENDERECO_EVENTOS_DE_PARADA_ENVIADOS 1998
-#define LSB_ENDERECO_EVENTOS_DE_PARADA_ENVIADOS 1999
+#define MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS 1998
+#define LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS 1999
         
 typedef struct{    
-    unsigned char EPC_area[8];
-    unsigned char EPC_operador[8];
-    unsigned char EPC_pedestre[8];
+    unsigned char EPC_naoUsado[8];
+    unsigned char tipoMovimento[8];
+    unsigned char EPC_veiculo[8];
     unsigned char dia;
     unsigned char mes;
     unsigned char ano;
     unsigned char hora;
     unsigned char minuto;
     unsigned char segundo;
-}eventoParadaEmpilhadeira;
+}eventoPassagem;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: lerEventoDeParadaDeEmpilhadeiraNaEEPROM
-// PARÂMETROS: eventoParadaEmpilhadeira *evento, int endereco
-// UTILIZADA EM: executaMaquinaDeEstados_EventosDeParadas
+// FUNÇÃO: lerEventoDePassagemDeNaEEPROM
+// PARÂMETROS: eventoPassagem *evento, int endereco
+// UTILIZADA EM: executaMaquinaDeEstados_EventosDePassagems
 // FUNÇÃO: realiza a leitura de um evento de parada na eeprom para dentro de evento
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void lerEventoDeParadaDeEmpilhadeiraNaEEPROM(eventoParadaEmpilhadeira *evento,int endereco);
+    void lerEventoDePassagemNaEEPROM(eventoPassagem *evento,int endereco);
   
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: criarEventoDeParadaDeEmpilhadeira
-// PARÂMETROS: eventoParadaEmpilhadeira *novoEventoDeParada
-// UTILIZADA EM: logicaDeEmpilhadeiraV2
+// FUNÇÃO: criarEventoDePassagemDe
+// PARÂMETROS: eventoPassagem *novoEventoDePassagem
+// UTILIZADA EM: logicaDeV2
 // FUNÇÃO: realiza a escrita de um novo evento de parada dentro da eeprom
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void criarEventoDeParadaDeEmpilhadeira(eventoParadaEmpilhadeira *novoEventoDeParada);
+    void criarEventoDePassagem(eventoPassagem *novoEventoDePassagem);
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: inicializaMaquinaDeEstados_EventosDeParada
+// FUNÇÃO: inicializaMaquinaDeEstados_EventosDePassagem
 // PARÂMETROS: nenhum
-// UTILIZADA EM: logicaDeEmpilhadeiraV2
+// UTILIZADA EM: logicaDeV2
 // FUNÇÃO: inicializa as variáveis necessárias para o funcionamento da máquina de estados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void inicializaMaquinaDeEstados_EventosDeParada(void);
+    void inicializaMaquinaDeEstados_EventosDePassagem(void);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: habilitaMaquinaDeEstados_EventosDeParada
+// FUNÇÃO: habilitaMaquinaDeEstados_EventosDePassagem
 // PARÂMETROS: nenhum
-// UTILIZADA EM: logicaDeEmpilhadeiraV2
+// UTILIZADA EM: logicaDeV2
 // FUNÇÃO: libera a máquina de estados para execução
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void habilitaMaquinaDeEstados_EventosDeParada(void);
+    void habilitaMaquinaDeEstados_EventosDePassagem(void);
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: executaMaquinaDeEstados_EventosDeParada
+// FUNÇÃO: executaMaquinaDeEstados_EventosDePassagem
 // PARÂMETROS: nenhum
 // UTILIZADA EM: tick
 // FUNÇÃO: executa a máquina de estados. Essa função é executada com interrupção de timer
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void executaMaquinaDeEstados_EventosDeParada(void);
+    void executaMaquinaDeEstados_EventosDePassagem(void);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: bloqueiaMaquinaDeEstados_EventosDeParada
+// FUNÇÃO: bloqueiaMaquinaDeEstados_EventosDePassagem
 // PARÂMETROS: nenhum
-// UTILIZADA EM: logicaDeEmpilhadeiraV2
+// UTILIZADA EM: logicaDeV2
 // FUNÇÃO: bloqueia a execução da máquina de estados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void bloqueiaMaquinaDeEstados_EventosDeParada(void);
+    void bloqueiaMaquinaDeEstados_EventosDePassagem(void);
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// FUNÇÃO: limpaBufferNaMaquinaDeEstados_EventosDeParada
+// FUNÇÃO: limpaBufferNaMaquinaDeEstados_EventosDePassagem
 // PARÂMETROS: nenhum
-// UTILIZADA EM: executaMaquinaDeEstados_EventosDeParadas
+// UTILIZADA EM: executaMaquinaDeEstados_EventosDePassagems
 // FUNÇÃO: limpa o buffer de mensagens recebidas da UART2
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void limpaBufferNaMaquinaDeEstados_EventosDeParada(void);
+    void limpaBufferNaMaquinaDeEstados_EventosDePassagem(void);
     
 #ifdef	__cplusplus
 }

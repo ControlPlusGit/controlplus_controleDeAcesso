@@ -40,6 +40,7 @@
         <itemPath>src/FSM_KeepAlive.h</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.h</itemPath>
         <itemPath>src/setup_usb.h</itemPath>
+        <itemPath>src/FSM_EventosDePassagem.h</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.h</itemPath>
@@ -113,6 +114,7 @@
         <itemPath>src/FSM_KeepAlive.c</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.c</itemPath>
         <itemPath>src/setup_usb.c</itemPath>
+        <itemPath>src/FSM_EventosDePassagem.c</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.c</itemPath>
