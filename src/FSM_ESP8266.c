@@ -22,8 +22,8 @@
 #include "RTC/rtc.h"
 #include "RTC/DS1307.h"
 #include "BSP/bsp.h"
+#include "clp.h"
 
-#define NAO 0
 #define SIM 1
 
 #define LIGADO 1
@@ -77,7 +77,7 @@ enum{
 // UTILIZADA EM: inicializaMaquinaDeEstados_ESP8266
 // FUNÇÃO: saber quando a maquina de estado está liberada para executar
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned char maquinaDeEstadosLiberada_ESP8266  = NAO;   
+    unsigned char maquinaDeEstadosLiberada_ESP8266  = 0;   
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIAVEL: delay
@@ -114,7 +114,7 @@ enum{
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     char stringMensagemESP8266[300];
     
-    char ESP8266_inicializado = NAO;
+    char ESP8266_inicializado = 0;
     
     char ipServidorPrimario[15] = {"10.159.158.10"};
     char portaServidorPrimario[5] = {"6000"};
@@ -156,7 +156,7 @@ enum{
         }
 
     void bloqueiaMaquinaDeEstados_ESP8266(void){
-            maquinaDeEstadosLiberada_ESP8266 = NAO;
+            maquinaDeEstadosLiberada_ESP8266 = 0;
         }
 
     void limpaBufferNaMaquinaDeEstados_ESP8266(void)  {
@@ -168,7 +168,7 @@ enum{
 
     void inicializaMaquinaDeEstados_ESP8266(void){    
         if(leitorAcabouDeLigar_ESP8266){
-            leitorAcabouDeLigar_ESP8266 = NAO;    
+            leitorAcabouDeLigar_ESP8266 = 0;    
             //ipServidorEmUso = ipServidorPrimario;
             //portaServidorEmUso = portaServidorPrimario;
             ipServidorEmUso = ipRemotoPrincipal;
@@ -202,7 +202,7 @@ enum{
             errosDeTimeout++;
             if(errosDeTimeout >= NUM_MAX_ERROS_TIMEOUT){
                 errosDeTimeout = 0;
-                //ESP8266_inicializado = NAO;    
+                //ESP8266_inicializado = 0;    
                 
                 switch(servidorEmUso){
                     case PRIMARIO:
@@ -222,7 +222,7 @@ enum{
         errosDeTimeout++;
         if(errosDeTimeout >= NUM_MAX_ERROS_MAQUINA_TIMEOUT){
             errosDeTimeout = 0;
-            //ESP8266_inicializado = NAO;               
+            //ESP8266_inicializado = 0;               
             
             switch(servidorEmUso){
                 case PRIMARIO:
@@ -236,7 +236,7 @@ enum{
         }        
     }
     
-    unsigned int solicitarTrocaDeServidor = NAO;
+    unsigned int solicitarTrocaDeServidor = 0;
     
     void trocarIpDeServidor(char servidor){  
         
@@ -261,7 +261,7 @@ enum{
     }
     
     extern unsigned int debugInterfaceWifi_Silent;    
-    unsigned int wifiLiberadoParaUso = NAO;
+    unsigned int wifiLiberadoParaUso = 0;
     
     void executaMaquinaDeEstados_ESP8266(void){     
                         
@@ -525,7 +525,11 @@ enum{
                     if(maquinaDeEstadosLiberada_ESP8266){                 
                         limpaBufferNaMaquinaDeEstados_ESP8266(); 
                                
+                        #ifndef DEBUG
                         sprintf(stringMensagemESP8266,"AT+CWJAP_CUR=\"%s\",\"%s\"\r\n",ssidWifi,senhaWifi); // Credenciais de acesso da rede industrial 
+                        #else
+                        sprintf(stringMensagemESP8266,"AT+CWJAP_CUR=\"RedeTeste\",\"1234567890\"\r\n"); // Credenciais de acesso da rede industrial 
+                        #endif
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_7;
@@ -578,7 +582,7 @@ enum{
                         
                         if(solicitarTrocaDeServidor){
                             // volta para o modo de comandos AT
-                            //solicitarTrocaDeServidor = NAO;                            
+                            //solicitarTrocaDeServidor = 0;                            
                             sprintf(stringMensagemESP8266,"+++"); 
                             escreveMensagemESP8266(stringMensagemESP8266);
                             delay_ms(50);                            
@@ -605,7 +609,7 @@ enum{
                              
                              estadoAtual_ESP8266 = ENVIAR_MENSAGEM_9;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_8;
-                             solicitarTrocaDeServidor = NAO;
+                             solicitarTrocaDeServidor = 0;
                              statusConexaoWifi_ESP8266 = CONECTADO;
                              wifiLiberadoParaUso = SIM;
                         }
@@ -621,7 +625,7 @@ enum{
                                if(strstr(bufferInterrupcaoUART4,"no ip")!=0)
                                 {                 
                                      limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                                     solicitarTrocaDeServidor = NAO;
+                                     solicitarTrocaDeServidor = 0;
                                      if(logConectividadeWifi){
                                          //dataHora_ESP8266 = localtime(&Tempo);
                                          RTC_calendarRequest(&dataHora_ESP8266);
@@ -648,7 +652,7 @@ enum{
                                     }
                                 }
                            }                           
-                           wifiLiberadoParaUso = NAO;
+                           wifiLiberadoParaUso = 0;
                        }
                     }  
                 }

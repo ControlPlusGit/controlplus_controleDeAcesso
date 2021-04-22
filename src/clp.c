@@ -468,6 +468,8 @@ void CLP_executaLogica(void){
             listaDeVeiculosLiberados.ponteiroTabela = 0;
 
             adicionaNovaTagNaLista(&listaDeVeiculosLiberados, epc);
+            
+            num_of_tags = 1;
 
             #endif
             if(num_of_tags > 0){
@@ -493,8 +495,10 @@ void CLP_executaLogica(void){
             }
             #ifndef DEBUG //definido em clp.h
             num_of_tags = realizaLeituraDeAntena(ANTENNA_2);
+            #else
+            num_of_tags = 0;
             #endif
-
+            
             if(num_of_tags > 0){
                 for (i = 0; i < MAXTAG; i++) {
                     if (tags_[i].epclen > 0) {
@@ -503,7 +507,7 @@ void CLP_executaLogica(void){
                             epcLido.byte2 = tags_[i].epc[1];
                             if (!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido)) { // Veiculo esta na lista?  
                                 EventoPassagem novoEvento;
-                                uint8_t i = 0;
+                                //uint8_t i = 0;
 
                                 adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);
                                 tagEncontradaNaClausura = 1;

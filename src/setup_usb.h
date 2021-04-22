@@ -50,10 +50,10 @@
 #define END_AJUSTE_CAP1_ANTENA_8                        28
 #define END_AJUSTE_CAP2_ANTENA_8                        29
 #define END_FREQUENCIA                                  30
-#define END_ID_DO_LEITOR_0                              31 // 0xxx
-#define END_ID_DO_LEITOR_1                              32 // x0xx
-#define END_ID_DO_LEITOR_2                              33 // xx0x
-#define END_ID_DO_LEITOR_3                              34 // xxx0
+#define END_ID_DO_LEITOR_0                              31 // 0xxxxx
+#define END_ID_DO_LEITOR_1                              32 // x0xxxx
+#define END_ID_DO_LEITOR_2                              33 // xx0xxx
+#define END_ID_DO_LEITOR_3                              34 // xxx0xx
 #define END_IP_REMOTO_PRINCIPAL_0                       35 // 000.xxx.xxx.xxx
 #define END_IP_REMOTO_PRINCIPAL_1                       36 // xxx.000.xxx.xxx
 #define END_IP_REMOTO_PRINCIPAL_2                       37 // xxx.xxx.000.xxx
@@ -122,6 +122,8 @@
 #define END_INTENSIDADE_REFLEXAO_ANTENA_7_LSB          100 // xx00
 #define END_INTENSIDADE_REFLEXAO_ANTENA_8_MSB          101 // 00xx
 #define END_INTENSIDADE_REFLEXAO_ANTENA_8_LSB          102 // xx00
+#define END_ID_DO_LEITOR_4                             103 // xxxx0x
+#define END_ID_DO_LEITOR_5                             104 // xxxxx0
 
 
 enum ComandosInterfaceAjustes{
@@ -204,7 +206,7 @@ extern unsigned int  reflexaoAntena6;
 extern unsigned int  reflexaoAntena7;
 extern unsigned int  reflexaoAntena8;
 extern unsigned char frequenciaDeOperacao;
-extern unsigned char idDoLeitor[4];
+extern unsigned char idDoLeitor[20];
 extern unsigned char rssiMinAntena1;
 extern unsigned char rssiMinAntena2;
 extern unsigned char rssiMinAntena3;

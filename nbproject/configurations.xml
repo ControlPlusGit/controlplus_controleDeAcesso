@@ -40,6 +40,7 @@
         <itemPath>src/FSM_KeepAlive.h</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.h</itemPath>
         <itemPath>src/setup_usb.h</itemPath>
+        <itemPath>src/FSM_EventosDePassagem.h</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.h</itemPath>
@@ -113,6 +114,7 @@
         <itemPath>src/FSM_KeepAlive.c</itemPath>
         <itemPath>src/FSM_TabelaDeEstacionamento.c</itemPath>
         <itemPath>src/setup_usb.c</itemPath>
+        <itemPath>src/FSM_EventosDePassagem.c</itemPath>
       </logicalFolder>
       <logicalFolder name="I2C1" displayName="I2C1" projectFiles="true">
         <itemPath>src/I2C1/i2c1_driver.c</itemPath>
@@ -164,7 +166,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.24</languageToolchainVersion>
-        <platform>3</platform>
+        <platform>2</platform>
       </toolsSet>
       <packs>
         <pack name="PIC24F-DA-GB_DFP" vendor="Microchip" version="1.3.63"/>
@@ -188,6 +190,7 @@
       </compileType>
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeUseCleanTarget>false</makeUseCleanTarget>
         <makeCustomizationPreStep></makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep></makeCustomizationPostStep>
