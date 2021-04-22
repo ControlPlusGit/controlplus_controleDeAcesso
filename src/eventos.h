@@ -18,8 +18,10 @@ extern "C" {
     #define NUM_MAX_EVENTOS 20
     
     typedef enum{
-        MOVIMENTO_ENTRADA = 0,
-        MOVIMENTO_SAIDA
+        MOVIMENTO_SAIDA = 0,
+        MOVIMENTO_ENTRADA,
+        MOVIMENTO_ENTRADA_SAIDA,
+        MOVIMENTO_SAIDA_ENTRADA
     }TipoMovimento;
     
     typedef struct{

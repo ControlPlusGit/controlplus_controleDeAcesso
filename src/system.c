@@ -23,6 +23,7 @@
 #include "setup_usb.h"
 #include "FSM_DataHora.h"
 #include "FSM_KeepAlive.h"
+#include "FSM_EventosDePassagem.h"
 
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"

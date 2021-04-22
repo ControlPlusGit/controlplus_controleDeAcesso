@@ -276,7 +276,7 @@ enum estadosDaMaquina{
                         //delay++;
                         //if(delay>INTERVALO_ENTRE_TENTATIVAS){
                             sprintf(stringMensagemEvento,"GET /tag/php/apiff.php?parametro=[FF;%c%c%c%c%c%c;%c;%c%c%c%c;%02d%02d%02d;%02d%02d%02d] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n",
-                                    '0','0',idLeitor[0],idLeitor[1],idLeitor[2],idLeitor[3],     
+                                    idLeitor[0],idLeitor[1],idLeitor[2],idLeitor[3],idDoLeitor[4],idDoLeitor[5],
                                     (novoEventoDePassagem.tipoMovimento[0]==MOVIMENTO_ENTRADA ? 'E':'S'),
                                     novoEventoDePassagem.EPC_veiculo[0],novoEventoDePassagem.EPC_veiculo[1],novoEventoDePassagem.EPC_veiculo[2],novoEventoDePassagem.EPC_veiculo[3],
                                     novoEventoDePassagem.dia,novoEventoDePassagem.mes,novoEventoDePassagem.ano,
