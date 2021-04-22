@@ -1,1 +1,0 @@
- -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    -Wa,-g,--no-relax$(MP_EXTRA_AS_POST) /home/vitor/0_MPLABX_V5.45/controlplus_controleDeAcesso/src/FLASH/flash.s

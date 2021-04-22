@@ -45,7 +45,7 @@ unsigned int  reflexaoAntena7;
 unsigned int  reflexaoAntena8;
 
 unsigned char frequenciaDeOperacao;
-unsigned char idDoLeitor[4];
+unsigned char idDoLeitor[20];
 unsigned char firmware[20] = FIRMWARE;
 
 unsigned char rssiMinAntena1;
@@ -818,11 +818,13 @@ void setaFrequenciaDeOperacao(void){
 
 void setaIdDoLeitor(void){
     
-    if(bufferRxUSB[11] == '\r' && bufferRxUSB[12] == '\n'){
+    if(bufferRxUSB[13] == '\r' && bufferRxUSB[14] == '\n'){
         EscreverNaEEprom(END_ID_DO_LEITOR_0, bufferRxUSB[7]);
         EscreverNaEEprom(END_ID_DO_LEITOR_1, bufferRxUSB[8]);
         EscreverNaEEprom(END_ID_DO_LEITOR_2, bufferRxUSB[9]);
         EscreverNaEEprom(END_ID_DO_LEITOR_3, bufferRxUSB[10]);
+        EscreverNaEEprom(END_ID_DO_LEITOR_4, bufferRxUSB[11]);
+        EscreverNaEEprom(END_ID_DO_LEITOR_5, bufferRxUSB[12]);
         retornaOk();
         return;
     }
@@ -1167,8 +1169,12 @@ void obtemIdDoLeitor(void){
     mensagem[2] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_3, &aux);
     mensagem[3] = (char)aux;
-    mensagem[4] = '\r';
-    mensagem[5] = '\n';
+    LerDadosDaEEprom(END_ID_DO_LEITOR_4, &aux);
+    mensagem[4] = (char)aux;
+    LerDadosDaEEprom(END_ID_DO_LEITOR_5, &aux);
+    mensagem[5] = (char)aux;
+    mensagem[6] = '\r';
+    mensagem[7] = '\n';
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));    
 }
 
@@ -1176,9 +1182,11 @@ void retornaIdDoLeitor(unsigned char *pointer){
     uint16_t addr = (uint16_t) pointer;
     
     *pointer++ = idDoLeitor[0];
-    *pointer++ = idDoLeitor[0];
-    *pointer++ = idDoLeitor[0];
-    *pointer++ = idDoLeitor[0];
+    *pointer++ = idDoLeitor[1];
+    *pointer++ = idDoLeitor[2];
+    *pointer++ = idDoLeitor[3];
+    *pointer++ = idDoLeitor[4];
+    *pointer++ = idDoLeitor[5];
     
     pointer = (unsigned char*) addr;
 }
@@ -1503,6 +1511,8 @@ void obtemParametrosDaMemoriaEEPROM(void){
     LerDadosDaEEprom(END_ID_DO_LEITOR_1, &idDoLeitor[1]);
     LerDadosDaEEprom(END_ID_DO_LEITOR_2, &idDoLeitor[2]);
     LerDadosDaEEprom(END_ID_DO_LEITOR_3, &idDoLeitor[3]);
+    LerDadosDaEEprom(END_ID_DO_LEITOR_4, &idDoLeitor[4]);
+    LerDadosDaEEprom(END_ID_DO_LEITOR_5, &idDoLeitor[5]);
     
     //EpcTagEmpilhadeira[0] = (char)((idDoLeitor[0]-'0')<<4 | (idDoLeitor[1]-'0'));
     //EpcTagEmpilhadeira[1] = (char)((idDoLeitor[2]-'0')<<4 | (idDoLeitor[3]-'0'));
@@ -1605,7 +1615,7 @@ void exibirParametrosObtidos(void){
     sprintf(mensagem, "FREQUENCIA OPERACAO: %02d\r\n", frequenciaDeOperacao);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "ID DO LEITOR:        %c%c%c%c\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3]);
+    sprintf(mensagem, "ID DO LEITOR:        %c%c%c%c%c%c\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));    
     
     sprintf(mensagem, "IP REMOTO PRINC.:    %s\r\n", ipRemotoPrincipal);

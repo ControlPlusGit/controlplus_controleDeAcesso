@@ -23,6 +23,7 @@
 #include "setup_usb.h"
 #include "FSM_DataHora.h"
 #include "FSM_KeepAlive.h"
+#include "FSM_EventosDePassagem.h"
 
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
@@ -71,8 +72,9 @@ volatile void tick ( void ){
     executaMaquinaDeEstados_ESP8266();    
     executaMaquinaDeEstados_TabelaDeEstacionamento();
     commandHandlerPortaUSB();
-//    executaMaquinaDeEstados_DataHora();
-    executaMaquinaDeEstados_KeepAlive();        
+    executaMaquinaDeEstados_DataHora();
+    executaMaquinaDeEstados_KeepAlive();      
+    executaMaquinaDeEstados_EventosDePassagem();
 }
 
 uint16_t tick_getTimerCounter_ms(void){
