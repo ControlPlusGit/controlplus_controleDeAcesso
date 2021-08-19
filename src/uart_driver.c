@@ -46,8 +46,11 @@
 #include <uart.h>
 #include "string.h"
 #include "delay.h"
-#include "FSM_DataHora.h"
+//#include "FSM_DataHora.h"
 #include "setup_usb.h"
+#include "p24FJ256DA210.h"
+#include <xc.h>
+#include <p24Fxxxx.h>
 /*
  *
  *
@@ -657,39 +660,50 @@ void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt (void){
         }
     }    
 }
- char bufferInterrupcaoUART2[100];
- 
+//char bufferRxEthernet[TAMANHO_BUFFER_ISR_UART2];
+
+char __attribute__((far)) bufferRxEthernet[TAMANHO_BUFFER_ISR_UART2];
+
 void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt (void){ // Porta usada para receber dados de ETH
  
-    U2RX_Clear_Intr_Status_Bit;
+    //U2RX_Clear_Intr_Status_Bit;
+    //IFS1bits.U2RXIF = 0;
     INTCON1bits.NSTDIS = 1; //habilita o aninhamento de interrupcoes
-    //INTCON1bits.NSTDIS = 1;
+    IFS1bits.U2RXIF = 0;
+    IEC1bits.U2RXIE = 0;
     
-    int posicao = 0;
-    int EsperaChegadaDeDados = 500;    
-    while(EsperaChegadaDeDados != 0){
-        EsperaChegadaDeDados = EsperaChegadaDeDados - 1;
+    IEC0bits.T1IE = 0;
+    IEC0bits.T2IE = 0;
+    IEC0bits.T3IE = 0;
     
-        if (U2STAbits.OERR || U2STAbits.FERR){
-                if (U2STAbits.OERR)
-                    U2STAbits.OERR = 0;
-
-                if (U2STAbits.FERR)
-                    U2STAbits.FERR = 0;
-        } 
-        else {
-            while(DataRdyUART2()){
-
-                char Dado;    
-                Dado = ReadUART2();
-                EsperaChegadaDeDados = 500;
-                if(posicao<2000){
-                    bufferInterrupcaoUART2[posicao] = Dado;
-                    posicao++;                  
-                }                
-            }
-        }
-    }    
+    IEC3bits.RTCIE = 0;
+    U2STAbits.OERR = 0;
+    U2STAbits.FERR = 0;
+    U2STAbits.PERR = 0;
+    
+    
+    unsigned int posicao = 0;
+    unsigned int esperaChegadaDeDados = 0;
+    unsigned char dado;
+    
+    esperaChegadaDeDados = 0;
+    while(esperaChegadaDeDados < 500){
+        esperaChegadaDeDados = esperaChegadaDeDados + 1;
+        while(U2STAbits.URXDA == 1){ // enquanto houver dados disponiveis
+            U2STAbits.URXDA = 0;
+            dado = U2RXREG;
+            bufferRxEthernet[posicao] = dado;
+            posicao = posicao + 1;
+            esperaChegadaDeDados = 0;
+        }    
+    }
+    
+    IEC0bits.T1IE = 1;
+    IEC0bits.T2IE = 1;
+    IEC0bits.T3IE = 1;
+    
+    IEC1bits.U2RXIE = 1;
+    
 }
 
 void __attribute__((interrupt, no_auto_psv)) _U3ErrInterrupt (void){
@@ -756,6 +770,8 @@ void __attribute__((interrupt, no_auto_psv)) _U3RXInterrupt (void){ //Porta usad
 extern int ResultadoProtocolo;
 
 char __attribute__((far)) bufferInterrupcaoUART4[TAMANHO_BUFFER_ISR_UART4];
+
+
 
 void __attribute__((interrupt, no_auto_psv)) _U4RXInterrupt (void){ // Wifi
     U4RX_Clear_Intr_Status_Bit;

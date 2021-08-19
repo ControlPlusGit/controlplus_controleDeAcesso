@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 #include "system.h"
-#include "clp.h"
+//#include "clp.h"
 
 #include "uart_driver.h" //REMOVER FUTURAMENTE
 #include "spi1.h"
@@ -18,75 +18,86 @@
 #include "EEPROM/24LC256.h"
 #include "RFID/as3993.h"
 
-#include "FSM_ESP8266.h"
-#include "FSM_TabelaDeEstacionamento.h"
+//#include "FSM_ESP8266.h"
+//#include "FSM_TabelaDeEstacionamento.h"
 #include "setup_usb.h"
-#include "FSM_DataHora.h"
-#include "FSM_KeepAlive.h"
-#include "FSM_EventosDePassagem.h"
+//#include "FSM_DataHora.h"
+//#include "FSM_KeepAlive.h"
+//#include "FSM_EventosDePassagem.h"
 
 #include "BSP/bsp.h"
 #include "BSP/rfid_bsp.h"
 #include "BSP/pin_manager.h"
+#include "USR_TCP232.h"
+#include "controleAcessoGaragem.h"
 
-uint16_t globalCounter_ms = 0;
-uint16_t globalCounter_seg = 0;
-uint16_t globalCounter_min = 0;
+
+uint16_t contador100MiliSegundos = 0;
+uint16_t contadorSegundos = 0;
+uint16_t contadorMinutos = 0;
+
 
 uint16_t counter_ms = 0;
+uint16_t tickAlarme = 0;
 
 void EX_INT1_CallBack(void){
      as3993Isr();
  }
 
-volatile void tick ( void ){   
+volatile void tick(void){   
+
+    contador100MiliSegundos = contador100MiliSegundos + 1;
+    tickAlarme = tickAlarme + 1;
     
-    globalCounter_ms++;
-    counter_ms++;
-    
-    if(counter_ms > 1000){    
-        
-        counter_ms = 0;
-        
-        if(globalCounter_seg >= 60){
-            globalCounter_seg = 0;
-        }      
-        else{
-            globalCounter_seg++;
-        }
+    if(tickAlarme > 300){
+        tickAlarme = 0;
+        trataAlarmeDoPortaoDeGaragem();
     }
     
-    if(globalCounter_seg >= 60){
-        globalCounter_seg = 0;
-        if(globalCounter_min >= 60){
-            globalCounter_min = 0;
-        }      
-        else{
-            globalCounter_min++;
-        }
-    }   
+//    if(contadorExecucaoMaquinaEstadosUSRTCP232 >= 1000){
+//        contadorExecucaoMaquinaEstadosUSRTCP232 = 0;
+//        executaMaquinaDeEstadosUSRTCP232();
+//    }else{
+//        contadorExecucaoMaquinaEstadosUSRTCP232++;
+//    }
     
-    // FLUXO DO CLP
+ 
     
-//    
-    executaMaquinaDeEstados_ESP8266();    
-    executaMaquinaDeEstados_TabelaDeEstacionamento();
+    if(contador100MiliSegundos > 100){    
+        contador100MiliSegundos = 0;
+        contadorSegundos = contadorSegundos + 1;
+    
+    }
+
+    if(contadorSegundos >= 10){
+        contadorSegundos = 0;
+        contadorMinutos = contadorMinutos + 1;
+        
+    }
+    
+    if(contadorMinutos >= 60){
+        contadorMinutos = 0;
+               
+    }
+ 
+    //executaMaquinaDeEstados_TabelaDeEstacionamento();
+    //executaMaquinaDeEstadosUSRTCP232();
     commandHandlerPortaUSB();
-    executaMaquinaDeEstados_DataHora();
-    executaMaquinaDeEstados_KeepAlive();      
-    executaMaquinaDeEstados_EventosDePassagem();
+    //executaMaquinaDeEstados_EventosDePassagem();
 }
+    
+
 
 uint16_t tick_getTimerCounter_ms(void){
-    return globalCounter_ms;
+    return contador100MiliSegundos;
 }
 
 uint16_t tick_getTimerCounter_seg(void){
-    return globalCounter_seg;
+    return contadorSegundos;
 }
 
 uint16_t tick_getTimerCounter_min(void){
-    return globalCounter_min;
+    return contadorMinutos;
 }
 
 void AS3993_Init(void){

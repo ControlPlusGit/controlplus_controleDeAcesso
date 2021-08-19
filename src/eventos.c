@@ -1,119 +1,154 @@
 #include "eventos.h"
 #include <stdint.h>
+#include <string.h>
 #include "clp.h"
 #include "log.h"
-#include "FSM_EventosDePassagem.h"
 #include "RTC/rtc.h"
+#include "tabelaEstacionamento.h"
+#include "EEPROM/eeprom.h"
+#include "EEPROM/24LC256.h"
+#include "setup_usb.h"
+#include "USR_TCP232.h"
+//#include "FSM_EventosDePassagem.h"
 
 uint8_t string[100];
+unsigned int eventosDePassagemCadastrados = 0;
+unsigned int eventosDePassagemEnviados = 0;
 
-extern eventoPassagem novoEventoDePassagem;
 
-int8_t cadastrarNovoEvento(PilhaEventos *pilhaEventos, EventoPassagem evento){
+unsigned char idLeitor[20];
+
+//extern eventoPassagem novoEventoDePassagem;
+
+//unsigned char cadastrarNovoEvento(EPC_Estacionamento veiculo, char movimento){
+unsigned char cadastrarNovoEvento(unsigned int veiculo, char movimento){
     
+    unsigned int endereco;
+    unsigned char temp = 0;
+    unsigned char numVeiculo[2];
     Calendar dataHora;
     
-    if(pilhaEventos->numEventos >= NUM_MAX_EVENTOS){
-        pilhaEventos->numEventos = 0;
+    endereco = ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS + (eventosDePassagemCadastrados * TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES);
+    RTC_calendarRequest(&dataHora); 
+
+    numVeiculo[0] =  veiculo & 0x00FF;
+    numVeiculo[1] =  veiculo >> 8 & 0x00FF;
+    
+    EscreverNaEEprom(endereco, 0xAA);
+    EscreverNaEEprom(endereco+1, numVeiculo[0]); //EscreverNaEEprom(endereco+1, veiculo.numVeiculo[0]);
+    EscreverNaEEprom(endereco+2, numVeiculo[1]); //EscreverNaEEprom(endereco+2, veiculo.numVeiculo[1]);
+    EscreverNaEEprom(endereco+3, movimento);
+    EscreverNaEEprom(endereco+4, dataHora.tm_mday);
+    EscreverNaEEprom(endereco+5, dataHora.tm_mon);
+    EscreverNaEEprom(endereco+6, dataHora.tm_year);
+    EscreverNaEEprom(endereco+7, dataHora.tm_hour);
+    EscreverNaEEprom(endereco+8, dataHora.tm_min);
+    EscreverNaEEprom(endereco+9, dataHora.tm_sec);
+
+    eventosDePassagemCadastrados = eventosDePassagemCadastrados + 1;
+    if(eventosDePassagemCadastrados > NUM_MAX_EVENTOS_CADASTRADOS){
+        eventosDePassagemCadastrados = 0;
     }
-    if(!buscarEvento(pilhaEventos, evento)){
-        pilhaEventos->eventos[pilhaEventos->numEventos++] = evento;        
-                
-        //IMPLEMENTANDO GRAVACAO DE EVENTO NA EEPROM
+
+    temp = (unsigned char)(eventosDePassagemCadastrados >> 8);
+    EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,temp);
+    temp = (unsigned char)eventosDePassagemCadastrados & 0x00FF;
+    EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,temp); 
+    return 1;    
+}
+
+
+
+void inicializaEventosDePassagem(void){
+    unsigned int temp = 0;
+
+    //Carrega ultima posição de eventos de passagem armazenados na eeprom
+    LerDadosDaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, &temp);
+    eventosDePassagemCadastrados = (unsigned int)temp << 8;
+    LerDadosDaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, &temp);
+    eventosDePassagemCadastrados |= (unsigned int)temp;
+
+    //Carrega ultima posição de eventos de passagem enviados para o server
+    LerDadosDaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, &temp);
+    eventosDePassagemEnviados = (unsigned int)temp << 8;
+    LerDadosDaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, &temp);
+    eventosDePassagemEnviados |= (unsigned int)temp;
+
+    retornaIdDoLeitor(idLeitor);
+}
+
+
+void lerEventoDePassagemNaEEPROM(eventoPassagem *evento,int endereco){      
         
-        novoEventoDePassagem.EPC_naoUsado[0] = '0';
-        novoEventoDePassagem.EPC_naoUsado[1] = '0';
-        novoEventoDePassagem.EPC_naoUsado[2] = '0';
-        novoEventoDePassagem.EPC_naoUsado[3] = '0';
-        novoEventoDePassagem.EPC_naoUsado[4] = '0';
-        novoEventoDePassagem.EPC_naoUsado[5] = '0';
-        novoEventoDePassagem.EPC_naoUsado[6] = '0';
-        novoEventoDePassagem.EPC_naoUsado[7] = '0';
+    LerDadosDaEEprom(endereco, &evento->flagDeRegistro);
+    LerDadosDaEEprom(endereco+1, &evento->EPC_veiculo[0]);
+    LerDadosDaEEprom(endereco+2, &evento->EPC_veiculo[1]);
+    LerDadosDaEEprom(endereco+3, &evento->tipoMovimento);
+    LerDadosDaEEprom(endereco+4, &evento->dia);
+    LerDadosDaEEprom(endereco+5, &evento->mes);
+    LerDadosDaEEprom(endereco+6, &evento->ano);
+    LerDadosDaEEprom(endereco+7, &evento->hora);
+    LerDadosDaEEprom(endereco+8, &evento->minuto);
+    LerDadosDaEEprom(endereco+9, &evento->segundo);
 
-        novoEventoDePassagem.tipoMovimento[0] = evento.tipoMovimento;
-        novoEventoDePassagem.tipoMovimento[1] = '0';
-        novoEventoDePassagem.tipoMovimento[2] = '0';
-        novoEventoDePassagem.tipoMovimento[3] = '0';
-        novoEventoDePassagem.tipoMovimento[4] = '0';
-        novoEventoDePassagem.tipoMovimento[5] = '0';
-        novoEventoDePassagem.tipoMovimento[6] = '0';
-        novoEventoDePassagem.tipoMovimento[7] = '0';
+}
 
-        novoEventoDePassagem.EPC_veiculo[0] = (((unsigned char)evento.id_veiculo[0] >> 4) + '0');
-        novoEventoDePassagem.EPC_veiculo[1] = (((unsigned char)evento.id_veiculo[0] & 0x0F) + '0');
-        novoEventoDePassagem.EPC_veiculo[2] = (((unsigned char)evento.id_veiculo[1] >> 4) + '0');
-        novoEventoDePassagem.EPC_veiculo[3] = (((unsigned char)evento.id_veiculo[1] & 0x0F) + '0');
-        novoEventoDePassagem.EPC_veiculo[4] = '0';
-        novoEventoDePassagem.EPC_veiculo[5] = '0';
-        novoEventoDePassagem.EPC_veiculo[6] = '0';
-        novoEventoDePassagem.EPC_veiculo[7] = '0';
 
-        RTC_calendarRequest(&dataHora); 
-
-        novoEventoDePassagem.dia = dataHora.tm_mday;
-        novoEventoDePassagem.mes = dataHora.tm_mon+1;
-        novoEventoDePassagem.ano = dataHora.tm_year-100;
-
-        novoEventoDePassagem.hora = dataHora.tm_hour;
-        novoEventoDePassagem.minuto = dataHora.tm_min;
-        novoEventoDePassagem.segundo = dataHora.tm_sec;
-
-        //inicializaMaquinaDeEstados_EventosDePassagem();                    
-
-        criarEventoDePassagem(&novoEventoDePassagem);                    
-
-        //bloqueiaMaquinaDeEstados_EventosDePassagem(); 
-        
-        //FIM DA GRAVACAO DE EVENTO NA EEPROM
-        
-        #ifdef LOG_EVENTOS //definido em clp.h
-        sprintf(string,"\n\rVeiculo %02x%02x fez um movimento de %s",evento.id_veiculo[0],evento.id_veiculo[1],(evento.tipoMovimento == MOVIMENTO_ENTRADA ? "SAIDA":"ENTRADA"));
-        logMsg(string);
-        sprintf(string,"\n\rNum. Eventos: %d",pilhaEventos->numEventos);
-        logMsg(string);
-        #endif
-        
+unsigned char VerificaSeHaEventosParaSeremEnviados(void){
+    if(eventosDePassagemCadastrados != eventosDePassagemEnviados){
         return 1;
-        
     }
-    else{
-        return 0;
-    }        
-    
+    return 0;
 }
 
-int8_t buscarEvento(PilhaEventos *pilhaEventos, EventoPassagem evento){
+
+void IncrementaContadorDeEventosEnviados(void){
+    unsigned char temp = 0;
     
-    uint16_t i=0;
-    
-    for(i = 0; i < pilhaEventos->numEventos; i++){
-        if(pilhaEventos->eventos[i].id_veiculo[0] == evento.id_veiculo[0] &&
-           pilhaEventos->eventos[i].id_veiculo[1] == evento.id_veiculo[1] &&
-           pilhaEventos->eventos[i].tipoMovimento == evento.tipoMovimento){
-            return 1;
-        }        
-    }
-    return 0;    
+    eventosDePassagemEnviados++;
+    temp = (unsigned char)(eventosDePassagemEnviados >> 8);
+    EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, temp);
+    temp = (unsigned char)eventosDePassagemEnviados & 0x00FF;
+    EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, temp);  
 }
 
-int8_t removerEvento(PilhaEventos *pilhaEventos, EventoPassagem evento){
-    uint16_t i = 0;
-    uint16_t j = 0;
-    
-    for(i = 0; i < pilhaEventos->numEventos; i++){
-        if(pilhaEventos->eventos[i].id_veiculo == evento.id_veiculo &&
-           pilhaEventos->eventos[i].tipoMovimento == evento.tipoMovimento){
-            
-            pilhaEventos->eventos[i].id_veiculo[0] = 0;
-            pilhaEventos->eventos[i].id_veiculo[1] = 0;
-            pilhaEventos->eventos[i].tipoMovimento = 0;
-            //pilhaEventos->eventos[i].dataEvento;
-            
-            for(j = i; j < pilhaEventos->numEventos-1; j++){
-                pilhaEventos->eventos[j] = pilhaEventos->eventos[j+1];
-            }
-            return 1;
-        }        
-    }
-    return 0;   
+void ReiniciaPonteiroDeMemoriaDosEventosNaEeprom(void){
+    EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, 0);
+    EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, 0);
+    EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, 0);
+    EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, 0);
+    eventosDePassagemCadastrados = 0;
+    eventosDePassagemEnviados = 0;
 }
+
+
+void limpaEventosArmazenadosNaEeprom(void){
+    unsigned int i;
+    unsigned int posicaoInicialDoRegistro;
+    unsigned char mensagem[50];
+    
+    sprintf(mensagem, "limpando memoria de eventos\r\n");
+    enviaDadosParaUSBserial(mensagem, strlen(mensagem));
+    
+    for(i = 0; i < NUM_MAX_EVENTOS_CADASTRADOS; i++){
+        posicaoInicialDoRegistro = ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS + (i * TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES);
+        EscreverNaEEprom(posicaoInicialDoRegistro, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+1, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+2, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+3, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+4, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+5, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+6, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+7, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+8, 0);
+        EscreverNaEEprom(posicaoInicialDoRegistro+9, 0);
+    }   
+    ReiniciaPonteiroDeMemoriaDosEventosNaEeprom();
+    sprintf(mensagem, "memoria reiniciada com sucesso!\r\n");
+    enviaDadosParaUSBserial(mensagem, strlen(mensagem));
+}
+
+
+
+
+

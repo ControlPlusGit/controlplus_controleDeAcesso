@@ -37,7 +37,8 @@ extern TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLidosDura
     
 void marsOne_init(void);
 uint8_t realizaLeituraDeAntena(uint8_t antena);
-int8_t obtemDadosDaMemoriaFLASH(void);
+int8_t obtemListaDeVeiculosLiberadosDaMemoriaFLASH(void);
+void exibirListaDeVeiculosLiberados(void);
 
 int8_t adicionaNovaTagNaLista(TabelaDeEpcDeEstacionamento *lista, EPC_Estacionamento tag);
 uint8_t realizaLeituraDeAntena(uint8_t antena);

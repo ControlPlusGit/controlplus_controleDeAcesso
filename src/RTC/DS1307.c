@@ -138,27 +138,38 @@ RTC_DS1307_stats RTC_DS1307_I2C_write_calendar ( Calendar *data ){
         RTC_DS1307_CharToBcd(         month, (uint8_t*)&bcdCalendar.tm_mon);
         RTC_DS1307_CharToBcd(          year, (uint8_t*)&bcdCalendar.tm_year);
 
-        status = RTC_DS1307_I2C_start( MAX_DS1307_TIMEOUT );                                            if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_start( MAX_DS1307_TIMEOUT );                                            
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS & I2C_WRITE_FLAG, MAX_DS1307_TIMEOUT );  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS & I2C_WRITE_FLAG, MAX_DS1307_TIMEOUT );  
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( SEC_REG, MAX_DS1307_TIMEOUT );                              if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( SEC_REG, MAX_DS1307_TIMEOUT );                              
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_sec, MAX_DS1307_TIMEOUT );                   if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_sec, MAX_DS1307_TIMEOUT );                   
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_min, MAX_DS1307_TIMEOUT );                   if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_min, MAX_DS1307_TIMEOUT );                   
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_hour, MAX_DS1307_TIMEOUT );                  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_hour, MAX_DS1307_TIMEOUT );                  
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_wday, MAX_DS1307_TIMEOUT );                  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_wday, MAX_DS1307_TIMEOUT );                  
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_mday, MAX_DS1307_TIMEOUT );                  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_mday, MAX_DS1307_TIMEOUT );                  
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_mon, MAX_DS1307_TIMEOUT );                   if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_mon, MAX_DS1307_TIMEOUT );                   
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_year, MAX_DS1307_TIMEOUT );                  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_sendTxData( bcdCalendar.tm_year, MAX_DS1307_TIMEOUT );                  
+        if( status != RTC_DS1307_OK ) return status;
 
-        status = RTC_DS1307_I2C_stop( MAX_DS1307_TIMEOUT );  if( status != RTC_DS1307_OK ) return status;
+        status = RTC_DS1307_I2C_stop( MAX_DS1307_TIMEOUT );  
+        if( status != RTC_DS1307_OK ) return status;
 
         RTC_DS1307_delay_ms (RTC_DS1307_MIN_DELAY_BETWEEN_OPERATIONS);
 
@@ -177,45 +188,72 @@ RTC_DS1307_stats RTC_DS1307_I2C_read_calendar( Calendar *data ){
 
     time_t timeInSeconds = 0;
     
+    data->tm_sec = 0;
+    data->tm_min = 0;
+    data->tm_hour = 0;
+    data->tm_wday = 0;
+    data->tm_mday = 0;
+    data->tm_mon = 0;
+    data->tm_year = 0;
+    
     RTC_DS1307_stats status = RTC_DS1307_ERROR;
     
-    status = RTC_DS1307_I2C_start( MAX_DS1307_TIMEOUT );                                           if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_start( MAX_DS1307_TIMEOUT );                                           
+    if( status != RTC_DS1307_OK ) return status;
     
-    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS & I2C_WRITE_FLAG, MAX_DS1307_TIMEOUT ); if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS & I2C_WRITE_FLAG, MAX_DS1307_TIMEOUT );
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_sendTxData( SEC_REG, MAX_DS1307_TIMEOUT );                             if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_sendTxData( SEC_REG, MAX_DS1307_TIMEOUT );                             
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_restart( MAX_DS1307_TIMEOUT );                                         if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_restart( MAX_DS1307_TIMEOUT );                                         
+    if( status != RTC_DS1307_OK ) return status;
     
-    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS | I2C_READ_FLAG, MAX_DS1307_TIMEOUT );  if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS | I2C_READ_FLAG, MAX_DS1307_TIMEOUT );  
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_sec, MAX_DS1307_TIMEOUT );             if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_sec, MAX_DS1307_TIMEOUT );             
+    if( status != RTC_DS1307_OK ) return status;
 
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;
     
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_min, MAX_DS1307_TIMEOUT );             if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_min, MAX_DS1307_TIMEOUT );             
+    if( status != RTC_DS1307_OK ) return status;
 
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_hour, MAX_DS1307_TIMEOUT );            if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_hour, MAX_DS1307_TIMEOUT );            
+    if( status != RTC_DS1307_OK ) return status;
 
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_wday, MAX_DS1307_TIMEOUT );            if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_wday, MAX_DS1307_TIMEOUT );            
+    if( status != RTC_DS1307_OK ) return status;
   
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mday, MAX_DS1307_TIMEOUT );            if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mday, MAX_DS1307_TIMEOUT );            
+    if( status != RTC_DS1307_OK ) return status;
   
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;
 
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mon, MAX_DS1307_TIMEOUT );             if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mon, MAX_DS1307_TIMEOUT );             
+    if( status != RTC_DS1307_OK ) return status;
 
-    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  if( status != RTC_DS1307_OK ) return status;    
+    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+    if( status != RTC_DS1307_OK ) return status;    
     
-    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_year, MAX_DS1307_TIMEOUT );            if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_year, MAX_DS1307_TIMEOUT );            
+    if( status != RTC_DS1307_OK ) return status;
     
-    status = RTC_DS1307_I2C_stop( MAX_DS1307_TIMEOUT );                                            if( status != RTC_DS1307_OK ) return status;
+    status = RTC_DS1307_I2C_stop( MAX_DS1307_TIMEOUT );                                            
+    if( status != RTC_DS1307_OK ) return status;
     
     RTC_DS1307_delay_ms (RTC_DS1307_MIN_DELAY_BETWEEN_OPERATIONS);
     
@@ -242,13 +280,13 @@ RTC_DS1307_stats RTC_DS1307_I2C_read_calendar( Calendar *data ){
        data->tm_year >= 0 && data->tm_year <= 99 ){
         
         // Adequação de valores por conta da biblioteca <time.h>
-        data->tm_mon  -= 1;   // RTC conta de 1 a 12, time.h de 0 a 11
-        data->tm_year += 100; // RTC conta de 00 a 99, time.h retorna um valor que,
+        //data->tm_mon  -= 1;   // RTC conta de 1 a 12, time.h de 0 a 11  // comentei porque estáva somando valores que não deveriam
+        //data->tm_year += 100; // RTC conta de 00 a 99, time.h retorna um valor que, // comentei porque estáva somando valores que não deveriam
                               // somado ao ano de 1900, obtêm-se o ano atual.    
         
         timeInSeconds = mktime(data);
         
-        data = localtime(&timeInSeconds);
+        ////data = localtime(&timeInSeconds);
         
         return RTC_DS1307_OK;
         
@@ -260,6 +298,113 @@ RTC_DS1307_stats RTC_DS1307_I2C_read_calendar( Calendar *data ){
     }
         
 }
+
+//RTC_DS1307_stats RTC_DS1307_I2C_read_calendar( Calendar *data ){
+//
+//    time_t timeInSeconds = 0;
+//    
+//    RTC_DS1307_stats status = RTC_DS1307_ERROR;
+//    
+//    status = RTC_DS1307_I2C_start( MAX_DS1307_TIMEOUT );                                           
+//    if( status != RTC_DS1307_OK ) return status;
+//    
+//    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS & I2C_WRITE_FLAG, MAX_DS1307_TIMEOUT );
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_sendTxData( SEC_REG, MAX_DS1307_TIMEOUT );                             
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_restart( MAX_DS1307_TIMEOUT );                                         
+//    if( status != RTC_DS1307_OK ) return status;
+//    
+//    status = RTC_DS1307_I2C_sendTxData( RTC_DS1307_ADDRESS | I2C_READ_FLAG, MAX_DS1307_TIMEOUT );  
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_sec, MAX_DS1307_TIMEOUT );             
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;
+//    
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_min, MAX_DS1307_TIMEOUT );             
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_hour, MAX_DS1307_TIMEOUT );            
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_wday, MAX_DS1307_TIMEOUT );            
+//    if( status != RTC_DS1307_OK ) return status;
+//  
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mday, MAX_DS1307_TIMEOUT );            
+//    if( status != RTC_DS1307_OK ) return status;
+//  
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_mon, MAX_DS1307_TIMEOUT );             
+//    if( status != RTC_DS1307_OK ) return status;
+//
+//    RTC_DS1307_I2C_sendAck( MAX_DS1307_TIMEOUT );                                                  
+//    if( status != RTC_DS1307_OK ) return status;    
+//    
+//    status = RTC_DS1307_I2C_getRxData( (uint8_t*) &data->tm_year, MAX_DS1307_TIMEOUT );            
+//    if( status != RTC_DS1307_OK ) return status;
+//    
+//    status = RTC_DS1307_I2C_stop( MAX_DS1307_TIMEOUT );                                            
+//    if( status != RTC_DS1307_OK ) return status;
+//    
+//    RTC_DS1307_delay_ms (RTC_DS1307_MIN_DELAY_BETWEEN_OPERATIONS);
+//    
+//    RTC_DS1307_BcdToChar( data->tm_sec, (uint8_t*)&data->tm_sec );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_min, (uint8_t*)&data->tm_min );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_hour, (uint8_t*)&data->tm_hour );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_wday, (uint8_t*)&data->tm_wday );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_mday, (uint8_t*)&data->tm_mday );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_mon, (uint8_t*)&data->tm_mon );
+//    
+//    RTC_DS1307_BcdToChar( data->tm_year, (uint8_t*)&data->tm_year );
+//    
+//    if(data->tm_sec  >= 0 && data->tm_sec  <= 59 &&
+//       data->tm_min  >= 0 && data->tm_min  <= 59 &&
+//       data->tm_hour >= 0 && data->tm_hour <= 23 &&
+//       data->tm_wday >= 1 && data->tm_wday <= 7  &&
+//       data->tm_mday >= 1 && data->tm_mday <= 31 &&
+//       data->tm_mon  >= 1 && data->tm_mon  <= 12 &&
+//       data->tm_year >= 0 && data->tm_year <= 99 ){
+//        
+//        // Adequação de valores por conta da biblioteca <time.h>
+//        data->tm_mon  -= 1;   // RTC conta de 1 a 12, time.h de 0 a 11
+//        data->tm_year += 100; // RTC conta de 00 a 99, time.h retorna um valor que,
+//                              // somado ao ano de 1900, obtêm-se o ano atual.    
+//        
+//        timeInSeconds = mktime(data);
+//        
+//        data = localtime(&timeInSeconds);
+//        
+//        return RTC_DS1307_OK;
+//        
+//    }
+//    else{
+//        
+//        return RTC_DS1307_ERROR;
+//        
+//    }
+//        
+//}
 
 void RTC_DS1307_load_callbacks(    void*     I2C_start,
                                    void*     I2C_restart,
@@ -379,7 +524,7 @@ RTC_DS1307_stats RTC_DS1307_I2C_sendAck(uint8_t timeout) {
 void RTC_DS1307_BcdToChar( uint8_t source, uint8_t *output) {
 
 //            |            MSB           |   |      LSB      |
-//  *output = ( ( ( source >> 4 ) & 0x07 ) * 10 ) + ( source & 0x0F );
+    //*output = ( ( ( source >> 4 ) & 0x07 ) * 10 ) + ( source & 0x0F );
     *output = ( ( ( source >> 4 ) ) * 10 ) + ( source & 0x0F );
     
 }

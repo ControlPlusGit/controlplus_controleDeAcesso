@@ -20,9 +20,9 @@ extern "C" {
     
 #define TEMPO_AGUARDANDO_ACK_EVENTOS_DE_PASSAGEM 2000
     
-#define ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS 2000
+
     
-#define TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES 30
+#define TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES 10
     
 #define NUMERO_MAXIMO_DE_EVENTOS_ARMAZENADOS 900
     
@@ -35,11 +35,14 @@ extern "C" {
 
 #define MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS 1998
 #define LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS 1999
+    
+#define ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS 2000
         
-typedef struct{    
-    unsigned char EPC_naoUsado[8];
-    unsigned char tipoMovimento[8];
-    unsigned char EPC_veiculo[8];
+    
+typedef struct{ 
+    unsigned char flagDeRegistro;
+    unsigned char EPC_veiculo[2];
+    unsigned char tipoMovimento;
     unsigned char dia;
     unsigned char mes;
     unsigned char ano;
@@ -55,13 +58,13 @@ typedef struct{
 // UTILIZADA EM: executaMaquinaDeEstados_EventosDePassagems
 // FUNÇÃO: realiza a leitura de um evento de parada na eeprom para dentro de evento
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void lerEventoDePassagemNaEEPROM(eventoPassagem *evento,int endereco);
+    
   
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNÇÃO: criarEventoDePassagemDe
 // PARÂMETROS: eventoPassagem *novoEventoDePassagem
 // UTILIZADA EM: logicaDeV2
-// FUNÇÃO: realiza a escrita de um novo evento de parada dentro da eeprom
+// FUNÇÃO: realiza a escrita de um novo evento de passagem dentro da eeprom
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void criarEventoDePassagem(eventoPassagem *novoEventoDePassagem);
     

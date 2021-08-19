@@ -60,6 +60,17 @@
 #define RS485_DIRECTION_Togle()    (_LATG13 ^= 1)
 #define RS485_DIRECTION_GetValue() _RG13
 
+#define LED_ANTENA_1(x)     _LATE4 = (x);
+#define LED_ANTENA_2(x)     _LATE5 = (x);
+#define LED_ANTENA_3(x)     _LATA1 = (x);
+#define LED_ANTENA_4(x)     _LATA6 = (x);
+#define LED_ANTENA_5(x)     _LATE0 = (x);
+#define LED_ANTENA_6(x)     _LATE1 = (x);
+#define LED_ANTENA_7(x)     _LATE2 = (x);
+#define LED_ANTENA_8(x)     _LATE3 = (x);
+
+
+
 /**
   @Summary
     Sets the GPIO pin, RA1, high using LATA1.

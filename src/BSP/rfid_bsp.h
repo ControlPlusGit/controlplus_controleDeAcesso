@@ -36,7 +36,7 @@
     }BSP_RFID_Status;
     
     typedef enum {
-        ANTENNA_1 = 0,
+        ANTENNA_1 = 1,
         ANTENNA_2,
         ANTENNA_3,
         ANTENNA_4,

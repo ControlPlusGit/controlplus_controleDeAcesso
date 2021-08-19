@@ -18,7 +18,7 @@
 
 // <editor-fold defaultstate="collapsed" desc="DECLARACAO DE VARIAVEIS">
 
-PilhaEventos eventosDePassagem;
+//PilhaEventos eventosDePassagem;
 
 uint8_t ELC = 0;
 
@@ -475,9 +475,9 @@ void CLP_executaLogica(void){
             if(num_of_tags > 0){
                 for (i = 0; i < MAXTAG; i++) {
                     if (tags_[i].epclen > 0) {
-                        if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
-                            epcLido.byte1 = tags_[i].epc[2];
-                            epcLido.byte2 = tags_[i].epc[1];
+                        if ((tags_[i].epc[0] == 0x29) && (tags_[i].epc[1] == 0x04) && (tags_[i].epc[2] == 0x80)){ //if (verificaTagValida(tags_[i].epc) > 0) { // Tag veicular valida?
+                            epcLido.byte1 = tags_[i].epc[6];
+                            epcLido.byte2 = tags_[i].epc[5];
                             if(!buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido)){
                                 if (buscarRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLiberados, epcLido)) { // Veiculo esta na lista?  
                                     adicionaNovaTagNaLista(&listaDeVeiculosLidosDuranteMovimento_Entrada, epcLido);
@@ -515,7 +515,7 @@ void CLP_executaLogica(void){
                                 novoEvento.id_veiculo[0] = epcLido.byte2;
                                 novoEvento.id_veiculo[1] = epcLido.byte1;
                                 novoEvento.tipoMovimento = MOVIMENTO_SAIDA; 
-                                cadastrarNovoEvento(&eventosDePassagem, novoEvento);
+                                //cadastrarNovoEvento(&eventosDePassagem, novoEvento);
 
                             } else {
                                 removerRegistroNaTabelaDeEpcDeEstacionamento(&listaDeVeiculosLidosDuranteMovimento_Saida, epcLido);                              
@@ -578,7 +578,7 @@ void CLP_executaLogica(void){
                 novoEvento.id_veiculo[0] = listaDeVeiculosLidosDuranteMovimento_Entrada.epc[i].byte2;
                 novoEvento.id_veiculo[1] = listaDeVeiculosLidosDuranteMovimento_Entrada.epc[i].byte1;
                 novoEvento.tipoMovimento = MOVIMENTO_ENTRADA;     
-                cadastrarNovoEvento(&eventosDePassagem, novoEvento);
+                //cadastrarNovoEvento(&eventosDePassagem, novoEvento);
             }            
         }
 
