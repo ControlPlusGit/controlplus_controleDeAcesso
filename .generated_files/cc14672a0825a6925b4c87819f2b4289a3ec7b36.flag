@@ -1,0 +1,1 @@
+ -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    -Wa,-g,--no-relax$(MP_EXTRA_AS_POST) C:\_CONTROL PLUS\_FIRMWARES\CONTROLE DE ACESSO GARAGEM\controlplus_controleDeAcesso-main\src\FLASH\flash.s

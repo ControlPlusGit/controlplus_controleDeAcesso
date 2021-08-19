@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=controlplus_controleDeAcesso
+PROJECTNAME=controlplus_controleDeAcesso-main
 
 # Active Configuration
 DEFAULTCONF=default

@@ -1,0 +1,1 @@
+ -c -mcpu=$(MP_PROCESSOR_OPTION)      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off   C:\_CONTROL PLUS\_FIRMWARES\CONTROLE DE ACESSO GARAGEM\controlplus_controleDeAcesso-main\src\EXT_INT\ext_int.c
