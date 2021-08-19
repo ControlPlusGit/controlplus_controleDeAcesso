@@ -194,7 +194,13 @@ struct tm objetoDataHora;
                        
                         //if(delayExecucao_DataHora>500){
                         
-                        sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;000001] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n");
+                        sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;%c%c%c%c%c%c] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n",
+                                idDoLeitor[0],
+                                idDoLeitor[1],
+                                idDoLeitor[2],
+                                idDoLeitor[3],
+                                idDoLeitor[4],
+                                idDoLeitor[5]);
                         //sprintf(stringSolicitacaoDataHora,"<FE;1302>\n\r");
 
                         //escreverMensagemEthernet(stringSolicitacaoDataHora);                     

@@ -1,0 +1,19 @@
+PROTOCOLO DE COMUNICAÇÃO - CONTROLE DE ACESSO
+
+SOLICITAÇÃO DE DATA E HORA
+[FE;idDoLeitor]
+sprintf(stringSolicitacaoDataHora,"GET /tag/php/apife.php?parametro=[FE;%c%c%c%c%c%c] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
+
+SOLICITAÇÃO KEEP ALIVE
+[FD;idDoLeitor]
+printf(stringSolicitacaoKeepAlive,"GET /tag/php/apifd.php?parametro=[FD;%c%c%c%c%c%c;A0] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
+
+SOLICITAÇÃO DA GREEN LIST
+[FB;idDoLeitor]
+ sprintf(stringSolicitacaoTabelaDeEstacionamento,"GET /tag/php/apifb.php?parametro=[FB;%c%c%c%c%c%c] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n", idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
+
+ENVIO DE EVENTOS
+[FE;idDoLeitor,tipoMovimento,EPC_veiculo,dia,mes,ano,hora,minuto,segundo]
+sprintf(stringMensagemEvento,"GET /tag/php/apiff.php?parametro=[FF;%c%c%c%c%c%c;%c;%c%c%c%c;%02d%02d%02d;%02d%02d%02d] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n", idLeitor[0],idLeitor[1],idLeitor[2],idLeitor[3],idDoLeitor[4],idDoLeitor[5],
+                                    (novoEventoDePassagem.tipoMovimento[0]==MOVIMENTO_ENTRADA ? 'E':'S'), novoEventoDePassagem.EPC_veiculo[0],novoEventoDePassagem.EPC_veiculo[1],novoEventoDePassagem.EPC_veiculo[2],novoEventoDePassagem.EPC_veiculo[3],
+                                    novoEventoDePassagem.dia,novoEventoDePassagem.mes,novoEventoDePassagem.ano, novoEventoDePassagem.hora,novoEventoDePassagem.minuto,novoEventoDePassagem.segundo);

@@ -25,6 +25,7 @@
 #include "clp.h"
 
 #define SIM 1
+#define NAO 0
 
 #define LIGADO 1
 #define DESLIGADO 0
@@ -32,7 +33,7 @@
 #define CONECTADO 1
 #define DESCONECTADO 0
 
-#define NUM_MAX_ERROS_TIMEOUT 4
+#define NUM_MAX_ERROS_TIMEOUT 1
 
 #define NUM_MAX_ERROS_MAQUINA_TIMEOUT 2
 
@@ -40,29 +41,42 @@
 
 #define TEMPO_AGUARDANDO_ACK_ESP8266 500
 
-#define TEMPO_AGUARDANDO_ACK_MSG_WIFI_ESP8266 20000
+#define TEMPO_AGUARDANDO_ACK_MSG_WIFI_ESP8266 10000 //20000 //MARCOS - DIMINUI TEMPO DE TENTATIVA DE CONEXÃO.
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
         VERIFICA_SE_JA_INICIALIZOU,
-        ENVIAR_MENSAGEM_1,
-        AGUARDANDO_ACK_1,   
-        ENVIAR_MENSAGEM_2,
-        AGUARDANDO_ACK_2,  
-        ENVIAR_MENSAGEM_3,
-        AGUARDANDO_ACK_3,  
-        ENVIAR_MENSAGEM_4,
-        AGUARDANDO_ACK_4,  
-        ENVIAR_MENSAGEM_5,
-        AGUARDANDO_ACK_5,  
-        ENVIAR_MENSAGEM_6,
-        AGUARDANDO_ACK_6,  
-        ENVIAR_MENSAGEM_7,
-        AGUARDANDO_ACK_7,  
-        ENVIAR_MENSAGEM_8,
-        AGUARDANDO_ACK_8,  
-        ENVIAR_MENSAGEM_9,
-        AGUARDANDO_ACK_9, 
+        
+        RESET_MODULO_WIFI,          
+        AGUARDANDO_ACK_0,
+        
+        ENVIAR_COMANDO_AT,
+        AGUARDANDO_ACK_1,
+        
+        ENVIAR_COMANDO_AT0,
+        AGUARDANDO_ACK_2,
+        
+        ENVIAR_COMANDO_RFPOWER,
+        AGUARDANDO_ACK_3,
+        
+        ENVIAR_COMANDO_CIPMUX,
+        AGUARDANDO_ACK_4, 
+        
+        ENVIAR_COMANDO_CWMODE,
+        AGUARDANDO_ACK_5,
+        
+        ENVIAR_COMANDO_CIPMODE,
+        AGUARDANDO_ACK_6,
+        
+        ENVIAR_COMANDO_CWJAP,
+        AGUARDANDO_ACK_7,
+        
+        ENVIAR_COMANDO_CIPSTART,
+        AGUARDANDO_ACK_8,
+        
+        ENVIAR_COMANDO_CIPSEND,
+        AGUARDANDO_ACK_9,
+        
         FIM_CICLO
 }estados_ESP8266;
 
@@ -140,6 +154,8 @@ enum{
     
     char stringLogWifi[300];
     
+    char wifiBusy = NAO;
+    
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////      FUNÃ‡Ã•ES      /////////////////////////////////////////////////////
@@ -202,7 +218,7 @@ enum{
             errosDeTimeout++;
             if(errosDeTimeout >= NUM_MAX_ERROS_TIMEOUT){
                 errosDeTimeout = 0;
-                //ESP8266_inicializado = 0;    
+                ESP8266_inicializado = 0;    
                 
                 switch(servidorEmUso){
                     case PRIMARIO:
@@ -222,7 +238,7 @@ enum{
         errosDeTimeout++;
         if(errosDeTimeout >= NUM_MAX_ERROS_MAQUINA_TIMEOUT){
             errosDeTimeout = 0;
-            //ESP8266_inicializado = 0;               
+            ESP8266_inicializado = 0;               
             
             switch(servidorEmUso){
                 case PRIMARIO:
@@ -268,7 +284,7 @@ enum{
         incrementaContadorLeds_FSM_ESP8266();
         incrementaContadorExecucao_FSM_ESP8266();
         
-        if(contadorDelayLeds>500 && statusConexaoWifi_ESP8266 == DESCONECTADO){
+        if(contadorDelayLeds>200 && statusConexaoWifi_ESP8266 == DESCONECTADO){
             contadorDelayLeds = 0;
             LED_ZIG_Toggle();
         }
@@ -284,7 +300,7 @@ enum{
                    
                     if(maquinaDeEstadosLiberada_ESP8266){ 
                         if(solicitarTrocaDeServidor){
-                            estadoAtual_ESP8266 = ENVIAR_MENSAGEM_8;  
+                            estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPSTART;  
                         }
                         else{
                             estadoAtual_ESP8266 = VERIFICA_SE_JA_INICIALIZOU;                              
@@ -299,10 +315,10 @@ enum{
                     zeraContadorExecucao_FSM_ESP8266();
                     
                     if(maquinaDeEstadosLiberada_ESP8266){  
-                        
-                        if(!ESP8266_inicializado){                          
+                        if(!ESP8266_inicializado){                   
+                            bloqueiaMaquinaDeEstados_KeepAlive(); // MARCOS - Bloquei KeepAlive
                             statusConexaoWifi_ESP8266 = DESCONECTADO;                             
-                            estadoAtual_ESP8266 = ENVIAR_MENSAGEM_1;
+                            estadoAtual_ESP8266 = RESET_MODULO_WIFI;
                             estadoAnterior_ESP8266 = VERIFICA_SE_JA_INICIALIZOU; 
                         }         
                         else{
@@ -311,30 +327,71 @@ enum{
                         }
                     }                     
                 }
-            break;         
-            case ENVIAR_MENSAGEM_1:  
+            break;
+            
+            case RESET_MODULO_WIFI:
+                
+                if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
+                    zeraContadorExecucao_FSM_ESP8266();
+
+                    if(maquinaDeEstadosLiberada_ESP8266){ 
+                        sprintf(stringMensagemESP8266,"+++"); // sai para modo AT
+                        escreveMensagemESP8266(stringMensagemESP8266);
+                        delay_ms(50);
+                        limpaBufferNaMaquinaDeEstados_ESP8266();
+                        sprintf(stringMensagemESP8266,"AT+RST\r\n");
+                        escreveMensagemESP8266(stringMensagemESP8266);
+                      
+                        estadoAtual_ESP8266=AGUARDANDO_ACK_0;
+                        estadoAnterior_ESP8266=RESET_MODULO_WIFI;      
+                    }                     
+                }
+            break;            
+            case AGUARDANDO_ACK_0:
+                if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266 + 5000){
+                
+                    if(maquinaDeEstadosLiberada_ESP8266){
+                       if(strstr(bufferInterrupcaoUART4,"ready")!=0){          
+                             limpaBufferNaMaquinaDeEstados_ESP8266();
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_AT;
+                             estadoAnterior_ESP8266 = AGUARDANDO_ACK_0; 
+                         }
+                    }  
+                }
+                else{
+                    zeraContadorExecucao_FSM_ESP8266();
+                    estadoAtual_ESP8266=AGUARDANDO_TAREFA;
+                    estadoAnterior_ESP8266=AGUARDANDO_ACK_0;
+
+                    sprintf(stringMensagemESP8266,"+++"); // sai para modo AT
+                    escreveMensagemESP8266(stringMensagemESP8266);
+                }            
+            break;  
+                       
+            case ENVIAR_COMANDO_AT:  // AT COMMAND
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();         
                     
                     if(maquinaDeEstadosLiberada_ESP8266){                 
-                            
-                        
                         sprintf(stringMensagemESP8266,"AT\r\n");
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_1;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_1;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_AT;                        
                     } 
                 }
                 
-            break;
+            break;           
             case AGUARDANDO_ACK_1:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
+                    
                     if(maquinaDeEstadosLiberada_ESP8266){
                        if(strstr(bufferInterrupcaoUART4,"OK")!=0){          
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_2;
+                             limpaBufferNaMaquinaDeEstados_ESP8266();
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_AT0;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_1; 
                          }
                     }  
@@ -348,7 +405,8 @@ enum{
                     escreveMensagemESP8266(stringMensagemESP8266);
                 }
             break;
-            case ENVIAR_MENSAGEM_2:  
+            
+            case ENVIAR_COMANDO_AT0:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -361,17 +419,18 @@ enum{
                      
                         //estadoAtual_ESP8266=AGUARDANDO_ACK_2;
                         estadoAtual_ESP8266=AGUARDANDO_ACK_2;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_2;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_AT0;                        
                     } 
                 }
                 
-            break;
+            break;          
             case AGUARDANDO_ACK_2:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
                        if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_3;
+                             limpaBufferNaMaquinaDeEstados_ESP8266();
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_RFPOWER;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_2; 
                          }
                     }  
@@ -382,7 +441,8 @@ enum{
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_2;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_3:  
+            
+            case ENVIAR_COMANDO_RFPOWER:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -394,7 +454,7 @@ enum{
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_3;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_3;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_RFPOWER;                        
                     } 
                 }
                 
@@ -404,9 +464,10 @@ enum{
                     if(maquinaDeEstadosLiberada_ESP8266){
                        if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
                              limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_4;
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPMUX;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_3; 
-                         }
+                        }
                     }  
                 }
                 else{
@@ -415,7 +476,8 @@ enum{
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_3;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_4:  
+            
+            case ENVIAR_COMANDO_CIPMUX:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -426,7 +488,7 @@ enum{
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_4;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_4;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CIPMUX;                        
                     } 
                 }
                 
@@ -434,37 +496,33 @@ enum{
             case AGUARDANDO_ACK_4:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
-                       if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_5;
-                             estadoAnterior_ESP8266 = AGUARDANDO_ACK_4; 
-                         }
-                    }  
+                        if((strstr(bufferInterrupcaoUART4,"OK")!=0) || (strstr(bufferInterrupcaoUART4,"link is builded")!=0)){           
+                            limpaBufferNaMaquinaDeEstados_ESP8266();
+                            zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                            estadoAtual_ESP8266 = ENVIAR_COMANDO_CWMODE;
+                            estadoAnterior_ESP8266 = AGUARDANDO_ACK_4; 
+                        }
+                    }
                 }
                 else{
-                    if(strstr(bufferInterrupcaoUART4,"link is builded")!=0){
-                        estadoAtual_ESP8266 = ENVIAR_MENSAGEM_5;
-                        estadoAnterior_ESP8266 = AGUARDANDO_ACK_4; 
-                    }
-                    else{
-                        zeraContadorExecucao_FSM_ESP8266();
-                        estadoAtual_ESP8266=AGUARDANDO_TAREFA;
-                        estadoAnterior_ESP8266=AGUARDANDO_ACK_4;   
-                    }
+                    zeraContadorExecucao_FSM_ESP8266();
+                    estadoAtual_ESP8266=AGUARDANDO_TAREFA;
+                    estadoAnterior_ESP8266=AGUARDANDO_ACK_4;     
                 }
             break;
-            case ENVIAR_MENSAGEM_5:  
+            
+            case ENVIAR_COMANDO_CWMODE:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
                     
                     if(maquinaDeEstadosLiberada_ESP8266){                 
                                                 
-                        //sprintf(stringMensagemESP8266,"ATE0\r\n");
+                        sprintf(stringMensagemESP8266,"AT+CWMODE=3\r\n");
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_5;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_5;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CWMODE;                        
                     } 
                 }
                 
@@ -473,8 +531,9 @@ enum{
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
                        if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_6;
+                             limpaBufferNaMaquinaDeEstados_ESP8266();
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPMODE;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_5; 
                          }
                     }  
@@ -485,7 +544,8 @@ enum{
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_5;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_6:  
+            
+            case ENVIAR_COMANDO_CIPMODE:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -496,7 +556,7 @@ enum{
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_6;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_6;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CIPMODE;                        
                     } 
                 }
                 
@@ -505,10 +565,11 @@ enum{
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
                        if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_7;
-                             estadoAnterior_ESP8266 = AGUARDANDO_ACK_6; 
-                         }
+                            limpaBufferNaMaquinaDeEstados_ESP8266();
+                            zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                            estadoAtual_ESP8266 = ENVIAR_COMANDO_CWJAP;
+                            estadoAnterior_ESP8266 = AGUARDANDO_ACK_6; 
+                        }
                     }  
                 }
                 else{
@@ -517,7 +578,8 @@ enum{
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_6;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_7:  
+            
+            case ENVIAR_COMANDO_CWJAP:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -531,9 +593,9 @@ enum{
                         sprintf(stringMensagemESP8266,"AT+CWJAP_CUR=\"RedeTeste\",\"1234567890\"\r\n"); // Credenciais de acesso da rede industrial 
                         #endif
                         escreveMensagemESP8266(stringMensagemESP8266);
-                     
+                        
                         estadoAtual_ESP8266=AGUARDANDO_ACK_7;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_7;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CWJAP;                        
                     } 
                 }
                 
@@ -541,38 +603,33 @@ enum{
             case AGUARDANDO_ACK_7:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_MSG_WIFI_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
-                       if(strstr(bufferInterrupcaoUART4,"WIFI CONNECTED")!=0 || strstr(bufferInterrupcaoUART4,"OK")!=0){           
-                             limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                             statusConexaoWifi_ESP8266 = CONECTADO;
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_8;
-                             estadoAnterior_ESP8266 = AGUARDANDO_ACK_7;
+                        if(strstr(bufferInterrupcaoUART4,"WIFI CONNECTED")!=0 || strstr(bufferInterrupcaoUART4,"OK")!=0){           
+                            limpaBufferNaMaquinaDeEstados_ESP8266(); 
+                            statusConexaoWifi_ESP8266 = CONECTADO;
+                            zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
+                            estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPSTART;
+                            estadoAnterior_ESP8266 = AGUARDANDO_ACK_7;
                              
-                             if(logConectividadeWifi){
-                                numVezesReconectou++;
-                                //dataHora_ESP8266 = localtime(&Tempo);
-                                RTC_calendarRequest(&dataHora_ESP8266);
-                                sprintf(stringLogWifi,"\rNumero de conexoes realizadas: %02d\n\rConectou as: %02d:%02d:%02d\n",numVezesReconectou,dataHora_ESP8266.tm_hour,dataHora_ESP8266.tm_min,dataHora_ESP8266.tm_sec);                             
-                                escreverMensagemUSB(stringLogWifi);  
-                             }
+                            if(logConectividadeWifi){
+                               numVezesReconectou++;
+                               //dataHora_ESP8266 = localtime(&Tempo);
+                               RTC_calendarRequest(&dataHora_ESP8266);
+                               sprintf(stringLogWifi,"\rNumero de conexoes realizadas: %02d\n\rConectou as: %02d:%02d:%02d\n",numVezesReconectou,dataHora_ESP8266.tm_hour,dataHora_ESP8266.tm_min,dataHora_ESP8266.tm_sec);                             
+                               escreverMensagemUSB(stringLogWifi);  
+                            }
                         }
-                       else{
-                           
-                           if(strstr(bufferInterrupcaoUART4,"FAIL")!=0 || strstr(bufferInterrupcaoUART4,"ERROR")!=0){
-                                limpaBufferNaMaquinaDeEstados_ESP8266(); 
-                                statusConexaoWifi_ESP8266 = DESCONECTADO;
-                                estadoAtual_ESP8266 = ENVIAR_MENSAGEM_7;
-                                estadoAnterior_ESP8266 = AGUARDANDO_ACK_7;
-                           }
-                       }
                     }  
                 }
                 else{
+                    limpaBufferNaMaquinaDeEstados_ESP8266();
+                    statusConexaoWifi_ESP8266 = DESCONECTADO;
                     zeraContadorExecucao_FSM_ESP8266();
-                    estadoAtual_ESP8266=ENVIAR_MENSAGEM_7;
+                    estadoAtual_ESP8266=AGUARDANDO_TAREFA; 
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_7;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_8:  
+            
+            case ENVIAR_COMANDO_CIPSTART:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -593,7 +650,7 @@ enum{
                         escreveMensagemESP8266(stringMensagemESP8266);
                             
                         estadoAtual_ESP8266=AGUARDANDO_ACK_8;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_8;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CIPSTART;                        
                     } 
                 }
                 
@@ -601,13 +658,13 @@ enum{
             case AGUARDANDO_ACK_8:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
-                       if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
+                       if((strstr(bufferInterrupcaoUART4,"OK")!=0) || (strstr(bufferInterrupcaoUART4,"CONNECT")!=0)){           
                              //limpaBufferNaMaquinaDeEstados_ESP8266(); 
                              //sprintf(stringMensagemESP8266,"AT+CIPSTART=\"TCP\",\"%s\",%d\r\n",ipServidorEmUso,portaServidorEmUso);
                              //escreveMensagemESP8266(stringMensagemESP8266);
                              
                              
-                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_9;
+                             estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPSEND;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_8;
                              solicitarTrocaDeServidor = 0;
                              statusConexaoWifi_ESP8266 = CONECTADO;
@@ -618,7 +675,7 @@ enum{
                                limpaBufferNaMaquinaDeEstados_ESP8266(); 
                                sprintf(stringMensagemESP8266,"AT+CIPCLOSE\r\n");
                                escreveMensagemESP8266(stringMensagemESP8266);
-                               estadoAtual_ESP8266=ENVIAR_MENSAGEM_8;
+                               estadoAtual_ESP8266=ENVIAR_COMANDO_CIPSTART;
                                estadoAnterior_ESP8266=AGUARDANDO_ACK_8;      
                            }
                            else{
@@ -633,7 +690,7 @@ enum{
                                          escreverMensagemUSB(stringLogWifi);
                                      }
                                      statusConexaoWifi_ESP8266 = DESCONECTADO;
-                                     estadoAtual_ESP8266 = ENVIAR_MENSAGEM_7;                              
+                                     estadoAtual_ESP8266 = ENVIAR_COMANDO_CWJAP;                              
                                 }
                                 else{
                                     if(strstr(bufferInterrupcaoUART4,"ERROR")!=0){
@@ -641,11 +698,11 @@ enum{
                                     switch(servidorEmUso){
                                          case PRIMARIO:
                                              trocarIpDeServidor(SECUNDARIO);
-                                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_8;                                        
+                                             estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPSTART;                                        
                                              break;
                                          case SECUNDARIO:
                                              trocarIpDeServidor(PRIMARIO);
-                                             estadoAtual_ESP8266 = ENVIAR_MENSAGEM_8;                               
+                                             estadoAtual_ESP8266 = ENVIAR_COMANDO_CIPSTART;                               
                                              break;
                                      }   
                                      estadoAnterior_ESP8266 = AGUARDANDO_ACK_8; 
@@ -663,7 +720,7 @@ enum{
                     estadoAnterior_ESP8266=AGUARDANDO_ACK_8;                                          
                 }
             break;
-            case ENVIAR_MENSAGEM_9:  
+            case ENVIAR_COMANDO_CIPSEND:  
                 
                 if(delayExecucao_ESP8266 > TEMPO_ENTRE_ESTADOS_FSM_ESP8266){
                     zeraContadorExecucao_FSM_ESP8266();     
@@ -674,7 +731,7 @@ enum{
                         escreveMensagemESP8266(stringMensagemESP8266);
                      
                         estadoAtual_ESP8266=AGUARDANDO_ACK_9;
-                        estadoAnterior_ESP8266=ENVIAR_MENSAGEM_9;                        
+                        estadoAnterior_ESP8266=ENVIAR_COMANDO_CIPSEND;                        
                     } 
                 }
                 
@@ -682,8 +739,9 @@ enum{
             case AGUARDANDO_ACK_9:                    
                 if(delayExecucao_ESP8266 < TEMPO_AGUARDANDO_ACK_ESP8266){
                     if(maquinaDeEstadosLiberada_ESP8266){
-                       if(strstr(bufferInterrupcaoUART4,"OK")!=0){           
+                       if((strstr(bufferInterrupcaoUART4,"OK")!=0) && (strstr(bufferInterrupcaoUART4,'>')!=0)){           
                              limpaBufferNaMaquinaDeEstados_ESP8266(); 
+                             zeraContadorExecucao_FSM_ESP8266(); //MARCOS - ZEREI PARA REINICIAR PARA A PROXIMA FUNÇÃO
                              estadoAtual_ESP8266 = FIM_CICLO;
                              estadoAnterior_ESP8266 = AGUARDANDO_ACK_9; 
                          }
@@ -703,6 +761,7 @@ enum{
                         ESP8266_inicializado = SIM;
                         //statusConexaoWifi_ESP8266 = CONECTADO;
                         bloqueiaMaquinaDeEstados_ESP8266();
+                        //habilitaMaquinaDeEstados_KeepAlive(); // MARCOS - Bloquei KeepAlive
 
                         estadoAtual_ESP8266=AGUARDANDO_TAREFA;
                         estadoAnterior_ESP8266=FIM_CICLO;

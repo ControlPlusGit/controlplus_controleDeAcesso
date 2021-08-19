@@ -309,7 +309,7 @@
     #endif
         
     typedef enum {
-        LED_D1 = 1,
+        LED_D1 = 0,
         LED_D2,
         LED_D3,
         LED_D4,
@@ -358,6 +358,8 @@
     void BSP_setBuzzer(uint8_t state);
 
     void BSP_setLed(uint8_t numLed, uint8_t state);
+    
+    void BSP_setLedAntena(uint8_t numAntena, uint8_t state);
     
     void BSP_RS485_setDirection(uint8_t direction);
     

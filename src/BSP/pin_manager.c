@@ -54,6 +54,7 @@
 #include "pin_manager.h"
 #include "../PPS.h"
 #include "../delay.h"
+#include "p24FJ256DA210.h"
 
 /**
  Section: Driver Interface Function Definitions
@@ -119,10 +120,10 @@ void PIN_MANAGER_Initialize (void){
     _ANSG6   = 0;      //OPTO2 ANALOG DISABLE
     _ANSB5   = 0;      //OPTO3 ANALOG DISABLE
     _ANSC13  = 0;      //OPTO4 ANALOG DISABLE
-    _TRISG6  = 1;      //OPTO1 INPUT
-    _TRISG7  = 1;      //OPTO2 INPUT
-    _TRISB5  = 1;      //OPTO3 INPUT
-    _TRISC13 = 1;      //OPTO4 INPUT
+    _TRISG6  = 1;      //OPTO1 INPUT - SENSOR PORTÃO 1
+    _TRISG7  = 1;      //OPTO2 INPUT - SENSOR PORTÃO 2
+    _TRISB5  = 1;      //OPTO3 INPUT GP16 - CALAR ALARME
+    _TRISC13 = 0;      //OPTO4 INPUT GP1 - SENBSOR DE VEICULO    
 
     _TRISG13 = 0;     //saida DIR
 
@@ -191,9 +192,9 @@ void PIN_MANAGER_Initialize (void){
     _TRISC2 = 0;     //SAIDA SAI_4
     _TRISF5 = 0;     //SAIDA GP0
     _TRISF3 = 0;     //SAIDA GP1
-    _TRISF2 = 0;     //SAIDA GP2
+    _TRISF2 = 0;     //SAIDA GP2 - RESET FISICO MODULO ETHERNET
     _TRISA4 = 0;     //SAIDA GP3
-    _TRISA5 = 0;     //SAIDA GP4
+    _TRISA5 = 1;     //ENTRADA GP4 - SENSOR ULTRASON VEICULOS
     _TRISA2 = 0;     //SAIDA GP5
     _TRISG12 = 0;    //SAIDA GP6
     _TRISA9 = 0;     //SAIDA GP7
@@ -221,11 +222,11 @@ void PIN_MANAGER_Initialize (void){
     //configure SPI
     
     _TRISF8 = 0;//NCS
-    _TRISC13 = 1;// O NET GP1 esta nesse pino tambem e o deixo como entrada para nao influenciar na operacao
+    _TRISC13 = 0;// O NET GP1 esta nesse pino tambem e o deixo como entrada para nao influenciar na operacao
     _TRISB4 = 0;//                          ALTERAR!!!!
    // _TRISB5 = 0;
     _TRISB2 = 0;
-    _TRISB6 = 0;
+    _TRISB6 = 1;    // GP15 - 
     _TRISB14 = 1;// IRQ
 
     _TRISD8 = 0;//CLK

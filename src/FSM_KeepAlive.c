@@ -44,12 +44,18 @@
 // FUNÇÃO: controlar o tempo em que o keep alive eh enviado ao sistema
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     //#define TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE 300000ULL  // MILISEGUNDOS
-    #define TEMPO_ENTRE_KEEP_ALIVE 5  // MINUTOS
+    #define TEMPO_ENTRE_KEEP_ALIVE 1  // MINUTOS
 
 enum estadosDaMaquina{
         AGUARDANDO_TAREFA=0,
+        INICIA_CONEXAO_TCP_CLIENT,
+        AGUARDANDO_INICIA_CONEXAO_TCP_CLIENT,
+        INICIA_ENVIO_DE_DADOS_PARA_SERVER,
+        AGUARDANDO_INICIA_ENVIO_DE_DADO_PARA_SERVER,
         ENVIAR_KEEP_ALIVE,        
-        AGUARDANDO_KEEP_ALIVE,        
+        AGUARDANDO_KEEP_ALIVE,
+        FINALIZA_CONEXAO_TCP,
+        AGUARDANDO_FINALIZA_CONEXAO_TCP,
         FIM_CICLO
 }estados_KeepAlive;
 
@@ -100,7 +106,10 @@ enum estadosDaMaquina{
 // UTILIZADA EM: executaMaquinaDeEstados_KeepAlive
 // FUNÇÃO: armazenar o ID do leitor para uso da máquina de estados
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    unsigned char idLeitor_KeepAlive[20];   
+    unsigned char idLeitor_KeepAlive[20];  
+    
+    
+    extern char ESP8266_inicializado;
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////      FUNCOES     /////////////////////////////////////////////////////
@@ -125,7 +134,8 @@ enum estadosDaMaquina{
     void inicializaMaquinaDeEstados_KeepAlive(void){    
         if(leitorAcabouDeLigar_KeepAlive){
             leitorAcabouDeLigar_KeepAlive = NAO;
-            retornaIdDoLeitor(idLeitor_KeepAlive);
+            //obtemIdDoLeitor();
+            //retornaIdDoLeitor(idLeitor_KeepAlive);
         }
         habilitaMaquinaDeEstados_KeepAlive();
     }
@@ -165,21 +175,40 @@ enum estadosDaMaquina{
                     zeraContadorExecucao_FSM_KeepAlive();                    
                               
                     if(maquinaDeEstadosLiberada_KeepAlive){     
-                        
+                        //wifiBusy = SIM;
                         estadoAtual_KeepAlive = ENVIAR_KEEP_ALIVE;
                         estadoAnterior_KeepAlive = AGUARDANDO_TAREFA;   
                     }                           
                 }
-            break;            
+            break;
+
+            case INICIA_CONEXAO_TCP_CLIENT:
+                               
+            break;
+            case AGUARDANDO_INICIA_CONEXAO_TCP_CLIENT:
+                
+            break;
+                
+            case INICIA_ENVIO_DE_DADOS_PARA_SERVER:
+                               
+            break;
+            case AGUARDANDO_INICIA_ENVIO_DE_DADO_PARA_SERVER:
+                               
+            break;
+                        
             case ENVIAR_KEEP_ALIVE:  
                 
                 if(delayExecucao_KeepAlive > TEMPO_ENTRE_ESTADOS_FSM_KEEP_ALIVE){
                     zeraContadorExecucao_FSM_KeepAlive();                                  
                     
                     if(maquinaDeEstadosLiberada_KeepAlive){  
-                      
-                        sprintf(stringSolicitacaoKeepAlive,"GET /tag/php/apifd.php?parametro=[FD;000001;A0] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n");
-                        
+                        sprintf(stringSolicitacaoKeepAlive,"GET /tag/php/apifd.php?parametro=[FD;%c%c%c%c%c%c;A0] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n",
+                                idDoLeitor[0],
+                                idDoLeitor[1],
+                                idDoLeitor[2],
+                                idDoLeitor[3],
+                                idDoLeitor[4],
+                                idDoLeitor[5]); 
                         escreverMensagemWifi(stringSolicitacaoKeepAlive);
                         
                         estadoAtual_KeepAlive=AGUARDANDO_KEEP_ALIVE;
@@ -194,27 +223,23 @@ enum estadosDaMaquina{
                 if(delayExecucao_KeepAlive < TEMPO_AGUARDANDO_KEEP_ALIVE_FSM_KEEP_ALIVE){
                     
                     if(maquinaDeEstadosLiberada_KeepAlive){
-                        
-                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FD;OK;");                                              
+                        msgStartPosition = strstr(bufferInterrupcaoUART4,"[FD;OK;");    
                         
                         if(msgStartPosition != 0){
-                            
                             msgPosition = (int) (msgStartPosition - bufferInterrupcaoUART4);                                
-                           
                             numMaiorQueZeroEncontrado = NAO;  
-                            
+                
                             if(*(msgStartPosition+7) == 'S'){
                                 inicializaMaquinaDeEstados_TabelaDeEstacionamento();
                             }
-                                                        
-                            resetarErrosDeTimeoutNoWifi();
-                                      
+                                             
+                            resetarErrosDeTimeoutNoWifi(); 
                             limpaBufferNaMaquinaDeEstados_KeepAlive(); 
                             estadoAtual_KeepAlive = FIM_CICLO;
                             estadoAnterior_KeepAlive = AGUARDANDO_KEEP_ALIVE;                             
                         }
-                       else{ // SE NAO RECEBER MENSAGEM OK
-                            
+                        else{ // SE NAO RECEBER MENSAGEM OK
+                            //ESP8266_inicializado = NAO; //MARCOS - REINICIA MODULO WIFI
                        }
                     }  
                 }
@@ -226,6 +251,14 @@ enum estadosDaMaquina{
                     estadoAnterior_KeepAlive=AGUARDANDO_KEEP_ALIVE;                                          
                 }
             break;
+            
+            case FINALIZA_CONEXAO_TCP:
+                               
+            break;
+            case AGUARDANDO_FINALIZA_CONEXAO_TCP:
+                               
+            break;
+            
             case FIM_CICLO: 
                 //TESTE DA BIBLIOTECA DE BUSCA DA TABELA DE EXCLUSAO
                                
@@ -238,7 +271,7 @@ enum estadosDaMaquina{
                         bloqueiaMaquinaDeEstados_KeepAlive();
                         estadoAtual_KeepAlive=AGUARDANDO_TAREFA;
                         estadoAnterior_KeepAlive=FIM_CICLO;
-                        
+                        //wifiBusy = NAO;
                     }      
                 }                
             break;        

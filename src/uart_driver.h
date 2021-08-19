@@ -281,7 +281,8 @@ uint16_t uartRx4NumBytesAvailable();
  */
 
 #include "setup_usb.h"
-#define TAMANHO_BUFFER_ISR_UART4 5300
+#define TAMANHO_BUFFER_ISR_UART4 1000 //5300
+#define TAMANHO_BUFFER_ISR_UART2 9000 //5300
 
 int8_t uartRxNBytes( uint8_t * buffer, uint16_t * numBytes);
 int8_t uartRx2NBytes( uint8_t * buffer, uint16_t * numBytes);
@@ -295,6 +296,8 @@ void uart4Tx (uint8_t dado);
 void cleanRX4InterruptBuffer(void);
 
 extern char __attribute__((far)) bufferInterrupcaoUART4[TAMANHO_BUFFER_ISR_UART4];
+extern char __attribute__((far)) bufferRxEthernet[TAMANHO_BUFFER_ISR_UART2];
+
 extern char bufferInterrupcaoUART3[TAMANHO_BUFFER_COMANDOS_USB];
 #endif /* UART_RECEIVE_ENABLED */
 

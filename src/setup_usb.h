@@ -8,7 +8,7 @@
 #ifndef SETUP_USB_H
 #define	SETUP_USB_H
 
-#define FIRMWARE "FWCTRACESSO_V01R00"
+#define FIRMWARE "FRWCTRLGAR_V02R00"
 
 #define TAMANHO_ENDERECO_IP 15
 #define TAMANHO_BUFFER_COMANDOS_USB 300
@@ -98,14 +98,14 @@
 #define END_SENHA_WIFI_13                               76 // xxxxxxxxxxxxx0xx
 #define END_SENHA_WIFI_14                               77 // xxxxxxxxxxxxxx0x
 #define END_SENHA_WIFI_15                               78 // xxxxxxxxxxxxxxx0
-#define END_SENSIBILIDADE_DA_ANTENA_1                   79 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_2                   80 // 00
-#define END_SENSIBILIDADE_DA_ANTENA_3                   81 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_4                   82 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_5                   83 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_6                   84 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_7                   85 // 00 
-#define END_SENSIBILIDADE_DA_ANTENA_8                   86 // 00
+#define END_RSSI_MIN_DA_ANTENA_1                        79 // 00 
+#define END_RSSI_MIN_DA_ANTENA_2                        80 // 00
+#define END_RSSI_MIN_DA_ANTENA_3                        81 // 00 
+#define END_RSSI_MIN_DA_ANTENA_4                        82 // 00 
+#define END_RSSI_MIN_DA_ANTENA_5                        83 // 00 
+#define END_RSSI_MIN_DA_ANTENA_6                        84 // 00 
+#define END_RSSI_MIN_DA_ANTENA_7                        85 // 00 
+#define END_RSSI_MIN_DA_ANTENA_8                        86 // 00
 #define END_INTENSIDADE_REFLEXAO_ANTENA_1_MSB           87 // 00xx
 #define END_INTENSIDADE_REFLEXAO_ANTENA_1_LSB           88 // xx00
 #define END_INTENSIDADE_REFLEXAO_ANTENA_2_MSB           89 // 00xx
@@ -124,6 +124,11 @@
 #define END_INTENSIDADE_REFLEXAO_ANTENA_8_LSB          102 // xx00
 #define END_ID_DO_LEITOR_4                             103 // xxxx0x
 #define END_ID_DO_LEITOR_5                             104 // xxxxx0
+#define END_CODIGO_CONDOMINIO_0                        105 // 0XXX 
+#define END_CODIGO_CONDOMINIO_1                        106 // X0XX
+#define END_CODIGO_CONDOMINIO_2                        107 // XX0X
+#define END_CODIGO_CONDOMINIO_3                        108 // XXX0
+
 
 
 enum ComandosInterfaceAjustes{
@@ -153,21 +158,23 @@ enum ComandosInterfaceAjustes{
     CMD_OBTER_FIRMWARE,
     CMD_OBTER_PARAMETROS,
     CMD_CALIBRACAO_AUTOMATICA,
-    CMD_SENSIBILIDADE_ANTENA_1,
-    CMD_SENSIBILIDADE_ANTENA_2,
-    CMD_SENSIBILIDADE_ANTENA_3,
-    CMD_SENSIBILIDADE_ANTENA_4,
-    CMD_SENSIBILIDADE_ANTENA_5,
-    CMD_SENSIBILIDADE_ANTENA_6,
-    CMD_SENSIBILIDADE_ANTENA_7,
-    CMD_SENSIBILIDADE_ANTENA_8,
+    CMD_RSSI_MINIMO_ANTENA_1,
+    CMD_RSSI_MINIMO_ANTENA_2,
+    CMD_RSSI_MINIMO_ANTENA_3,
+    CMD_RSSI_MINIMO_ANTENA_4,
+    CMD_RSSI_MINIMO_ANTENA_5,
+    CMD_RSSI_MINIMO_ANTENA_6,
+    CMD_RSSI_MINIMO_ANTENA_7,
+    CMD_RSSI_MINIMO_ANTENA_8,
     CMD_HABILITA_DEBUG_WIFI,
     CMD_DESABILITA_DEBUG_WIFI,
-    CMD_ENVIA_MSG_INTERFACE_WIFI,     // #CMD37;
-    CMD_HABILITA_DEBUG_WIFI_SILENT,   // #CMD38;
-    CMD_DESABILITA_DEBUG_WIFI_SILENT, // #CMD39;
-    CMD_HABILITA_LOG_CONECTIVIDADE_WIFI,   // #CMD40;
-    CMD_DESABILITA_LOG_CONECTIVIDADE_WIFI, // #CMD41;
+    CMD_ENVIA_MSG_INTERFACE_WIFI,           // #CMD37;
+    CMD_HABILITA_DEBUG_WIFI_SILENT,         // #CMD38;
+    CMD_DESABILITA_DEBUG_WIFI_SILENT,       // #CMD39;
+    CMD_HABILITA_LOG_CONECTIVIDADE_WIFI,    // #CMD40;
+    CMD_DESABILITA_LOG_CONECTIVIDADE_WIFI,  // #CMD41;
+    CMD_LIMPAR_EVENTOS_ARMAZENADOS,         // #CMD42;
+    CMD_CODIGO_DO_CONDOMINIO,               // #CMD43;
 };
 
 /*
@@ -297,14 +304,15 @@ void obtemPortaRemotaSecundaria(void);
 void obtemSsidWifi(void);
 void obtemSenhaWifi(void);
 void obtemFimware(void);
-void obtemSensibilidadeDaAntena1(void);
-void obtemSensibilidadeDaAntena2(void);
-void obtemSensibilidadeDaAntena3(void);
-void obtemSensibilidadeDaAntena4(void);
-void obtemSensibilidadeDaAntena5(void);
-void obtemSensibilidadeDaAntena6(void);
-void obtemSensibilidadeDaAntena7(void);
-void obtemSensibilidadeDaAntena8(void);
+void obtemRSSIMinimoDaAntena1(void);
+void obtemRSSIMinimoDaAntena2(void);
+void obtemRSSIMinimoDaAntena3(void);
+void obtemRSSIMinimoDaAntena4(void);
+void obtemRSSIMinimoDaAntena5(void);
+void obtemRSSIMinimoDaAntena6(void);
+void obtemRSSIMinimoDaAntena7(void);
+void obtemRSSIMinimoDaAntena8(void);
+void obtemCodigoDoCondominio(void);
 
 
 void enviaComandoParaInterfaceWifi(void);

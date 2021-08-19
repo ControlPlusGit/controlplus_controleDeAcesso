@@ -10,11 +10,11 @@
 #include "BSP/rfid_bsp.h"
 
 #include "setup_usb.h"
-#include "FSM_TabelaDeEstacionamento.h"
-#include "FSM_ESP8266.h"
-#include "FSM_KeepAlive.h"
-#include "FSM_DataHora.h"
-#include "FSM_EventosDePassagem.h"
+//#include "FSM_TabelaDeEstacionamento.h"
+//#include "FSM_ESP8266.h"
+//#include "FSM_KeepAlive.h"
+//#include "FSM_DataHora.h"
+//#include "FSM_EventosDePassagem.h"
 
 #include "tabelaEstacionamento.h"
 #include "log.h"
@@ -24,9 +24,11 @@
 #include "EEPROM/24LC256.h"
 #include "FLASH/flash.h"
 #include "RFID/gen2.h"
-#include "clp.h"
+//#include "clp.h"
 
 #include "main.h"
+
+#include "controleAcessoGaragem.h"
 
 #ifdef __PIC24FJ256DA210__
 _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & ALTVREF_ALTVREDIS & WINDIS_OFF & FWDTEN_OFF & ICS_PGx1 & GWRP_OFF & GCP_ON & JTAGEN_OFF)
@@ -57,36 +59,37 @@ TabelaDeEpcDeEstacionamento __attribute__((far)) listaDeVeiculosLidosDuranteMovi
     // Para leitura e escrita na eeprom, usar linhas abaixo  
     //EEPROM_24LC256_I2C_write_uchar(0,200,0x55);
     //EEPROM_24LC256_I2C_read_uchar(0,200,&var);
+    
 
 int main(void){
         
     SYSTEM_Initialize();
     
     marsOne_init();         
-     
-    obtemDadosDaMemoriaFLASH();
     
     obtemParametrosDaMemoriaEEPROM();
+    exibirParametrosObtidos();
     
-    inicializaMaquinaDeEstados_ESP8266();   
+    carregaListaDeVeiculosAutorizadosNaRAM();
+    exibirListaDeVeiculosLiberados();
     
-    #ifdef FORCA_SOLICITACAO_GREENLIST
-    inicializaMaquinaDeEstados_TabelaDeEstacionamento(); 
-    #endif
-    //inicializaMaquinaDeEstados_TabelaDeEstacionamento(); // Agora a chamada fica em FSM_KeepAlive.c
+    //inicializaMaquinaDeEstados_ESP8266();   
+    //inicializaMaquinaDeEstados_DataHora();
+    //inicializaMaquinaDeEstados_KeepAlive(); 
+    //inicializaMaquinaDeEstados_EventosDePassagem();
     
-    inicializaMaquinaDeEstados_DataHora();
+    //void inicializaEventosDePassagem(void);
+    inicializaEventosDePassagem();
+    ExecutaControleDeAcessoGaragem();
     
-    inicializaMaquinaDeEstados_KeepAlive(); 
+       
     
-    inicializaMaquinaDeEstados_EventosDePassagem();
     
-    CLP_liberaExecucao();         
+    //CLP_liberaExecucao();         
     
     while(1){
-        //Para teste em bancada, habilitar as flags no arquivo clp.h. 
-        //Usar a flag DEBUG apenas se quiser simular com o Simulator do MPLABX
-       CLP_executa();
+       //CLP_executa();
+      
     }
     
     return 0;
@@ -113,7 +116,7 @@ void marsOne_init(void){
     BSP_RS485_setDirection(RS485_INPUT);        
 }
 
-int8_t obtemDadosDaMemoriaFLASH(void){
+int8_t obtemListaDeVeiculosLiberadosDaMemoriaFLASH(void){
     obtemListaDeVeiculosLiberados();
     return 0;
 }
@@ -127,15 +130,21 @@ int8_t adicionaNovaTagNaLista(TabelaDeEpcDeEstacionamento *lista, EPC_Estacionam
 
 //FUNCOES DE USUARIO PARA UTILIZACAO DO SEQUENCIADOR
 uint8_t realizaLeituraDeAntena(uint8_t antena){
-    BSP_RFID_selectAntenna(antena);        
-    return BSP_RFID_searchForTags();
+    unsigned char numTags;
+     
+    BSP_setLedAntena(antena, 1);
+    BSP_RFID_selectAntenna(antena); 
+    numTags = BSP_RFID_searchForTags();
+    BSP_setLedAntena(antena, 0);
+    return numTags;
+    
 }
 
 int8_t verificaTagValida(uint8_t *tag){
     uint8_t i;
     uint8_t *p = tag;
     
-    if( *tag == 0x30 ){
+    if( *tag == 0x29 ){
         tag += 3;
         for( i = 3; i < EPCLENGTH-1; i++){            
             if( *tag != 0x00 )
@@ -155,3 +164,7 @@ int8_t verificaTagValida(uint8_t *tag){
     
     return 1;
 }
+
+
+
+

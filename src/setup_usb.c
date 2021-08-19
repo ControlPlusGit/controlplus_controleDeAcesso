@@ -6,9 +6,9 @@
 #include <stdint.h>
 
 #include "uart_driver.h"
-#include "FSM_DataHora.h"
-#include "FSM_ESP8266.h"
-#include "FSM_Ethernet.h"
+//#include "FSM_DataHora.h"
+//#include "FSM_ESP8266.h"
+//#include "FSM_Ethernet.h"
 
 #include "EEPROM/eeprom.h"
 
@@ -69,6 +69,7 @@ int  portaRemotaSecundaria;
 
 unsigned char ssidWifi[17];
 unsigned char senhaWifi[17];
+unsigned char codigoDoCondominio[5];
 
 unsigned char ipTemp[4];
 
@@ -192,35 +193,35 @@ void commandHandlerPortaUSB(void){
                     realizarCalibracaoAutomatica();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_1:
+                case CMD_RSSI_MINIMO_ANTENA_1:
                     setarssiMinAntena1();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_2:
+                case CMD_RSSI_MINIMO_ANTENA_2:
                     setarssiMinAntena2();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_3:
+                case CMD_RSSI_MINIMO_ANTENA_3:
                     setaSensibilidadeAntena3();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_4:
+                case CMD_RSSI_MINIMO_ANTENA_4:
                     setaSensibilidadeAntena4();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_5:
+                case CMD_RSSI_MINIMO_ANTENA_5:
                     setaSensibilidadeAntena5();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_6:
+                case CMD_RSSI_MINIMO_ANTENA_6:
                     setaSensibilidadeAntena6();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_7:
+                case CMD_RSSI_MINIMO_ANTENA_7:
                     setaSensibilidadeAntena7();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_8:
+                case CMD_RSSI_MINIMO_ANTENA_8:
                     setaSensibilidadeAntena8();
                     break;       
                 case CMD_HABILITA_DEBUG_WIFI:
@@ -243,7 +244,13 @@ void commandHandlerPortaUSB(void){
                     break;
                 case CMD_DESABILITA_LOG_CONECTIVIDADE_WIFI:
                     desabilitaLogConectividadeWifiViaUSB();
-                    break;                   
+                    break; 
+                case CMD_LIMPAR_EVENTOS_ARMAZENADOS:
+                    limpaEventosArmazenadosNaEeprom();
+                    break; 
+                case CMD_CODIGO_DO_CONDOMINIO:
+                    setarCodigoDoCondominio();
+                    break;
             }   
         }
         
@@ -350,37 +357,41 @@ void commandHandlerPortaUSB(void){
                     exibirParametrosObtidos();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_1:
-                    obtemSensibilidadeDaAntena1();
+                case CMD_RSSI_MINIMO_ANTENA_1:
+                    obtemRSSIMinimoDaAntena1();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_2:
-                    obtemSensibilidadeDaAntena2();
+                case CMD_RSSI_MINIMO_ANTENA_2:
+                    obtemRSSIMinimoDaAntena2();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_3:
-                    obtemSensibilidadeDaAntena3();
+                case CMD_RSSI_MINIMO_ANTENA_3:
+                    obtemRSSIMinimoDaAntena3();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_4:
-                    obtemSensibilidadeDaAntena4();
+                case CMD_RSSI_MINIMO_ANTENA_4:
+                    obtemRSSIMinimoDaAntena4();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_5:
-                    obtemSensibilidadeDaAntena5();
+                case CMD_RSSI_MINIMO_ANTENA_5:
+                    obtemRSSIMinimoDaAntena5();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_6:
-                    obtemSensibilidadeDaAntena6();
+                case CMD_RSSI_MINIMO_ANTENA_6:
+                    obtemRSSIMinimoDaAntena6();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_7:
-                    obtemSensibilidadeDaAntena7();
+                case CMD_RSSI_MINIMO_ANTENA_7:
+                    obtemRSSIMinimoDaAntena7();
                     break;
                     
-                case CMD_SENSIBILIDADE_ANTENA_8:
-                    obtemSensibilidadeDaAntena8();
-                    break;                
+                case CMD_RSSI_MINIMO_ANTENA_8:
+                    obtemRSSIMinimoDaAntena8();
+                    break;
+                    
+                case CMD_CODIGO_DO_CONDOMINIO:
+                    obtemCodigoDoCondominio();
+                    break;
             }   
         }
         limpaBufferRxUSB();
@@ -393,8 +404,8 @@ unsigned int logConectividadeWifi = 0;
 
 void habilitaDebugInterfaceWifiViaUSB(void){
     debugInterfaceWifi = 1;
-    bloqueiaMaquinaDeEstados_ESP8266();
-    bloqueiaMaquinaDeEstados_DataHora();
+    //bloqueiaMaquinaDeEstados_ESP8266();
+    //bloqueiaMaquinaDeEstados_DataHora();
 //    bloqueiaMaquinaDeEstados_EventosDeParada();
 //    bloqueiaMaquinaDeEstados_TabelaDeExclusao();
     retornaOk();
@@ -403,8 +414,8 @@ void desabilitaDebugInterfaceWifiViaUSB(void){
     debugInterfaceWifi = 0;
 //    habilitaMaquinaDeEstados_TabelaDeExclusao();
  //   habilitaMaquinaDeEstados_EventosDeParada();
-    habilitaMaquinaDeEstados_DataHora();
-    habilitaMaquinaDeEstados_ESP8266();
+    //habilitaMaquinaDeEstados_DataHora();
+    //habilitaMaquinaDeEstados_ESP8266();
     retornaOk();
 }
 
@@ -537,7 +548,7 @@ void setarssiMinAntena1(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_1, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_1, valor);
             retornaOk();
             return;        
         }
@@ -556,7 +567,7 @@ void setarssiMinAntena2(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_2, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_2, valor);
             retornaOk();
             return;        
         }
@@ -575,7 +586,7 @@ void setaSensibilidadeAntena3(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_3, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_3, valor);
             retornaOk();
             return;        
         }
@@ -594,7 +605,7 @@ void setaSensibilidadeAntena4(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_4, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_4, valor);
             retornaOk();
             return;        
         }
@@ -613,7 +624,7 @@ void setaSensibilidadeAntena5(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_5, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_5, valor);
             retornaOk();
             return;        
         }
@@ -632,7 +643,7 @@ void setaSensibilidadeAntena6(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_6, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_6, valor);
             retornaOk();
             return;        
         }
@@ -651,7 +662,7 @@ void setaSensibilidadeAntena7(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_7, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_7, valor);
             retornaOk();
             return;        
         }
@@ -670,7 +681,7 @@ void setaSensibilidadeAntena8(void){
         num[2] = bufferRxUSB[9];
         valor = atoi(num);
         if(valor >= 0 && valor <= 127){ //RANGE
-            EscreverNaEEprom(END_SENSIBILIDADE_DA_ANTENA_8, valor);
+            EscreverNaEEprom(END_RSSI_MIN_DA_ANTENA_8, valor);
             retornaOk();
             return;        
         }
@@ -957,6 +968,24 @@ void setaSenhaWifi(void){
     retornaNok();
 }
 
+void setarCodigoDoCondominio(void){
+    unsigned char endereco;
+    unsigned char ponteiro;
+    
+    ponteiro = 7;
+    endereco = END_CODIGO_CONDOMINIO_0;
+    
+    if(bufferRxUSB[11] == '\r' && bufferRxUSB[12] == '\n'){
+        for(ponteiro = 7; ponteiro <= 10; ponteiro = ponteiro + 1){
+            EscreverNaEEprom(endereco, bufferRxUSB[ponteiro]);
+            endereco = endereco + 1;
+        }
+        retornaOk();
+        return;
+    }
+    retornaNok();
+}
+
 
 // ROTINAS PARA OBTER DADOS
 
@@ -1003,82 +1032,82 @@ void obtemSensibilidadeDaAntena(void){
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena1(void){
+void obtemRSSIMinimoDaAntena1(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_1, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_1, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena2(void){
+void obtemRSSIMinimoDaAntena2(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_2, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_2, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena3(void){
+void obtemRSSIMinimoDaAntena3(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_3, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_3, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena4(void){
+void obtemRSSIMinimoDaAntena4(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_4, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_4, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena5(void){
+void obtemRSSIMinimoDaAntena5(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_5, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_5, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena6(void){
+void obtemRSSIMinimoDaAntena6(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_6, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_6, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena7(void){
+void obtemRSSIMinimoDaAntena7(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_7, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_7, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
 
-void obtemSensibilidadeDaAntena8(void){
+void obtemRSSIMinimoDaAntena8(void){
     char mensagem[50];
     unsigned char valor;
     
     memset(mensagem, NULL, 50);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_8, &valor);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_8, &valor);
     sprintf(mensagem, "#OK,%d\r\n", valor);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem)); 
 }
@@ -1163,16 +1192,22 @@ void obtemIdDoLeitor(void){
     memset(mensagem, NULL, 50);
     LerDadosDaEEprom(END_ID_DO_LEITOR_0, &aux);
     mensagem[0] = (char)aux;
+    idDoLeitor[0] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_1, &aux);
     mensagem[1] = (char)aux;
+    idDoLeitor[1] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_2, &aux);
     mensagem[2] = (char)aux;
+    idDoLeitor[2] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_3, &aux);
     mensagem[3] = (char)aux;
+    idDoLeitor[3] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_4, &aux);
     mensagem[4] = (char)aux;
+    idDoLeitor[4] = (char)aux;
     LerDadosDaEEprom(END_ID_DO_LEITOR_5, &aux);
     mensagem[5] = (char)aux;
+    idDoLeitor[5] = (char)aux;
     mensagem[6] = '\r';
     mensagem[7] = '\n';
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));    
@@ -1273,6 +1308,24 @@ void obtemSenhaWifi(void){
     sprintf(mensagem, "#OK,%s\r\n", str);
     enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));
 }
+
+
+void obtemCodigoDoCondominio(void){
+    char mensagem[50];
+    //unsigned char str[4];
+    unsigned int ponteiro;
+    unsigned int endereco;
+
+    memset(codigoDoCondominio, NULL, 4);
+    endereco = END_CODIGO_CONDOMINIO_0;
+    for(ponteiro = 0; ponteiro < 4; ponteiro = ponteiro + 1){
+        LerDadosDaEEprom(endereco, &codigoDoCondominio[ponteiro]);
+        endereco = endereco + 1;
+    }
+    sprintf(mensagem, "#OK,%c%c%c%c\r\n", codigoDoCondominio[0], codigoDoCondominio[1], codigoDoCondominio[2], codigoDoCondominio[3]);
+    enviaRespostaAosComandosDeSetupUSB(mensagem, strlen(mensagem));
+}
+
 
 
 void obtemFimware(void){
@@ -1521,13 +1574,13 @@ void obtemParametrosDaMemoriaEEPROM(void){
     LerDadosDaEEprom(END_IP_REMOTO_PRINCIPAL_1, &ipTemp[1]);
     LerDadosDaEEprom(END_IP_REMOTO_PRINCIPAL_2, &ipTemp[2]);
     LerDadosDaEEprom(END_IP_REMOTO_PRINCIPAL_3, &ipTemp[3]);
-    sprintf(ipRemotoPrincipal, "%d.%d.%d.%d", ipTemp[0], ipTemp[1], ipTemp[2], ipTemp[3]);
+    sprintf(ipRemotoPrincipal, "%03d.%03d.%03d.%03d", ipTemp[0], ipTemp[1], ipTemp[2], ipTemp[3]);
     
     LerDadosDaEEprom(END_IP_REMOTO_SECUNDARIO_0, &ipTemp[0]);
     LerDadosDaEEprom(END_IP_REMOTO_SECUNDARIO_1, &ipTemp[1]);
     LerDadosDaEEprom(END_IP_REMOTO_SECUNDARIO_2, &ipTemp[2]);
     LerDadosDaEEprom(END_IP_REMOTO_SECUNDARIO_3, &ipTemp[3]);
-    sprintf(ipRemotoSecundario, "%d.%d.%d.%d", ipTemp[0], ipTemp[1], ipTemp[2], ipTemp[3]);
+    sprintf(ipRemotoSecundario, "%03d.%03d.%03d.%03d", ipTemp[0], ipTemp[1], ipTemp[2], ipTemp[3]);
     
     
     LerDadosDaEEprom(END_PORTA_REMOTA_PRINCIPAL_0, &aux);    
@@ -1554,118 +1607,130 @@ void obtemParametrosDaMemoriaEEPROM(void){
         endereco = endereco + 1;
     }    
     
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_1, &rssiMinAntena1);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_2, &rssiMinAntena2);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_3, &rssiMinAntena3);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_4, &rssiMinAntena4);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_5, &rssiMinAntena5);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_6, &rssiMinAntena6);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_7, &rssiMinAntena7);
-    LerDadosDaEEprom(END_SENSIBILIDADE_DA_ANTENA_8, &rssiMinAntena8);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_1, &rssiMinAntena1);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_2, &rssiMinAntena2);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_3, &rssiMinAntena3);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_4, &rssiMinAntena4);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_5, &rssiMinAntena5);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_6, &rssiMinAntena6);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_7, &rssiMinAntena7);
+    LerDadosDaEEprom(END_RSSI_MIN_DA_ANTENA_8, &rssiMinAntena8);
+    
+    memset(codigoDoCondominio, 4, NULL);
+    endereco = END_CODIGO_CONDOMINIO_0;
+    for(vetor = 0; vetor < 4; vetor++){
+        LerDadosDaEEprom(endereco, &codigoDoCondominio[vetor]);
+        endereco = endereco + 1;
+    }
+          
+    
 }
 
 void exibirParametrosObtidos(void){
     char mensagem[100];
     
-    sprintf(mensagem, "INICIO\r\n");
+    sprintf(mensagem, "INIMSGXX\r\n");
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "MODO DE OPERACAO:    %03d\r\n", modoDeOperacao);
+    sprintf(mensagem, "MODOPER:%03d\r\n", modoDeOperacao);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "ATRASO DEG LEITURA:  %03d\r\n", atrasoParaDegradarLeitura);
+    sprintf(mensagem, "ATDEGLE:%03d\r\n", atrasoParaDegradarLeitura);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "REPETICAO LEITURA:   %03d\r\n", repeticaoNaLeitura);
+    sprintf(mensagem, "REPLEIA:%03d\r\n", repeticaoNaLeitura);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE:       %03d\r\n", sensibilidade);
+    sprintf(mensagem, "SENSIBI:%03d\r\n", sensibilidade);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "TEMPO INAT. TAG:     %03d\r\n", tempoParaInatividadeDaTagMonitorada);
+    sprintf(mensagem, "TINATAG:%03d\r\n", tempoParaInatividadeDaTagMonitorada);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "NUM ANTENAS ATIVAS:  %03d\r\n", numeroDeAntenasAtivas);
+    sprintf(mensagem, "NUMANTE:%03d\r\n", numeroDeAntenasAtivas);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 1:  %03d, %03d, %03d, %05u\r\n", capAntena1[0], capAntena1[1], capAntena1[2], reflexaoAntena1);
+    sprintf(mensagem, "SINTCP1:%03d,%03d,%03d,%05u\r\n", capAntena1[0], capAntena1[1], capAntena1[2], reflexaoAntena1);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 2:  %03d, %03d, %03d, %05u\r\n", capAntena2[0], capAntena2[1], capAntena2[2], reflexaoAntena2);
+    sprintf(mensagem, "SINTCP2:%03d,%03d,%03d,%05u\r\n", capAntena2[0], capAntena2[1], capAntena2[2], reflexaoAntena2);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 3:  %03d, %03d, %03d, %05u\r\n", capAntena3[0], capAntena3[1], capAntena3[2], reflexaoAntena3);
+    sprintf(mensagem, "SINTCP3:%03d,%03d,%03d,%05u\r\n", capAntena3[0], capAntena3[1], capAntena3[2], reflexaoAntena3);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
    
-    sprintf(mensagem, "SINTONIA CAP ANT 4:  %03d, %03d, %03d, %05u\r\n", capAntena4[0], capAntena4[1], capAntena4[2], reflexaoAntena4);
+    sprintf(mensagem, "SINTCP4:%03d,%03d,%03d,%05u\r\n", capAntena4[0], capAntena4[1], capAntena4[2], reflexaoAntena4);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 5:  %03d, %03d, %03d, %05u\r\n", capAntena5[0], capAntena5[1], capAntena5[2], reflexaoAntena5);
+    sprintf(mensagem, "SINTCP5:%03d,%03d,%03d,%05u\r\n", capAntena5[0], capAntena5[1], capAntena5[2], reflexaoAntena5);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 6:  %03d, %03d, %03d, %05u\r\n", capAntena6[0], capAntena6[1], capAntena6[2], reflexaoAntena6);
+    sprintf(mensagem, "SINTCP6:%03d,%03d,%03d,%05u\r\n", capAntena6[0], capAntena6[1], capAntena6[2], reflexaoAntena6);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 7:  %03d, %03d, %03d, %05u\r\n", capAntena7[0], capAntena7[1], capAntena7[2], reflexaoAntena7);
+    sprintf(mensagem, "SINTCP7:%03d,%03d,%03d,%05u\r\n", capAntena7[0], capAntena7[1], capAntena7[2], reflexaoAntena7);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SINTONIA CAP ANT 8:  %03d, %03d, %03d, %05u\r\n", capAntena8[0], capAntena8[1], capAntena8[2], reflexaoAntena8);
+    sprintf(mensagem, "SINTCP8:%03d,%03d,%03d,%05u\r\n", capAntena8[0], capAntena8[1], capAntena8[2], reflexaoAntena8);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "FREQUENCIA OPERACAO: %02d\r\n", frequenciaDeOperacao);
+    sprintf(mensagem, "FREQOPE:%03d\r\n", frequenciaDeOperacao);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "ID DO LEITOR:        %c%c%c%c%c%c\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
+    sprintf(mensagem, "IDLEITR:%c%c%c%c%c%c\r\n", idDoLeitor[0], idDoLeitor[1], idDoLeitor[2], idDoLeitor[3], idDoLeitor[4], idDoLeitor[5]);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));    
     
-    sprintf(mensagem, "IP REMOTO PRINC.:    %s\r\n", ipRemotoPrincipal);
+    sprintf(mensagem, "IPREMO1:%s\r\n", ipRemotoPrincipal);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "IP REMOTO SECUND.:   %s\r\n", ipRemotoSecundario);
+    sprintf(mensagem, "IPREMO2:%s\r\n", ipRemotoSecundario);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "PORTA REMOTA PRINC.: %05d\r\n", portaRemotaPrincipal);
+    sprintf(mensagem, "PORTRE1:%05d\r\n", portaRemotaPrincipal);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "PORTA REMOTA SEC.:   %05d\r\n", portaRemotaSecundaria);
+    sprintf(mensagem, "PORTRE2:%05d\r\n", portaRemotaSecundaria);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));    
     
     memset(mensagem, 100, NULL);
-    sprintf(mensagem, "SSID WIFI:           %s\r\n", ssidWifi);
+    sprintf(mensagem, "SSIDWFI:%s\r\n", ssidWifi);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
     memset(mensagem, 100, NULL);
-    sprintf(mensagem, "SENHA WIFI:          %s\r\n", senhaWifi);
+    sprintf(mensagem, "PWDWIFI:%s\r\n", senhaWifi);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 1:       %03d\r\n", rssiMinAntena1);
+    sprintf(mensagem, "RSSIAT1:%03d\r\n", rssiMinAntena1);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 2:       %03d\r\n", rssiMinAntena2);
+    sprintf(mensagem, "RSSIAT2:%03d\r\n", rssiMinAntena2);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 3:       %03d\r\n", rssiMinAntena3);
+    sprintf(mensagem, "RSSIAT3:%03d\r\n", rssiMinAntena3);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 4:       %03d\r\n", rssiMinAntena4);
+    sprintf(mensagem, "RSSIAT4:%03d\r\n", rssiMinAntena4);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 5:       %03d\r\n", rssiMinAntena5);
+    sprintf(mensagem, "RSSIAT5:%03d\r\n", rssiMinAntena5);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 6:       %03d\r\n", rssiMinAntena6);
+    sprintf(mensagem, "RSSIAT6:%03d\r\n", rssiMinAntena6);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 7:       %03d\r\n", rssiMinAntena7);
+    sprintf(mensagem, "RSSIAT7:%03d\r\n", rssiMinAntena7);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "SENSIBILIDADE ANTENA 8:       %03d\r\n", rssiMinAntena8);
+    sprintf(mensagem, "RSSIAT8:%03d\r\n", rssiMinAntena8);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
     
-    sprintf(mensagem, "FIRMWARE:     %s\r\n", firmware);
+    sprintf(mensagem, "CODCOND:%s\r\n", codigoDoCondominio);
+    enviaDadosParaUSBserial(mensagem, strlen(mensagem));
+    
+    sprintf(mensagem, "FRMWARE:%s\r\n", firmware);
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));    
     
-    sprintf(mensagem, "FIM\r\n");
+    sprintf(mensagem, "FIMMSGXX\r\n");
     enviaDadosParaUSBserial(mensagem, strlen(mensagem));
 }
 

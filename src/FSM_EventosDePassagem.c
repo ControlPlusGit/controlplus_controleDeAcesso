@@ -7,7 +7,7 @@
 
 #include <uart.h>
 //#include "../../../../../../../../Program Files (x86)/Microchip/xc16/v1.24/support/peripheral_24F/uart.h"
-#include "FSM_Ethernet.h"
+//#include "FSM_Ethernet.h"
 #include "timer.h"
 #include "FSM_EventosDePassagem.h"
 #include <stdint.h>
@@ -17,6 +17,7 @@
 #include "EEPROM/eeprom.h"
 #include "uart_driver.h"
 #include "eventos.h"
+#include "USR_TCP232.h"
 
 
 enum estadosDaMaquina{
@@ -78,14 +79,14 @@ enum estadosDaMaquina{
 // UTILIZADA EM: executaMaquinaDeEstados_EventosDePassagem
 // FUNÇÃO: armazena id do leitor
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned char idLeitor[20];
+    
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIAVEL: eventosDePassagemArmazenados
 // UTILIZADA EM: inicializaMaquinaDeEstados_EventosDePassagem, executaMaquinaDeEstados_EventosDePassagem e criarEventoDePassagem
 // FUNÇÃO: armazena o valor de quantos eventos foram armazenados até o momento
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned int eventosDePassagemArmazenados = 0;
+    //unsigned int eventosDePassagemArmazenados = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIAVEL: eventosDePassagemEnviados
@@ -136,85 +137,9 @@ enum estadosDaMaquina{
             }
         }
 
-    void inicializaMaquinaDeEstados_EventosDePassagem(void){
-        unsigned char temp=0;
-        
-        if(eepromInicializada != VALOR_FLAG_INICIALIZACAO_EEPROM){
-            LerDadosDaEEprom(ENDERECO_FLAG_INICIALIZACAO_EEPROM,&eepromInicializada);
-            if(eepromInicializada != VALOR_FLAG_INICIALIZACAO_EEPROM){
-                EscreverNaEEprom(ENDERECO_FLAG_INICIALIZACAO_EEPROM,VALOR_FLAG_INICIALIZACAO_EEPROM);
-                EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,0);
-                EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,eventosDePassagemArmazenados);
-                EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS,0);
-                EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS,eventosDePassagemEnviados);
-            }
-        }
 
-        if(leitorAcabouDeLigar){           
-            
-            leitorAcabouDeLigar=0;
 
-            LerDadosDaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, &temp);
-            eventosDePassagemArmazenados = (unsigned int)temp << 8;
-            LerDadosDaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS, &temp);
-            eventosDePassagemArmazenados |= (unsigned int)temp;
-
-            LerDadosDaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, &temp);
-            eventosDePassagemEnviados = (unsigned int)temp << 8;
-            LerDadosDaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ENVIADOS, &temp);
-            eventosDePassagemEnviados |= (unsigned int)temp;
-
-            retornaIdDoLeitor(idLeitor);
-        }       
-        habilitaMaquinaDeEstados_EventosDePassagem();
-    }
-
-    void criarEventoDePassagem(eventoPassagem *_novoEventoDePassagem){
-        unsigned int endereco = (eventosDePassagemArmazenados * TAMANHO_EVENTO_DE_PASSAGEM_EM_BYTES) + ENDERECO_INICIAL_PARA_ARMAZENAR_EVENTOS;
-        unsigned char temp=0;
-
-        bloqueiaMaquinaDeEstados_EventosDePassagem();
-        
-        EscreverNaEEprom(endereco,_novoEventoDePassagem->EPC_naoUsado[0]);
-        EscreverNaEEprom(endereco+1,_novoEventoDePassagem->EPC_naoUsado[1]);
-        EscreverNaEEprom(endereco+2,_novoEventoDePassagem->EPC_naoUsado[2]);
-        EscreverNaEEprom(endereco+3,_novoEventoDePassagem->EPC_naoUsado[3]);
-        EscreverNaEEprom(endereco+4,_novoEventoDePassagem->EPC_naoUsado[4]);
-        EscreverNaEEprom(endereco+5,_novoEventoDePassagem->EPC_naoUsado[5]);
-        EscreverNaEEprom(endereco+6,_novoEventoDePassagem->EPC_naoUsado[6]);
-        EscreverNaEEprom(endereco+7,_novoEventoDePassagem->EPC_naoUsado[7]);
-        EscreverNaEEprom(endereco+8,_novoEventoDePassagem->EPC_veiculo[0]);
-        EscreverNaEEprom(endereco+9,_novoEventoDePassagem->EPC_veiculo[1]);
-        EscreverNaEEprom(endereco+10,_novoEventoDePassagem->EPC_veiculo[2]);
-        EscreverNaEEprom(endereco+11,_novoEventoDePassagem->EPC_veiculo[3]);
-        EscreverNaEEprom(endereco+12,_novoEventoDePassagem->EPC_veiculo[4]);
-        EscreverNaEEprom(endereco+13,_novoEventoDePassagem->EPC_veiculo[5]);
-        EscreverNaEEprom(endereco+14,_novoEventoDePassagem->EPC_veiculo[6]);
-        EscreverNaEEprom(endereco+15,_novoEventoDePassagem->EPC_veiculo[7]);
-        EscreverNaEEprom(endereco+16,_novoEventoDePassagem->dia);
-        EscreverNaEEprom(endereco+17,_novoEventoDePassagem->mes);
-        EscreverNaEEprom(endereco+18,_novoEventoDePassagem->ano);
-        EscreverNaEEprom(endereco+19,_novoEventoDePassagem->hora);
-        EscreverNaEEprom(endereco+20,_novoEventoDePassagem->minuto);
-        EscreverNaEEprom(endereco+21,_novoEventoDePassagem->segundo);
-        EscreverNaEEprom(endereco+22,_novoEventoDePassagem->tipoMovimento[0]);
-        EscreverNaEEprom(endereco+23,_novoEventoDePassagem->tipoMovimento[1]);
-        EscreverNaEEprom(endereco+24,_novoEventoDePassagem->tipoMovimento[2]);
-        EscreverNaEEprom(endereco+25,_novoEventoDePassagem->tipoMovimento[3]);
-        EscreverNaEEprom(endereco+26,_novoEventoDePassagem->tipoMovimento[4]);
-        EscreverNaEEprom(endereco+27,_novoEventoDePassagem->tipoMovimento[5]);
-        EscreverNaEEprom(endereco+28,_novoEventoDePassagem->tipoMovimento[6]);
-        EscreverNaEEprom(endereco+29,_novoEventoDePassagem->tipoMovimento[7]);
-
-        eventosDePassagemArmazenados++;
-
-        temp = (unsigned char)(eventosDePassagemArmazenados>>8);
-        EscreverNaEEprom(MSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,temp);
-        temp = (unsigned char)eventosDePassagemArmazenados & 0x00FF;
-        EscreverNaEEprom(LSB_ENDERECO_EVENTOS_DE_PASSAGEM_ARMAZENADOS,temp);  
-        
-        habilitaMaquinaDeEstados_EventosDePassagem();
-    }
+ 
 
     void executaMaquinaDeEstados_EventosDePassagem(void){     
         unsigned char temp=0;
@@ -273,23 +198,22 @@ enum estadosDaMaquina{
                 if(delay > TEMPO_ENTRE_ESTADOS_FSM_EVENTOS_DE_PASSAGEM){  
                     zeraContadorExecucao_EventosDePassagem();
                     if(maquinaDeEstadosLiberada_EventosDePassagem){  
-                        //delay++;
-                        //if(delay>INTERVALO_ENTRE_TENTATIVAS){
-                            sprintf(stringMensagemEvento,"GET /tag/php/apiff.php?parametro=[FF;%c%c%c%c%c%c;%c;%c%c%c%c;%02d%02d%02d;%02d%02d%02d] HTTP/1.1\r\nHost: www.portarianota10.com.br\r\n\r\n",
+                            
+                        //if(setaURLEnvioDeEventos()){
+                            sprintf(stringMensagemEvento,"parametro=[FF;%c%c%c%c%c%c;%c;%c%c%c%c;%02d%02d%02d;%02d%02d%02d]",
                                     idLeitor[0],idLeitor[1],idLeitor[2],idLeitor[3],idDoLeitor[4],idDoLeitor[5],
-                                    (novoEventoDePassagem.tipoMovimento[0]==MOVIMENTO_ENTRADA ? 'E':'S'),
+                                    (novoEventoDePassagem.tipoMovimento == MOVIMENTO_ENTRADA ? 'E':'S'),
                                     novoEventoDePassagem.EPC_veiculo[0],novoEventoDePassagem.EPC_veiculo[1],novoEventoDePassagem.EPC_veiculo[2],novoEventoDePassagem.EPC_veiculo[3],
                                     novoEventoDePassagem.dia,novoEventoDePassagem.mes,novoEventoDePassagem.ano,
                                     novoEventoDePassagem.hora,novoEventoDePassagem.minuto,novoEventoDePassagem.segundo);
 
-                            //escreverMensagemEthernet(stringMensagemEvento); 
-                            escreverMensagemWifi(stringMensagemEvento); 
+                            escreverMensagemEthernet(stringMensagemEvento); 
+                            //escreverMensagemWifi(stringMensagemEvento); 
                             //escreverMensagemUSB(stringMensagemEvento);
                             
                             estadoAtual=AGUARDANDO_ACK;
                             estadoAnterior=ENVIAR_MENSAGEM;
-                            //delay = 0;
-                        //}
+                        //}     
                     }    
                 }
             break;
@@ -345,44 +269,5 @@ enum estadosDaMaquina{
         }
     }
 
-    void lerEventoDePassagemNaEEPROM(eventoPassagem *evento,int endereco){      
-            // LER EPC DO OPERADOR QUE ESTAVA OPERANDO O VEICULO DURANTE O EVENTO
-            LerDadosDaEEprom(endereco, &evento->EPC_naoUsado[0]);
-            LerDadosDaEEprom(endereco+1, &evento->EPC_naoUsado[1]);
-            LerDadosDaEEprom(endereco+2, &evento->EPC_naoUsado[2]);
-            LerDadosDaEEprom(endereco+3, &evento->EPC_naoUsado[3]);
-            LerDadosDaEEprom(endereco+4, &evento->EPC_naoUsado[4]);
-            LerDadosDaEEprom(endereco+5, &evento->EPC_naoUsado[5]);
-            LerDadosDaEEprom(endereco+6, &evento->EPC_naoUsado[6]);
-            LerDadosDaEEprom(endereco+7, &evento->EPC_naoUsado[7]);
-            // LER EPC DO PEDESTRE/OPERADOR/VEICULO PARA O QUAL GEROU O EVENTO
-            LerDadosDaEEprom(endereco+8, &evento->EPC_veiculo[0]);
-            LerDadosDaEEprom(endereco+9, &evento->EPC_veiculo[1]);
-            LerDadosDaEEprom(endereco+10, &evento->EPC_veiculo[2]);
-            LerDadosDaEEprom(endereco+11, &evento->EPC_veiculo[3]);
-            LerDadosDaEEprom(endereco+12, &evento->EPC_veiculo[4]);
-            LerDadosDaEEprom(endereco+13, &evento->EPC_veiculo[5]);
-            LerDadosDaEEprom(endereco+14, &evento->EPC_veiculo[6]);
-            LerDadosDaEEprom(endereco+15, &evento->EPC_veiculo[7]);
-            // LER DIA QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+16, &evento->dia);
-            // LER MES QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+17, &evento->mes);
-            // LER ANO QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+18, &evento->ano);
-            // LER HORA QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+19, &evento->hora);
-            // LER MINUTO QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+20, &evento->minuto);
-            // LER SEGUNDO QUANDO OCORREU O EVENTO
-            LerDadosDaEEprom(endereco+21, &evento->segundo);     
-            LerDadosDaEEprom(endereco+22, &evento->tipoMovimento[0]);
-            LerDadosDaEEprom(endereco+23, &evento->tipoMovimento[1]);
-            LerDadosDaEEprom(endereco+24, &evento->tipoMovimento[2]);
-            LerDadosDaEEprom(endereco+25, &evento->tipoMovimento[3]);
-            LerDadosDaEEprom(endereco+26, &evento->tipoMovimento[4]);
-            LerDadosDaEEprom(endereco+27, &evento->tipoMovimento[5]);
-            LerDadosDaEEprom(endereco+28, &evento->tipoMovimento[6]);
-            LerDadosDaEEprom(endereco+29, &evento->tipoMovimento[7]);
-    }
+    
 

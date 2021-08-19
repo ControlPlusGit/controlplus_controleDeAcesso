@@ -4,6 +4,7 @@
 #include "bsp.h"
 #include "pin_manager.h" // include all pin macros
 #include "../delay.h"
+#include "rfid_bsp.h"
 
 BSP_OnboardLeds OnboardLeds;
 
@@ -64,6 +65,42 @@ void BSP_setBuzzer(uint8_t state){
     }
     else{
         SAI_3_SetLow();
+    }
+}
+
+void BSP_setLedAntena(uint8_t numAntena, uint8_t state){
+    switch(numAntena){
+        case ANTENNA_1:
+            LED_ANTENA_1(state);
+            break; 
+            
+        case ANTENNA_2:
+            LED_ANTENA_2(state);
+            break;
+            
+        case ANTENNA_3:
+            LED_ANTENA_3(state);
+            break;
+            
+        case ANTENNA_4:
+            LED_ANTENA_4(state);
+            break;
+            
+        case ANTENNA_5:
+            LED_ANTENA_5(state);
+            break;
+            
+        case ANTENNA_6:
+            LED_ANTENA_6(state);
+            break;
+        
+        case ANTENNA_7:
+            LED_ANTENA_7(state);
+            break;
+            
+        case ANTENNA_8:
+            LED_ANTENA_8(state);
+            break;
     }
 }
 
@@ -183,7 +220,7 @@ void BSP_setLed(uint8_t numLed, uint8_t state){
             break;   
         case NUM_MAX_LEDS:
             state ? LED_A5_SetHigh():LED_A5_SetLow();
-            state ? LED_A6_SetHigh():LED_A6_SetLow();
+            //state ? LED_A6_SetHigh():LED_A6_SetLow();
             state ? LED_A7_SetHigh():LED_A7_SetLow();
             state ? LED_A8_SetHigh():LED_A8_SetLow();
             state ? LED_A1_SetHigh():LED_A1_SetLow();
