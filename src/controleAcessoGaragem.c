@@ -82,7 +82,7 @@ void ExecutaControleDeAcessoGaragem(void){
         executaMaquinaDeEstadosUSRTCP232();
         
         numeroDeTagsLidas = realizaLeituraDeAntena(ANTENNA_1); //Antena de entrada
-        if(numeroDeTagsLidas > 0){
+        if(numeroDeTagsLidas > 0 && tags_[0].tid.data_available_flag == 1){  // Se entrar, tid esta disponivel
             //CarregaEpcLido(0);
             if(tags_[0].epc[0] == 0x29 && tags_[0].epc[1] == 0x04 && tags_[0].epc[2] == 0x80){ //TAG é da ControlPlus?
                 if(tags_[0].epc[3] == tagCondominio[0] && tags_[0].epc[4] == tagCondominio[1]){ //TAG é do Condominio?

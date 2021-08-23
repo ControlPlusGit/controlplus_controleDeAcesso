@@ -88,6 +88,8 @@
 /** Definition for the CRC length */
 #define CRCLENGTH               2
 
+#define TID_LENGTH 12
+
 struct gen2Config{
     uint8_t tari;        /*< Tari setting */
     uint8_t linkFreq;    /*< GEN2_LF_40, ... */
@@ -115,8 +117,26 @@ struct gen2SelectParams{
 //typedef uint8_tx unsigned char __attribute__((far));
 
  //struct __attribute__((far)) TagInfo_
-struct TagInfo_
-{
+
+typedef struct
+{   
+    uint8_t rawData[TID_LENGTH];  
+    
+    uint8_t class_id;
+    uint8_t xtid_bit;
+    uint8_t security_bit;
+    uint8_t file_bit;
+    uint8_t mask_designer_identifier[2];
+    uint8_t tag_model_number[2];
+    
+    uint8_t xtid_header[2];
+    uint8_t serial_number_segment[6];    
+    
+    uint8_t data_available_flag; // use it to know when tid is read
+    
+}TidInfo_;
+
+struct TagInfo_ {
     /** RN16 number */
     uint8_t rn16[2];
     /** PC value */
@@ -124,7 +144,9 @@ struct TagInfo_
     /** EPC array */
     uint8_t epc[EPCLENGTH]; /* epc must immediately follow pc */
     /** EPC length */
-    uint8_t epclen;  /*length in bytes */
+    uint8_t epclen; /*length in bytes */
+    /** TID struct  */
+    TidInfo_ tid;
     /** Handle for write and read communication with the Tag */
     uint8_t handle[2];
     /** rssi which has been measured when reading this Tag. */
