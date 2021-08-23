@@ -94,6 +94,7 @@ Freq Frequencies;
 /* local prototypes */
 /*------------------------------------------------------------------------- */
 
+static int8_t gen2ReadTID(Tag *tag);
 
 /*------------------------------------------------------------------------- */
 /** EPC REQRN command send to the Tag. This function is used to
@@ -742,13 +743,21 @@ unsigned gen2SearchForTagsAutoAck(Tag *tags_
                 cmd = AS3993_CMD_QUERYREP;
                 break;
             case 1:
-                num_of_tags++;
-                
-                if (followCmd)
-                    cmd = 0;
-                else
-                    cmd = AS3993_CMD_QUERYREP;
-                break;
+                    num_of_tags++;
+                    
+                    if (followCmd)
+                    {
+                        cmd = 0;
+                    }
+                    else
+                    {
+                        cmd = AS3993_CMD_QUERYREP;
+                        if( gen2ReadTID(tags_+(num_of_tags-1)) != ERR_NONE )
+                        {
+                            cmd = cmd; // breakpoint here
+                        }
+                    }
+                    break;
             case 0:
                 //EPCLOG("NO EPC response -> empty Slot\n");
                 cmd = AS3993_CMD_QUERYREP;
@@ -1053,4 +1062,89 @@ uint8_t inventoryGen2(void)
 
     //APPLOG("end inventory, found tags: %hhx\n", num_of_tags);
     return num_of_tags;
+}
+
+static int8_t gen2ReadTID(Tag *tag)
+{
+    // Every time we read, last word came with random values, so we read additional word
+    // and ignore it when copying to tags_    
+    uint8_t nbWords = (TID_LENGTH) / 2; // 12/2 = 6 + position 0 = 7 words
+    //uint8_t tidlen = 0;
+    uint8_t tmpBuf[TID_LENGTH + 2]; // 12 + 2 dummy bytes (word)
+    //uint8_t len = 0;
+    int8_t ret;
+    uint8_t copyData = 0;
+    
+    memset(tmpBuf,0,TID_LENGTH + 2);
+
+    ret = gen2ReadFromTag(tag, MEM_TID, 0, nbWords, tmpBuf); // Read all 7 words from Tid memory bank
+
+    if (ret == ERR_NONE) 
+    {
+        copyData = 1;      
+    } 
+    else 
+    {
+        if (ret == ERR_NOMEM) 
+        {
+            // Reached last TID byte
+            ret = ERR_NONE;         // Not an error 
+            copyData = 1;
+        } 
+        else 
+        {
+            ret = ERR_CHIP_NORESP;
+        }
+        
+        copyData = 0;
+    }
+    
+    if (copyData)
+    {
+        memcpy(tag->tid.rawData, tmpBuf, TID_LENGTH);  // If no errors, copy only 6 words (12 bytes) to tags_
+        
+        tag->tid.class_id                 = tag->tid.rawData[0];
+        
+        tag->tid.xtid_bit                 = tag->tid.rawData[1] & 0x01; 
+        tag->tid.security_bit             = tag->tid.rawData[1] & 0x02;
+        tag->tid.file_bit                 = tag->tid.rawData[1] & 0x04;
+        
+        tag->tid.mask_designer_identifier[0] = ( ( tag->tid.rawData[1] & 0xF8 ) << 1 | ( tag->tid.rawData[2] & 0x0F ) ) ;
+        tag->tid.mask_designer_identifier[1] = tag->tid.rawData[1] & 0x80;
+        
+        tag->tid.tag_model_number[0]      = ( tag->tid.rawData[2] & 0xF0 ) | ( tag->tid.rawData[3] & 0x0F ); 
+        tag->tid.tag_model_number[1]      = tag->tid.rawData[3] & 0xF0;    
+        
+        tag->tid.xtid_header[0]           = tag->tid.rawData[4];
+        tag->tid.xtid_header[1]           = tag->tid.rawData[5];
+        
+        tag->tid.serial_number_segment[0] = tag->tid.rawData[6];
+        tag->tid.serial_number_segment[1] = tag->tid.rawData[7];
+        tag->tid.serial_number_segment[2] = tag->tid.rawData[8];
+        tag->tid.serial_number_segment[3] = tag->tid.rawData[9];
+        tag->tid.serial_number_segment[4] = tag->tid.rawData[10];
+        tag->tid.serial_number_segment[5] = tag->tid.rawData[11];
+        
+        tag->tid.data_available_flag = 1;
+    }
+    else
+    {
+        // If error, clean all registers
+        
+        memset(tag->tid.rawData,0,TID_LENGTH);
+        
+        memset(&tag->tid.class_id,0,sizeof(tag->tid.class_id));
+        memset(&tag->tid.xtid_bit,0,sizeof(tag->tid.xtid_bit));
+        memset(&tag->tid.security_bit,0,sizeof(tag->tid.security_bit));
+        memset(&tag->tid.file_bit,0,sizeof(tag->tid.file_bit));
+        memset(&tag->tid.mask_designer_identifier,0,sizeof(tag->tid.mask_designer_identifier));
+        memset(&tag->tid.tag_model_number,0,sizeof(tag->tid.tag_model_number));
+        
+        memset(&tag->tid.xtid_header,0,sizeof(tag->tid.xtid_header));
+        
+        memset(&tag->tid.serial_number_segment,0,sizeof(tag->tid.serial_number_segment));
+        tag->tid.data_available_flag = 0;
+    }
+
+    return ret;
 }

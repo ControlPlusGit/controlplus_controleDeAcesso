@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/controlplus_controleDeAcesso-main.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=controlplus_controleDeAcesso-main.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=controlpluscontroledeacesso-main/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/controlplus_controleDeAcesso.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=controlplus_controleDeAcesso.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=controlpluscontroledeacesso/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/controlpluscontroledeacesso-main/bin
+makeDirectory ${TMPDIR}/controlpluscontroledeacesso/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/controlpluscontroledeacesso-main.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/controlpluscontroledeacesso.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/controlpluscontroledeacesso-main.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/controlpluscontroledeacesso.tar *
 checkReturnCode
 
 # Cleanup
