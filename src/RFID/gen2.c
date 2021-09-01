@@ -1064,18 +1064,56 @@ uint8_t inventoryGen2(void)
     return num_of_tags;
 }
 
+static void tidSerialNumberFormula(Tag *tag){ 
+    
+    tag->tid.serialNumberFormulated[0]  = tag->tid.memBankRawData[0];
+    tag->tid.serialNumberFormulated[1]  = tag->tid.memBankRawData[1];
+    tag->tid.serialNumberFormulated[2]  = tag->tid.memBankRawData[2];
+    tag->tid.serialNumberFormulated[3]  = tag->tid.memBankRawData[3];
+    
+    tag->tid.serialNumberFormulated[4]  = ( ( tag->tid.memBankRawData[6]  & 0xE0 )      ) |
+                                          ( ( tag->tid.memBankRawData[10] & 0xE0 ) >> 4 );
+    
+    tag->tid.serialNumberFormulated[5]  = 0x00;
+    
+    tag->tid.serialNumberFormulated[6]  = ( ( tag->tid.memBankRawData[10] & 0x18 ) >> 2 );
+    
+    tag->tid.serialNumberFormulated[7]  = ( ( tag->tid.memBankRawData[6]  & 0x08 ) << 3 ) |
+                                          ( ( tag->tid.memBankRawData[10] & 0x07 ) << 3 ) |
+                                          ( ( tag->tid.memBankRawData[11] & 0xE0 ) >> 5 );
+    
+    tag->tid.serialNumberFormulated[8]  = ( ( tag->tid.memBankRawData[11] & 0x1F ) << 3 ) |
+                                          ( ( tag->tid.memBankRawData[8]  & 0xE0 ) >> 5 );
+    
+    tag->tid.serialNumberFormulated[9]  = ( ( tag->tid.memBankRawData[8]  & 0x1F ) << 3 ) |
+                                          ( ( tag->tid.memBankRawData[9]  & 0xE0 ) >> 5 );
+    
+    tag->tid.serialNumberFormulated[10] = ( ( tag->tid.memBankRawData[9]  & 0x1F ) << 3 ) |
+                                          ( ( tag->tid.memBankRawData[6]  & 0x07 )      );
+    
+    tag->tid.serialNumberFormulated[11] = tag->tid.memBankRawData[7];
+    
+    tag->tid.serial_number_formulated  = (uint64_t)tag->tid.serialNumberFormulated[6]  << 40;
+    tag->tid.serial_number_formulated |= (uint64_t)tag->tid.serialNumberFormulated[7]  << 32;
+    tag->tid.serial_number_formulated |= (uint64_t)tag->tid.serialNumberFormulated[8]  << 24;
+    tag->tid.serial_number_formulated |= (uint64_t)tag->tid.serialNumberFormulated[9]  << 16;
+    tag->tid.serial_number_formulated |= (uint64_t)tag->tid.serialNumberFormulated[10] << 8;
+    tag->tid.serial_number_formulated |= tag->tid.serialNumberFormulated[11];
+    
+}
+
 static int8_t gen2ReadTID(Tag *tag)
 {
     // Every time we read, last word came with random values, so we read additional word
     // and ignore it when copying to tags_    
     uint8_t nbWords = (TID_LENGTH) / 2; // 12/2 = 6 + position 0 = 7 words
     //uint8_t tidlen = 0;
-    uint8_t tmpBuf[TID_LENGTH + 2]; // 12 + 2 dummy bytes (word)
+    uint8_t tmpBuf[TID_LENGTH+2]; // 12 + 2 dummy bytes (word)
     //uint8_t len = 0;
-    int8_t ret;
+    int8_t ret = 0;
     uint8_t copyData = 0;
     
-    memset(tmpBuf,0,TID_LENGTH + 2);
+    memset(tmpBuf,0,sizeof(tmpBuf));
 
     ret = gen2ReadFromTag(tag, MEM_TID, 0, nbWords, tmpBuf); // Read all 7 words from Tid memory bank
 
@@ -1101,29 +1139,32 @@ static int8_t gen2ReadTID(Tag *tag)
     
     if (copyData)
     {
-        memcpy(tag->tid.rawData, tmpBuf, TID_LENGTH);  // If no errors, copy only 6 words (12 bytes) to tags_
+        memcpy(tag->tid.memBankRawData, tmpBuf, TID_LENGTH);  // If no errors, copy only 6 words (12 bytes) to tags_
         
-        tag->tid.class_id                 = tag->tid.rawData[0];
+        tag->tid.class_id                 = tag->tid.memBankRawData[0];
         
-        tag->tid.xtid_bit                 = tag->tid.rawData[1] & 0x01; 
-        tag->tid.security_bit             = tag->tid.rawData[1] & 0x02;
-        tag->tid.file_bit                 = tag->tid.rawData[1] & 0x04;
+//        tag->tid.xtid_bit                 = tag->tid.memBankRawData[1] & 0x01; 
+//        tag->tid.security_bit             = tag->tid.memBankRawData[1] & 0x02;
+//        tag->tid.file_bit                 = tag->tid.memBankRawData[1] & 0x04;
         
-        tag->tid.mask_designer_identifier[0] = ( ( tag->tid.rawData[1] & 0xF8 ) << 1 | ( tag->tid.rawData[2] & 0x0F ) ) ;
-        tag->tid.mask_designer_identifier[1] = tag->tid.rawData[1] & 0x80;
+        tag->tid.xtid_bit                 = tag->tid.memBankRawData[1] & 0x80 ? 1:0; 
+        tag->tid.security_bit             = tag->tid.memBankRawData[1] & 0x40 ? 1:0;
+        tag->tid.file_bit                 = tag->tid.memBankRawData[1] & 0x20 ? 1:0;
         
-        tag->tid.tag_model_number[0]      = ( tag->tid.rawData[2] & 0xF0 ) | ( tag->tid.rawData[3] & 0x0F ); 
-        tag->tid.tag_model_number[1]      = tag->tid.rawData[3] & 0xF0;    
+        tag->tid.mask_designer_identifier = ( (uint16_t)( tag->tid.memBankRawData[1] & 0x1F ) << 4 | (uint16_t)( tag->tid.memBankRawData[2] & 0xF0 ) >> 4 ) ;
         
-        tag->tid.xtid_header[0]           = tag->tid.rawData[4];
-        tag->tid.xtid_header[1]           = tag->tid.rawData[5];
+        tag->tid.tag_model_number      = (uint16_t)( tag->tid.memBankRawData[2] & 0x0F ) << 8 | (uint16_t)tag->tid.memBankRawData[3]; 
         
-        tag->tid.serial_number_segment[0] = tag->tid.rawData[6];
-        tag->tid.serial_number_segment[1] = tag->tid.rawData[7];
-        tag->tid.serial_number_segment[2] = tag->tid.rawData[8];
-        tag->tid.serial_number_segment[3] = tag->tid.rawData[9];
-        tag->tid.serial_number_segment[4] = tag->tid.rawData[10];
-        tag->tid.serial_number_segment[5] = tag->tid.rawData[11];
+        tag->tid.xtid_header           = (uint16_t)tag->tid.memBankRawData[4] << 8 | tag->tid.memBankRawData[5];
+        
+        tag->tid.raw_serial_number_segment = (uint64_t)tag->tid.memBankRawData[6]  << 40;
+        tag->tid.raw_serial_number_segment |= (uint64_t)tag->tid.memBankRawData[7]  << 32;
+        tag->tid.raw_serial_number_segment |= (uint64_t)tag->tid.memBankRawData[8]  << 24;
+        tag->tid.raw_serial_number_segment |= (uint64_t)tag->tid.memBankRawData[9]  << 16;
+        tag->tid.raw_serial_number_segment |= (uint64_t)tag->tid.memBankRawData[10] << 8;
+        tag->tid.raw_serial_number_segment |= tag->tid.memBankRawData[11];
+        
+        tidSerialNumberFormula(tag);
         
         tag->tid.data_available_flag = 1;
     }
@@ -1131,7 +1172,7 @@ static int8_t gen2ReadTID(Tag *tag)
     {
         // If error, clean all registers
         
-        memset(tag->tid.rawData,0,TID_LENGTH);
+        memset(tag->tid.memBankRawData,0,TID_LENGTH);
         
         memset(&tag->tid.class_id,0,sizeof(tag->tid.class_id));
         memset(&tag->tid.xtid_bit,0,sizeof(tag->tid.xtid_bit));
@@ -1139,12 +1180,13 @@ static int8_t gen2ReadTID(Tag *tag)
         memset(&tag->tid.file_bit,0,sizeof(tag->tid.file_bit));
         memset(&tag->tid.mask_designer_identifier,0,sizeof(tag->tid.mask_designer_identifier));
         memset(&tag->tid.tag_model_number,0,sizeof(tag->tid.tag_model_number));
-        
+
         memset(&tag->tid.xtid_header,0,sizeof(tag->tid.xtid_header));
-        
-        memset(&tag->tid.serial_number_segment,0,sizeof(tag->tid.serial_number_segment));
+
+        memset(&tag->tid.raw_serial_number_segment,0,sizeof(tag->tid.raw_serial_number_segment));
         tag->tid.data_available_flag = 0;
     }
 
     return ret;
 }
+
