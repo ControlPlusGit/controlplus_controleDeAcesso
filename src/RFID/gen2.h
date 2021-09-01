@@ -120,17 +120,19 @@ struct gen2SelectParams{
 
 typedef struct
 {   
-    uint8_t rawData[TID_LENGTH];  
+    uint8_t memBankRawData[TID_LENGTH];  
+    uint8_t serialNumberFormulated[TID_LENGTH];
     
     uint8_t class_id;
     uint8_t xtid_bit;
     uint8_t security_bit;
     uint8_t file_bit;
-    uint8_t mask_designer_identifier[2];
-    uint8_t tag_model_number[2];
+    uint16_t mask_designer_identifier;
+    uint16_t tag_model_number;
     
-    uint8_t xtid_header[2];
-    uint8_t serial_number_segment[6];    
+    uint16_t xtid_header;
+    uint64_t raw_serial_number_segment;   
+    uint64_t serial_number_formulated;
     
     uint8_t data_available_flag; // use it to know when tid is read
     
